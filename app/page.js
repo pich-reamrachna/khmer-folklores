@@ -1,4 +1,5 @@
 import collection from "../collection.config.js";
+import EntryCard, { draftEntries } from "../components/EntryCard.js";
 
 const styles = {
   wrap: {
@@ -8,7 +9,7 @@ const styles = {
   },
   kicker: {
     fontFamily: "'Courier New', monospace",
-    color: "#2EE6A8",
+    color: "#4fa3fd",
     fontSize: 14,
     letterSpacing: 1,
   },
@@ -30,6 +31,11 @@ const styles = {
     backgroundColor: "#1C222C",
     border: "1px solid #2E3644",
     borderRadius: 10,
+  },
+  grid: {
+    display: "grid",
+    gap: 20,
+    marginTop: 48,
   },
   cardLabel: {
     fontFamily: "'Courier New', monospace",
@@ -72,7 +78,13 @@ export default function Home() {
         <p style={styles.cardValue}>{collection.source}</p>
       </div>
 
-      <p style={styles.count}>entries in the archive: 0 (for now)</p>
+      <section style={styles.grid}>
+        {draftEntries.map((entry, index) => (
+          <EntryCard key={index} entry={entry} />
+        ))}
+      </section>
+
+      <p style={styles.count}>entries in the archive: {draftEntries.length}</p>
 
       <footer style={styles.footer}>
         Built in ICT 340 — Vibe Coding, American University of Phnom Penh, Fall
