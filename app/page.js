@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import collection from "../collection.config.js";
-import EntryCard, { draftEntries } from "../components/EntryCard.js";
+import EntryCard from "../components/EntryCard.js";
+import stories from "../data/entries.js";
 import StoryHero from "../components/StoryHero.js";
 
 const styles = {
@@ -96,7 +97,7 @@ const styles = {
     maxWidth: 1200,
     margin: "0 auto",
     display: "grid",
-    gridTemplateColumns: `repeat(${draftEntries.length}, minmax(0, 1fr))`,
+    gridTemplateColumns: `repeat(${stories.length}, minmax(0, 1fr))`,
     gap: 20,
   },
   cardLabel: {
@@ -133,7 +134,14 @@ const styles = {
 export default function Home() {
   // Selected index drives the hero. Default to the first entry.
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const selectedEntry = draftEntries[selectedIndex] ?? draftEntries[0];
+  // Flatten the selected story + its first version into a single object so
+  // StoryHero and EntryCard can keep reading entry.title, entry.description,
+  // entry.contributor, entry.place, entry.category — no component changes.
+  const story = stories[selectedIndex] ?? stories[0];
+  const selectedEntry = {
+    ...story,
+    ...story.versions[0],
+  };
 
   return (
     <main
@@ -154,7 +162,7 @@ export default function Home() {
 
         <div style={styles.firstSectionTail}>
           <div style={styles.cardsRow} aria-label="Entries in the archive">
-            {draftEntries.map((entry, index) => (
+            {stories.map((entry, index) => (
               <EntryCard
                 key={index}
                 entry={entry}
@@ -183,7 +191,7 @@ export default function Home() {
           </div>
 
           <p style={styles.count}>
-            entries in the archive: {draftEntries.length}
+            entries in the archive: {stories.length}
           </p>
 
           <footer style={styles.footer}>

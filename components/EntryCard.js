@@ -1,44 +1,5 @@
 "use client";
 
-// Draft entries for now — replace the placeholder values with real ones.
-export const draftEntries = [
-  {
-    title: "Bramat Promong",
-    description: "A story about a woman who comes to eat your inards if you don't take your naptime seriously. It's a story that is usually told to children to make them take their naps on time.",
-    contributor: "Rachna",
-    place: "Kampong Cham",
-    category: "Legend",
-  },
-  {
-    title: "Ahpt",
-    description: "A story about a floating head of a woman who eat chickens at night. It is usually told mostly in the countryside that if you see a glowing orb at night, you will see a floating head of a woman who will eat your chickens.",
-    contributor: "Numpang",
-    place: "Prey Veng",
-    category: "Legend",
-  },
-  {
-    title: "Daun Penh's Curse",
-    description: "There's a saying that in every Khmer wedding tradition, the groom must go to the Phnom Penh Pagod to pay respect to the founder of Phnom Penh, Daun Penh. If the groom does not do this, it is said that the groom will be cursed and will not have a happy marriage. However, the bride MUST not go to the pagoda with him for she will be cursed by Daun Penh. The reason is that Daun Penh was a woman who had her husband cheated on her, and she does not want to see a happy marriage for the groom and bride.",
-    contributor: "Kimyou",
-    place: "Phnom Penh",
-    category: "Practices/Customary",
-  },
-  {
-    title: "Crocodile Reincarnation",
-    description: "Many cambodians believe in superstition, and this is one of them. It is said that if you sleep right after you just ate, in the next life, you will be reincarnated as a crocodile.",
-    contributor: "Rachna's Mother",
-    place: "Cambodia",
-    category: "Superstition",
-  },
-  {
-    title: "Neang Neath",
-    description: "It is said that if you sleep under a banana tree, a ghost called Neak Neath will come and haunt you. She appears in a long white dress, holding her pregnant belly. It is said that she died during labor while her husband was away, which led to her to becoming a vengeful spirit.",
-    contributor: "Grandmother",
-    place: "Kandal",
-    category: "Legend",
-  }
-];
-
 // Card palette and structure match the hero: dark surface, gold active border.
 // We accept an isActive prop and an onClick so the parent (app/page.js) can
 // drive which entry is selected. The card is a <button> inside an <li> for
