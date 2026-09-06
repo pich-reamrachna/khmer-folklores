@@ -79,6 +79,22 @@ const styles = {
     maxWidth: 640,
     margin: "0 0 2.5rem",
   },
+  listHeader: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderBottom: "1px solid #2A172F",
+    paddingBottom: "0.85rem",
+    marginBottom: "1.25rem",
+  },
+  listCount: {
+    fontSize: "0.75rem",
+    fontWeight: 700,
+    color: "#8A7F91",
+    letterSpacing: "0.15em",
+    textTransform: "uppercase",
+    margin: 0,
+  },
   // Shows exactly VISIBLE_ROWS rows; the rest scroll into view — matches
   // the mockup's "5 stories in view" scrollable panel with a gold
   // scrollbar (see the <style jsx> block below for .archive-scroll).
@@ -159,6 +175,10 @@ export default function ArchiveBrowser({ stories }) {
           A living archive of Khmer legends, spirits, and the community
           memories that keep them alive.
         </p>
+
+        <div style={styles.listHeader}>
+          <p style={styles.listCount}>{stories.length} Stories in View</p>
+        </div>
 
         <ul style={styles.list} className="archive-scroll">
           {stories.map((entry) => (
