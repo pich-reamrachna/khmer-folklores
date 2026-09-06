@@ -1,11 +1,19 @@
 "use client";
 
-// The "browse the archive" section beneath the hero. This implements only
-// the eyebrow, title, subtitle, and the stacked list of stories from the
-// mockup — the stat badges, category filters, search bar, and the "share
-// a memory" banner aren't built yet. No icons: rows are plain text,
-// matching the no-icon rule already applied to the nav/hero/entry cards.
-// "use client" is required here for the <style jsx> block below.
+import { useState } from "react";
+import ArchiveSearch from "./ArchiveSearch.js";
+
+// The "browse the archive" section beneath the hero. This implements the
+// eyebrow, title, subtitle, a search bar, and the stacked list of stories
+// from the mockup — the stat badges and category filters aren't built yet.
+// Rows themselves stay icon-free, matching the no-icon rule already applied
+// to the nav/hero/entry cards; the search bar's icon (in ArchiveSearch.js)
+// is the one deliberate exception, per explicit request.
+//
+// The search input itself lives in ArchiveSearch.js (presentational only);
+// this component owns the query state and does the actual filtering, since
+// it's the one holding the `stories` data to filter.
+// "use client" is required here for useState and the <style jsx> block.
 
 const ROW_HEIGHT = 104;
 const ROW_GAP = 14;
@@ -78,6 +86,11 @@ const styles = {
     lineHeight: 1.6,
     maxWidth: 640,
     margin: "0 0 2.5rem",
+  },
+  searchRow: {
+    display: "flex",
+    justifyContent: "flex-end",
+    marginBottom: "1.5rem",
   },
   listHeader: {
     display: "flex",
@@ -162,6 +175,19 @@ const styles = {
 };
 
 export default function ArchiveBrowser({ stories }) {
+  const [query, setQuery] = useState("");
+
+  const normalizedQuery = query.trim().toLowerCase();
+  const filteredStories = normalizedQuery
+    ? stories.filter((entry) => {
+        const haystack = [entry.title, entry.contributor, entry.place, entry.description]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+        return haystack.includes(normalizedQuery);
+      })
+    : stories;
+
   return (
     <section style={styles.section}>
       <div style={styles.container}>
@@ -176,25 +202,33 @@ export default function ArchiveBrowser({ stories }) {
           memories that keep them alive.
         </p>
 
-        <div style={styles.listHeader}>
-          <p style={styles.listCount}>{stories.length} Stories in View</p>
+        <div style={styles.searchRow}>
+          <ArchiveSearch value={query} onChange={setQuery} />
         </div>
 
-        <ul style={styles.list} className="archive-scroll">
-          {stories.map((entry) => (
-            <li key={entry.id} style={styles.row} className="archive-row">
-              <div style={styles.textCol}>
-                {entry.khmerTitle ? (
-                  <p style={styles.khmerTitle}>{entry.khmerTitle}</p>
-                ) : null}
-                <h3 style={styles.rowTitle}>{entry.title}</h3>
-                <p style={styles.snippet}>{truncateSnippet(entry.description)}</p>
-              </div>
+        <div style={styles.listHeader}>
+          <p style={styles.listCount}>{filteredStories.length} Stories in View</p>
+        </div>
 
-              {entry.place ? <span style={styles.place}>{entry.place}</span> : null}
-            </li>
-          ))}
-        </ul>
+        {filteredStories.length > 0 ? (
+          <ul style={styles.list} className="archive-scroll">
+            {filteredStories.map((entry) => (
+              <li key={entry.id} style={styles.row} className="archive-row">
+                <div style={styles.textCol}>
+                  {entry.khmerTitle ? (
+                    <p style={styles.khmerTitle}>{entry.khmerTitle}</p>
+                  ) : null}
+                  <h3 style={styles.rowTitle}>{entry.title}</h3>
+                  <p style={styles.snippet}>{truncateSnippet(entry.description)}</p>
+                </div>
+
+                {entry.place ? <span style={styles.place}>{entry.place}</span> : null}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p style={styles.snippet}>No stories match your search.</p>
+        )}
       </div>
 
       {/* :hover and ::-webkit-scrollbar can't be expressed as inline
