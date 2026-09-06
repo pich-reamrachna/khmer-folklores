@@ -1,125 +1,194 @@
-// StoryHero — the first section of the mockup. Pure presentation.
-// Receives the selected entry from the parent (the page holds the state).
-// No state, no navigation, no data lookup — that all lives in app/page.js.
+// StoryHero — the hero-section from the mockup: eyebrow, title, summary,
+// CTA, and a meta tag, laid out as a two-column grid. `children` (the entry
+// card carousel) renders below the grid, inside the same container, so it
+// shares this section's padding/max-width/gap instead of managing its own.
 
 const styles = {
   section: {
-    backgroundColor: "#0C0A12",
-    padding: "72px 48px 56px",
     position: "relative",
+    minHeight: "100vh",
+    width: "100%",
+    // Top padding clears the fixed 90px NavBar.
+    padding: "130px 2rem 3rem",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
     overflow: "hidden",
-    fontFamily:
-      "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    color: "#E8EDF2",
+    backgroundColor: "#08040A",
+    boxSizing: "border-box",
+    scrollSnapAlign: "start",
+    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+    color: "#F5EFE6",
   },
-  // Single column — the decorative diamond/mandala accent has been removed
-  // by request, so the hero is just the story block (kicker, title,
-  // description, CTA) on a dark canvas.
-  grid: {
-    maxWidth: 1200,
+  container: {
+    maxWidth: 1560,
+    width: "100%",
     margin: "0 auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: "2.2rem",
+    position: "relative",
+    zIndex: 2,
   },
-  kickerRow: {
+  eyebrow: {
     display: "flex",
     alignItems: "center",
-    gap: 16,
-    color: "#C6A15B",
-    fontFamily: "Georgia, 'Times New Roman', serif",
-    fontSize: 13,
-    letterSpacing: 4,
-    textTransform: "uppercase",
+    gap: "1rem",
     margin: 0,
   },
-  rule: {
-    flex: "0 0 48px",
+  eyebrowLine: {
     height: 1,
-    backgroundColor: "#C6A15B",
-    opacity: 0.7,
+    width: 48,
+    backgroundColor: "rgba(197, 160, 89, 0.65)",
+  },
+  eyebrowText: {
+    fontSize: "0.75rem",
+    fontWeight: 600,
+    color: "#E6C575",
+    letterSpacing: "0.25em",
+    textTransform: "uppercase",
+  },
+  main: {
+    display: "grid",
+    gridTemplateColumns: "1fr auto",
+    alignItems: "center",
+    gap: "3rem",
+    minHeight: 280,
+  },
+  textContent: {
+    maxWidth: 760,
+  },
+  khmerTitle: {
+    fontFamily: "'Kantumruy Pro', serif",
+    fontSize: "2.2rem",
+    fontWeight: 600,
+    color: "#D4AF37",
+    letterSpacing: "0.04em",
+    margin: "0 0 0.5rem",
   },
   title: {
-    fontFamily: "Georgia, 'Times New Roman', serif",
-    fontSize: 72,
+    fontFamily: "'Cinzel', serif, 'Times New Roman'",
+    fontSize: "clamp(2.8rem, 6vw, 5.2rem)",
+    fontWeight: 600,
+    color: "#F5EFE6",
     lineHeight: 1.05,
-    fontWeight: 400,
-    margin: "28px 0 24px",
-    color: "#F1E9DA",
-    letterSpacing: 0.5,
+    letterSpacing: "-0.01em",
+    margin: "0 0 1.2rem",
+    // Fixed to exactly 2 lines (2 x line-height) regardless of whether
+    // the actual title wraps to 1 or 2 lines, so switching entries never
+    // changes this element's height.
+    height: "2.1em",
+    display: "-webkit-box",
+    WebkitLineClamp: 2,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
   },
-  description: {
-    fontSize: 17,
+  summary: {
+    fontSize: "1.05rem",
+    color: "#BBAEBF",
+    fontWeight: 300,
     lineHeight: 1.7,
-    color: "#B4AEC2",
-    margin: "0 0 32px",
-    maxWidth: 520,
+    maxWidth: 680,
+    margin: "0 0 1.8rem",
+    // Fixed to exactly 3 lines (3 x line-height); longer descriptions
+    // are clipped with an ellipsis instead of growing the hero block.
+    height: "5.1em",
+    display: "-webkit-box",
+    WebkitLineClamp: 3,
+    WebkitBoxOrient: "vertical",
+    overflow: "hidden",
   },
-  cta: {
-    display: "inline-flex",
+  readLink: {
+    display: "flex",
     alignItems: "center",
-    gap: 10,
     background: "transparent",
-    color: "#D4B368",
     border: "none",
-    padding: "10px 0",
-    fontFamily: "Georgia, 'Times New Roman', serif",
-    fontSize: 13,
-    letterSpacing: 4,
+    textDecoration: "none",
+    color: "#E6C575",
+    fontSize: "0.85rem",
+    fontWeight: 700,
+    letterSpacing: "0.22em",
     textTransform: "uppercase",
+    paddingBottom: 6,
+    borderBottom: "2px solid #C5A059",
     cursor: "pointer",
-    borderBottom: "1px solid #D4B368",
+    fontFamily: "inherit",
   },
-  metaLine: {
-    marginTop: 56,
-    textAlign: "right",
-    color: "#8A8398",
-    fontFamily: "Georgia, 'Times New Roman', serif",
-    fontSize: 13,
-    letterSpacing: 3,
+  metaAside: {
+    alignSelf: "flex-end",
+    paddingBottom: "1rem",
+  },
+  metaTag: {
+    margin: 0,
+    fontSize: "0.8rem",
+    fontWeight: 700,
+    color: "#E6C575",
+    letterSpacing: "0.22em",
     textTransform: "uppercase",
-    maxWidth: 1200,
-    marginLeft: "auto",
-    marginRight: "auto",
+    whiteSpace: "nowrap",
   },
-  metaSep: { color: "#C6A15B", margin: "0 10px" },
+  scrollCue: {
+    display: "flex",
+    justifyContent: "center",
+    paddingTop: "0.5rem",
+  },
+  scrollCueLink: {
+    background: "transparent",
+    border: "none",
+    fontSize: "0.75rem",
+    fontWeight: 600,
+    letterSpacing: "0.22em",
+    textTransform: "uppercase",
+    color: "#E6C575",
+    cursor: "pointer",
+    fontFamily: "inherit",
+  },
 };
 
-export default function StoryHero({ entry }) {
+export default function StoryHero({ entry, children }) {
   return (
     <section style={styles.section}>
-      <div style={styles.grid}>
-        <div>
-          <p style={styles.kickerRow}>
-            <span style={styles.rule} />
-            <span>A Story from the Living Archive</span>
-            <span style={styles.rule} />
-          </p>
+      <div style={styles.container}>
+        <p style={styles.eyebrow}>
+          <span style={styles.eyebrowLine} />
+          <span style={styles.eyebrowText}>A Story from the Living Archive</span>
+          <span style={styles.eyebrowLine} />
+        </p>
 
-          <h1 style={styles.title}>{entry.title}</h1>
+        <div style={styles.main}>
+          <div style={styles.textContent} key={entry.id} className="hero-fade">
+            {entry.khmerTitle ? (
+              <div style={styles.khmerTitle}>{entry.khmerTitle}</div>
+            ) : null}
 
-          <p style={styles.description}>{entry.description}</p>
+            <h1 style={styles.title}>{entry.title}</h1>
 
-          <button type="button" style={styles.cta} aria-label="Read this story">
-            Read This Story <span aria-hidden="true">↗</span>
+            <p style={styles.summary}>{entry.description}</p>
+
+            <button type="button" style={styles.readLink} aria-label="Read this story">
+              Read This Story
+            </button>
+          </div>
+
+          {entry.category || entry.place ? (
+            <div style={styles.metaAside}>
+              <p style={styles.metaTag} key={entry.id} className="hero-fade">
+                {entry.category}
+                {entry.category && entry.place ? " • " : ""}
+                {entry.place}
+              </p>
+            </div>
+          ) : null}
+        </div>
+
+        {children}
+
+        <div style={styles.scrollCue}>
+          <button type="button" style={styles.scrollCueLink}>
+            Scroll to open ledger &#8964;
           </button>
         </div>
       </div>
-
-      {entry.category || entry.place || entry.contributor ? (
-        <p style={styles.metaLine}>
-          {entry.category || "—"}
-          {entry.place ? (
-            <>
-              <span style={styles.metaSep}>•</span>
-              Across {entry.place}
-            </>
-          ) : null}
-          {entry.contributor ? (
-            <>
-              <span style={styles.metaSep}>•</span>
-              Shared by {entry.contributor}
-            </>
-          ) : null}
-        </p>
-      ) : null}
     </section>
   );
 }

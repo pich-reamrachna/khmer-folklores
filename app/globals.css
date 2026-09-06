@@ -1,0 +1,34 @@
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, modern Edge */
+}
+
+/* Belt-and-braces: also hide any scrollbars on the root <main> scroll
+   container that pages the archive. Section-snap scrolling doesn't
+   need a visible scrollbar. */
+main::-webkit-scrollbar {
+  display: none;
+}
+main {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Hero title/description/meta-tag fade in whenever the selected entry
+   changes (StoryHero remounts this block via a key={entry.id}). */
+@keyframes hero-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.hero-fade {
+  animation: hero-fade-in 350ms ease;
+}
