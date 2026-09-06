@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import collection from "../collection.config.js";
 
@@ -5,7 +8,11 @@ import collection from "../collection.config.js";
 // No logo/icon — the archive's identity comes from collection.config.js.
 // "Share a Memory" has no page yet, so it renders inert (a span, not a link).
 // Fixed to the viewport (matches the mockup's .navbar) so it stays visible
-// over both page sections, not just the hero.
+// over both page sections. Once the page is scrolled past the top of the
+// hero, it picks up a translucent blurred background (mockup's
+// .navbar.scrolled), matching content instead of floating over it.
+
+const SCROLL_THRESHOLD = 40;
 
 const styles = {
   nav: {
@@ -19,7 +26,16 @@ const styles = {
     display: "flex",
     alignItems: "center",
     backgroundColor: "transparent",
+    borderBottom: "1px solid transparent",
+    transition: "background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
     fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+  },
+  navScrolled: {
+    backgroundColor: "rgba(10, 6, 12, 0.95)",
+    backdropFilter: "blur(12px)",
+    WebkitBackdropFilter: "blur(12px)",
+    borderBottom: "1px solid #2A172F",
+    boxShadow: "0 10px 30px rgba(0, 0, 0, 0.6)",
   },
   // Inner wrapper: centered 1560px max-width, matching the mockup's
   // .nav-container. Side padding (2rem) lives here, not on `nav`.
@@ -81,8 +97,22 @@ const styles = {
 };
 
 export default function NavBar() {
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    // The page scrolls inside <main>, not the window, and scroll events
+    // don't bubble — a capture-phase listener on document still catches
+    // them, with event.target being the actual scrolling element.
+    const onScroll = (event) => {
+      const top = event.target?.scrollTop ?? 0;
+      setScrolled(top > SCROLL_THRESHOLD);
+    };
+    document.addEventListener("scroll", onScroll, true);
+    return () => document.removeEventListener("scroll", onScroll, true);
+  }, []);
+
   return (
-    <nav style={styles.nav} aria-label="Primary">
+    <nav style={{ ...styles.nav, ...(scrolled ? styles.navScrolled : null) }} aria-label="Primary">
       <div style={styles.inner}>
         <Link href="/" style={styles.lockup}>
           <span style={styles.siteName}>{collection.name}</span>
