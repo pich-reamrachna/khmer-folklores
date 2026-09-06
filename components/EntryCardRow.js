@@ -3,14 +3,28 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import EntryCard from "./EntryCard.js";
 
-// The hero-carousel-wrapper from the mockup. It has no max-width of its
-// own — it lives inside StoryHero's 1560px container and fills 100% of
-// that, with each card taking a third of the row via the same percentage
-// formula the mockup's .story-card uses.
+// The hero-carousel-wrapper from the mockup. Arrows are real flex
+// siblings of the track (not an absolute overlay) — flexbox physically
+// can't place two siblings in the same space, so this can't reproduce
+// an arrow-over-card overlap.
+//
+// cardSlot needs min-width: 0. Flex items default to min-width: auto,
+// which means a flex item can never shrink below its content's natural
+// minimum size — and text with white-space: nowrap (the card title) has
+// a minimum content width equal to its entire unwrapped width. Without
+// min-width: 0 here, every card silently got forced wider than its
+// flex-basis by its own title's length, which is why card widths were
+// inconsistent regardless of what the width formula said.
+//
+// No side padding on the track. scroll-snap-type: x mandatory only ever
+// rests at an actual snap point (each card), never in a padding-only
+// zone before/after them — so side padding here was never actually
+// visible at rest on either end, just dead scrollable space that threw
+// off the width math and looked inconsistent next to the real card gap.
 
 const GAP = 20; // 1.25rem
-const CARD_MIN_WIDTH = 260;
-const CARD_WIDTH = `calc((100% - ${2 * GAP}px) / 3)`;
+const CARDS_PER_VIEW = 3;
+const CARD_WIDTH = `calc((100% - ${GAP * (CARDS_PER_VIEW - 1)}px) / ${CARDS_PER_VIEW})`;
 
 const styles = {
   wrapper: {
@@ -28,12 +42,17 @@ const styles = {
     overflowX: "auto",
     scrollSnapType: "x mandatory",
     overscrollBehaviorX: "contain",
-    padding: "4px 0",
-    width: "100%",
+    // Vertical only — no side padding (see file-level note).
+    padding: "10px 0",
+    boxSizing: "border-box",
+    // Grow to fill whatever space remains after the two arrow buttons —
+    // clientWidth then already excludes them, no manual accounting needed.
+    flex: "1 1 0%",
+    minWidth: 0,
   },
   cardSlot: {
     flex: `0 0 ${CARD_WIDTH}`,
-    minWidth: CARD_MIN_WIDTH,
+    minWidth: 0,
     scrollSnapAlign: "start",
   },
   arrowBtn: {
@@ -76,11 +95,13 @@ export default function EntryCardRow({ entries, selectedIndex, onSelect }) {
   const scrollByPage = (direction) => {
     const el = scrollRef.current;
     if (!el) return;
-    scrollRef.current?.scrollBy({
-      left: direction * (el.clientWidth / 3 + GAP),
+    // An approximate nudge is enough — scroll-snap-align on each card
+    // pulls the final rest position to the exact card boundary regardless
+    // of small overshoot/undershoot here.
+    el.scrollBy({
+      left: direction * (el.clientWidth / CARDS_PER_VIEW),
       behavior: "smooth",
     });
-    // Re-check edges after the scroll animation completes.
     setTimeout(updateEdges, 350);
   };
 

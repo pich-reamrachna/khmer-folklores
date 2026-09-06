@@ -13,7 +13,9 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    overflow: "hidden",
+    // No overflow:hidden — the entry cards below need room for their
+    // hover lift (translateY) and glow (box-shadow) to render past the
+    // card's own box without being clipped at this section's edges.
     backgroundColor: "#08040A",
     boxSizing: "border-box",
     scrollSnapAlign: "start",
