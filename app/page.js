@@ -6,30 +6,23 @@ import stories from "../data/entries.js";
 import StoryHero from "../components/StoryHero.js";
 import NavBar from "../components/NavBar.js";
 import EntryCardRow from "../components/EntryCardRow.js";
+import ArchiveBrowser from "../components/ArchiveBrowser.js";
 
 const styles = {
-  // The second section mirrors the first section's two-level structure:
-  // an outer section (here) that owns the page-level layout (snap target,
-  // full viewport, flex centering, dark canvas), and an inner section
-  // (rendered in the JSX) that owns the content layout (its own 48px
-  // padding + max-width inner wrapper), exactly like <StoryHero>'s
-  // outer section + .grid wrapper. The 48px side gutter on this outer
-  // rule combines with the 48px on the inner rule to match the first
-  // section's apparent gutter (96px from screen edge to content text).
+  // Trailing page footer — the archive's identity (name, description,
+  // curator, source) and a credit line. Sized to its own content, not a
+  // full-viewport scroll-snap page like the sections above it — but it
+  // still needs scroll-snap-align, otherwise <main>'s mandatory snapping
+  // treats ArchiveBrowser as the last valid stop and snaps back to it,
+  // blocking you from ever resting on the footer.
   identity: {
     backgroundColor: "#0C0A12",
     padding: "72px 48px 56px",
     color: "#E8EDF2",
     fontFamily:
       "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
-    // Snap target: the second "page" of the scroll, holding the archive's
-    // identity (name, description, curator, source).
-    minHeight: "100vh",
-    scrollSnapAlign: "start",
     boxSizing: "border-box",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
+    scrollSnapAlign: "start",
   },
   // Inner section for the identity content — same role as <StoryHero>'s
   // own <section> in the first section. Owns the content-level padding
@@ -142,7 +135,9 @@ export default function Home() {
         />
       </StoryHero>
 
-      <section style={styles.identity}>
+      <ArchiveBrowser stories={flattenedStories} />
+
+      <footer style={styles.identity}>
         <section style={styles.identityInner}>
           <p style={styles.kicker}>KHMER LIVING ARCHIVE</p>
           <h2 style={styles.title}>{collection.name}</h2>
@@ -161,13 +156,13 @@ export default function Home() {
             entries in the archive: {stories.length}
           </p>
 
-          <footer style={styles.footer}>
+          <p style={styles.footer}>
             Built in ICT 340 — Vibe Coding, American University of Phnom Penh,
             Fall 2026. This archive is under construction all semester. Come
             back in December.
-          </footer>
+          </p>
         </section>
-      </section>
+      </footer>
     </main>
   );
 }
