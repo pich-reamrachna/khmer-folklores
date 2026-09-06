@@ -2,32 +2,12 @@
 
 import { useState } from "react";
 import collection from "../collection.config.js";
-import EntryCard from "../components/EntryCard.js";
 import stories from "../data/entries.js";
 import StoryHero from "../components/StoryHero.js";
+import NavBar from "../components/NavBar.js";
+import EntryCardRow from "../components/EntryCardRow.js";
 
 const styles = {
-  // The first section covers the full viewport and contains the hero story
-  // block, the entry-cards row. We
-  // keep it as a flex column with vertical centering so the story block sits
-  // in the middle of the screen, the cards anchor to the bottom, and the
-  // hint sits just below them — all on one dark canvas.
-  firstSection: {
-    backgroundColor: "#0C0A12",
-    minHeight: "100vh",
-    padding: "72px 48px 56px",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-    boxSizing: "border-box",
-    // Snap target: this section is the first "page" the user lands on.
-    scrollSnapAlign: "start",
-  },
-  // Inner column that holds the cards row, pushed to the
-  // bottom of the first section regardless of the story block's height.
-  firstSectionTail: {
-    marginTop: 56,
-  },
   // The second section mirrors the first section's two-level structure:
   // an outer section (here) that owns the page-level layout (snap target,
   // full viewport, flex centering, dark canvas), and an inner section
@@ -90,16 +70,6 @@ const styles = {
     border: "1px solid #2A2136",
     borderRadius: 10,
   },
-  // Row of entry cards under the hero. Lives inside the first section's
-  // tail block; the side padding of the first section already gives us
-  // the 48px gutter, so we drop the row's own horizontal padding.
-  cardsRow: {
-    maxWidth: 1200,
-    margin: "0 auto",
-    display: "grid",
-    gridTemplateColumns: `repeat(${stories.length}, minmax(0, 1fr))`,
-    gap: 20,
-  },
   cardLabel: {
     fontFamily: "'Courier New', monospace",
     fontSize: 12,
@@ -142,6 +112,11 @@ export default function Home() {
     ...story,
     ...story.versions[0],
   };
+  // Same flatten, applied to every story, so each card can read entry.place.
+  const flattenedStories = stories.map((s) => ({
+    ...s,
+    ...s.versions[0],
+  }));
 
   return (
     <main
@@ -157,23 +132,15 @@ export default function Home() {
         scrollBehavior: "smooth",
       }}
     >
-      <section style={styles.firstSection}>
-        <StoryHero entry={selectedEntry} />
+      <NavBar />
 
-        <div style={styles.firstSectionTail}>
-          <div style={styles.cardsRow} aria-label="Entries in the archive">
-            {stories.map((entry, index) => (
-              <EntryCard
-                key={index}
-                entry={entry}
-                index={index}
-                isActive={index === selectedIndex}
-                onSelect={setSelectedIndex}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
+      <StoryHero entry={selectedEntry}>
+        <EntryCardRow
+          entries={flattenedStories}
+          selectedIndex={selectedIndex}
+          onSelect={setSelectedIndex}
+        />
+      </StoryHero>
 
       <section style={styles.identity}>
         <section style={styles.identityInner}>
