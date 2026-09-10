@@ -1,3 +1,5 @@
+import BackButton from "./BackButton.js";
+
 // First section of a story's dedicated page: eyebrow (category • place),
 // optional Khmer title, English title, and the full description. No
 // image/graphic/shape and no "share what you heard" button — those belong
@@ -21,6 +23,9 @@ const styles = {
     maxWidth: 1560,
     width: "100%",
     margin: "0 auto",
+  },
+  backButton: {
+    margin: "0 0 2rem",
   },
   eyebrow: {
     display: "flex",
@@ -72,6 +77,10 @@ export default function StoryDetails({ entry }) {
   return (
     <section style={styles.section}>
       <div style={styles.container}>
+        <div style={styles.backButton}>
+          <BackButton />
+        </div>
+
         <p style={styles.eyebrow}>
           <span style={styles.eyebrowLine} />
           <span style={styles.eyebrowText}>
