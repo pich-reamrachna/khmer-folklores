@@ -11,7 +11,15 @@ const styles = {
     cursor: "pointer",
     padding: "1.2rem 1.4rem",
     backgroundColor: "#120916",
-    border: "1px solid #2A172F",
+    // Width and style are constant (2px solid) across active/inactive/
+    // hover states — only the color ever changes. The card's height is
+    // auto (content-driven), so box-sizing: border-box does NOT protect
+    // it from a genuine border-WIDTH change the way it does for the
+    // explicit flex-basis width; a 1px-to-2px animated width difference
+    // between the deactivating and activating card briefly desynced the
+    // carousel row's stretch-height (both cards mid-transition at once),
+    // nudging the vertically-centered hero content above it for a frame.
+    border: "2px solid #2A172F",
     borderRadius: 16,
     color: "#F5EFE6",
     fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
@@ -25,10 +33,11 @@ const styles = {
   },
   // Persistent indicator for the selected card — stays gold regardless
   // of hover. Inline styles always win over the .entry-card:hover CSS
-  // class below, so hovering the active card can't dull this.
+  // class below, so hovering the active card can't dull this. Only
+  // borderColor (not the border shorthand) so width/style stay constant.
   cardActive: {
     backgroundColor: "#1D1024",
-    border: "2px solid #C5A059",
+    borderColor: "#C5A059",
     boxShadow: "0 0 3px rgba(197, 160, 89, 0.8), 0 0 24px rgba(197, 160, 89, 0.45)",
   },
   // Small glowing dot that previews on hover for unselected cards only
