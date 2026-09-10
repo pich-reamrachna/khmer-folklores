@@ -172,6 +172,12 @@ const styles = {
     overflow: "hidden",
     textOverflow: "ellipsis",
   },
+  placeGroup: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.5rem",
+    flex: "0 0 auto",
+  },
   place: {
     fontSize: "0.75rem",
     fontWeight: 700,
@@ -179,7 +185,26 @@ const styles = {
     letterSpacing: "0.15em",
     textTransform: "uppercase",
     whiteSpace: "nowrap",
-    flex: "0 0 auto",
+    margin: 0,
+  },
+  // The PNG is recolored gold via mask-image (background-color shows
+  // through wherever the image is opaque), same technique as the other
+  // icons in this app. The hover-triggered nudge lives in the
+  // .archive-row:hover stylesheet rule below, not here — an inline
+  // transform would always beat that rule for the same property.
+  placeIcon: {
+    display: "inline-block",
+    width: 10,
+    height: 10,
+    backgroundColor: "#C5A059",
+    WebkitMaskImage: "url(/icons/top-right.png)",
+    maskImage: "url(/icons/top-right.png)",
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
   },
 };
 
@@ -238,7 +263,16 @@ export default function ArchiveBrowser({ stories }) {
                     <p style={styles.snippet}>{truncateSnippet(entry.description)}</p>
                   </div>
 
-                  {entry.place ? <span style={styles.place}>{entry.place}</span> : null}
+                  {entry.place ? (
+                    <span style={styles.placeGroup}>
+                      <span style={styles.place}>{entry.place}</span>
+                      <span
+                        style={styles.placeIcon}
+                        className="archive-row-icon"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  ) : null}
                 </button>
               </li>
             ))}
@@ -275,6 +309,12 @@ export default function ArchiveBrowser({ stories }) {
         .archive-row:hover {
           background-color: #1d1024;
           border-color: #c5a059;
+        }
+        .archive-row-icon {
+          transition: transform 150ms ease;
+        }
+        .archive-row:hover .archive-row-icon {
+          transform: translate(3px, -3px);
         }
       `}</style>
     </section>
