@@ -16,7 +16,7 @@ const styles = {
     backgroundColor: "rgba(255, 255, 255, 0.06)",
     borderRadius: 999,
     padding: "0.85rem 1.4rem",
-    transition: "border-color 0.2s ease, flex-basis 0.2s ease, max-width 0.2s ease",
+    transition: "border-color 0.2s ease",
   },
   // The PNG icon is recolored gold via mask-image (background-color shows
   // through wherever the image is opaque) rather than an <img>, since the
@@ -70,13 +70,11 @@ export default function ArchiveSearch({ value, onChange }) {
         }
         .archive-search-bar {
           border: 1px solid #2a172f;
-          flex: 0 1 320px;
+          flex: 0 1 290px;
           max-width: 520px;
         }
         .archive-search-bar:focus-within {
           border-color: #c5a059;
-          flex-basis: 400px;
-          max-width: 580px;
         }
       `}</style>
     </div>
