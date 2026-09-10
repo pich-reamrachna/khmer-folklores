@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 // StoryHero — the hero-section from the mockup: eyebrow, title, summary,
 // CTA, and a meta tag, laid out as a two-column grid. `children` (the entry
 // card carousel) renders below the grid, inside the same container, so it
@@ -104,19 +106,23 @@ const styles = {
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
   },
+  // color and borderBottomColor live in the .read-link stylesheet rule
+  // below, not here — same reason as scrollCueLink: an inline value would
+  // always beat the :hover rule for the same property, so hovering could
+  // never turn the text/underline white.
   readLink: {
-    display: "flex",
+    display: "inline-flex",
     alignItems: "center",
     background: "transparent",
     border: "none",
     textDecoration: "none",
-    color: "#E6C575",
     fontSize: "0.85rem",
     fontWeight: 700,
     letterSpacing: "0.22em",
     textTransform: "uppercase",
     paddingBottom: 6,
-    borderBottom: "2px solid #C5A059",
+    borderBottomWidth: 2,
+    borderBottomStyle: "solid",
     cursor: "pointer",
     fontFamily: "inherit",
   },
@@ -204,9 +210,14 @@ export default function StoryHero({ entry, children }) {
 
             <p style={styles.summary}>{entry.description}</p>
 
-            <button type="button" style={styles.readLink} aria-label="Read this story">
+            <Link
+              href={`/${entry.id}`}
+              style={styles.readLink}
+              className="read-link"
+              aria-label="Read this story"
+            >
               Read This Story
-            </button>
+            </Link>
           </div>
 
           {entry.category || entry.place ? (
@@ -255,6 +266,20 @@ export default function StoryHero({ entry, children }) {
         }
         .scroll-cue-link:hover {
           color: #ffffff;
+        }
+        /* :global — Link is a custom component, not a plain DOM element,
+           so styled-jsx can't auto-inject its scoping hash class onto the
+           <a> it renders the way it does for the button elements above.
+           Matching on the class name alone (no hash) is what actually
+           reaches the rendered <a>. */
+        :global(.read-link) {
+          color: #e6c575;
+          border-bottom-color: #c5a059;
+          transition: color 0.2s ease, border-bottom-color 0.2s ease;
+        }
+        :global(.read-link:hover) {
+          color: #ffffff;
+          border-bottom-color: #ffffff;
         }
         .scroll-cue-icon {
           background-color: #e6c575;
