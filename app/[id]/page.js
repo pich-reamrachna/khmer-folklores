@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import stories from "../../data/entries.js";
 import NavBar from "../../components/NavBar.js";
 import StoryMemories from "../../components/StoryMemories.js";
+import StoryPageShell from "../../components/StoryPageShell.js";
 
 // First section of a story's dedicated page: eyebrow (category • place),
 // optional Khmer title, English title, and the full description. No
@@ -18,6 +19,9 @@ const styles = {
     backgroundColor: "#08040A",
     fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
     color: "#F5EFE6",
+    // Required for StoryPageShell's scroll-snap-type: y mandatory to stop
+    // here, same as every snap section on the home page.
+    scrollSnapAlign: "start",
   },
   container: {
     maxWidth: 1560,
@@ -81,7 +85,7 @@ export default async function StoryPage({ params }) {
   const entry = { ...story, ...story.versions[0] };
 
   return (
-    <>
+    <StoryPageShell>
       <NavBar />
       <section style={styles.section}>
         <div style={styles.container}>
@@ -106,6 +110,6 @@ export default async function StoryPage({ params }) {
       </section>
 
       <StoryMemories versions={story.versions} />
-    </>
+    </StoryPageShell>
   );
 }

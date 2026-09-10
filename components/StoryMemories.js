@@ -12,6 +12,10 @@ const styles = {
     backgroundColor: "#08040A",
     fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
     color: "#F5EFE6",
+    // Required so the page's scroll-snap-type: y mandatory can stop here —
+    // without it, snapping treats the section above as the last valid
+    // stop and never rests on this one (same reasoning as the footer).
+    scrollSnapAlign: "start",
   },
   container: {
     maxWidth: 1560,
