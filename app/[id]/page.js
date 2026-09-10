@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import stories from "../../data/entries.js";
 import NavBar from "../../components/NavBar.js";
+import StoryMemories from "../../components/StoryMemories.js";
 
 // First section of a story's dedicated page: eyebrow (category • place),
 // optional Khmer title, English title, and the full description. No
@@ -103,6 +104,8 @@ export default async function StoryPage({ params }) {
           <p style={styles.description}>{entry.description}</p>
         </div>
       </section>
+
+      <StoryMemories versions={story.versions} />
     </>
   );
 }
