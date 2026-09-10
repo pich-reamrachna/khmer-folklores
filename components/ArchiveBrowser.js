@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import ArchiveSearch from "./ArchiveSearch.js";
 
 // The "browse the archive" section beneath the hero. This implements the
@@ -125,8 +126,16 @@ const styles = {
   // border and backgroundColor live in the .archive-row stylesheet rule
   // below, not here — an inline style on this element would always beat
   // the .archive-row:hover stylesheet rule for the same properties, so
-  // the hover effect would never be visible.
+  // the hover effect would never be visible. This is a <button>, not a
+  // styled <li> — reset the button-specific defaults that DON'T conflict
+  // with that stylesheet rule (width/text-align/font), and let the class
+  // supply background-color/border on its own (an author class already
+  // beats the UA default button chrome, no inline reset needed for those).
   row: {
+    width: "100%",
+    textAlign: "left",
+    fontFamily: "inherit",
+    color: "inherit",
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
@@ -175,6 +184,7 @@ const styles = {
 };
 
 export default function ArchiveBrowser({ stories }) {
+  const router = useRouter();
   const [query, setQuery] = useState("");
 
   const normalizedQuery = query.trim().toLowerCase();
@@ -213,16 +223,23 @@ export default function ArchiveBrowser({ stories }) {
         {filteredStories.length > 0 ? (
           <ul style={styles.list} className="archive-scroll">
             {filteredStories.map((entry) => (
-              <li key={entry.id} style={styles.row} className="archive-row">
-                <div style={styles.textCol}>
-                  {entry.khmerTitle ? (
-                    <p style={styles.khmerTitle}>{entry.khmerTitle}</p>
-                  ) : null}
-                  <h3 style={styles.rowTitle}>{entry.title}</h3>
-                  <p style={styles.snippet}>{truncateSnippet(entry.description)}</p>
-                </div>
+              <li key={entry.id}>
+                <button
+                  type="button"
+                  onClick={() => router.push(`/${entry.id}`)}
+                  style={styles.row}
+                  className="archive-row"
+                >
+                  <div style={styles.textCol}>
+                    {entry.khmerTitle ? (
+                      <p style={styles.khmerTitle}>{entry.khmerTitle}</p>
+                    ) : null}
+                    <h3 style={styles.rowTitle}>{entry.title}</h3>
+                    <p style={styles.snippet}>{truncateSnippet(entry.description)}</p>
+                  </div>
 
-                {entry.place ? <span style={styles.place}>{entry.place}</span> : null}
+                  {entry.place ? <span style={styles.place}>{entry.place}</span> : null}
+                </button>
               </li>
             ))}
           </ul>
