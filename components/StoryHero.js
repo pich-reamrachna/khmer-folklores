@@ -1,7 +1,11 @@
+"use client";
+
 // StoryHero — the hero-section from the mockup: eyebrow, title, summary,
 // CTA, and a meta tag, laid out as a two-column grid. `children` (the entry
 // card carousel) renders below the grid, inside the same container, so it
 // shares this section's padding/max-width/gap instead of managing its own.
+// "use client" is required for the scroll-cue's onClick handler and the
+// <style jsx> keyframes below.
 
 const styles = {
   section: {
@@ -134,20 +138,53 @@ const styles = {
     justifyContent: "center",
     paddingTop: "0.5rem",
   },
+  // color and font-size live in the .scroll-cue-link stylesheet rule below,
+  // not here — an inline value for either would always beat the :hover
+  // stylesheet rule for the same property, so hovering could never turn
+  // the text white or grow it.
   scrollCueLink: {
+    display: "inline-flex",
+    alignItems: "center",
+    gap: "0.5rem",
     background: "transparent",
     border: "none",
-    fontSize: "0.75rem",
     fontWeight: 600,
     letterSpacing: "0.22em",
     textTransform: "uppercase",
-    color: "#E6C575",
     cursor: "pointer",
     fontFamily: "inherit",
+  },
+  // The PNG is recolored via mask-image (background-color shows through
+  // wherever the image is opaque), same technique as the ArchiveSearch
+  // icon — the source asset's own color doesn't matter. background-color
+  // lives in the stylesheet below for the same inline-vs-:hover reason as
+  // scrollCueLink above. The float animation's @keyframes are there too.
+  scrollCueIcon: {
+    display: "inline-block",
+    width: 14,
+    height: 14,
+    WebkitMaskImage: "url(/icons/arrow-down-sign-to-navigate.png)",
+    maskImage: "url(/icons/arrow-down-sign-to-navigate.png)",
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+    animation: "scroll-cue-float 1.6s ease-in-out infinite",
   },
 };
 
 export default function StoryHero({ entry, children }) {
+  // Nudge <main> down by one viewport; scroll-snap-type: y mandatory
+  // (set on <main> in app/page.js) corrects the exact rest position,
+  // same approximate-nudge-then-snap pattern EntryCardRow uses.
+  const scrollToNextSection = () => {
+    const mainEl = document.querySelector("main");
+    if (!mainEl) return;
+    mainEl.scrollBy({ top: mainEl.clientHeight, behavior: "smooth" });
+  };
+
   return (
     <section style={styles.section}>
       <div style={styles.container}>
@@ -186,11 +223,47 @@ export default function StoryHero({ entry, children }) {
         {children}
 
         <div style={styles.scrollCue}>
-          <button type="button" style={styles.scrollCueLink}>
-            Scroll to open ledger &#8964;
+          <button
+            type="button"
+            style={styles.scrollCueLink}
+            className="scroll-cue-link"
+            onClick={scrollToNextSection}
+            aria-label="Scroll to the next section"
+          >
+            Scroll to open ledger
+            <span style={styles.scrollCueIcon} className="scroll-cue-icon" aria-hidden="true" />
           </button>
         </div>
       </div>
+
+      {/* @keyframes can't be expressed as an inline style — styled-jsx
+          (built into Next.js) scopes real CSS to just this component. */}
+      <style jsx>{`
+        @keyframes scroll-cue-float {
+          0%,
+          100% {
+            transform: translateY(0);
+          }
+          50% {
+            transform: translateY(4px);
+          }
+        }
+        .scroll-cue-link {
+          color: #e6c575;
+          font-size: 0.85rem;
+          transition: color 0.2s ease;
+        }
+        .scroll-cue-link:hover {
+          color: #ffffff;
+        }
+        .scroll-cue-icon {
+          background-color: #e6c575;
+          transition: background-color 0.2s ease;
+        }
+        .scroll-cue-link:hover .scroll-cue-icon {
+          background-color: #ffffff;
+        }
+      `}</style>
     </section>
   );
 }
