@@ -6,15 +6,24 @@
 
 const styles = {
   section: {
+    // Unlike the footer, this section isn't last — Footer follows it. A
+    // trailing section's own scroll-snap-align start point is only
+    // reachable if everything from that point to the end of the page is
+    // at least one full viewport tall; otherwise mandatory snapping can't
+    // legally scroll that far and jumps straight to the max-scroll
+    // position instead, gluing this section and the footer together as
+    // one stop. minHeight: 100vh (matching the section above it, and
+    // ArchiveBrowser's same role on the home page) guarantees that.
+    minHeight: "100vh",
     width: "100%",
-    padding: "4rem 2rem 6rem",
     boxSizing: "border-box",
+    padding: "4rem 2rem 6rem",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
     backgroundColor: "#08040A",
     fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
     color: "#F5EFE6",
-    // Required so the page's scroll-snap-type: y mandatory can stop here —
-    // without it, snapping treats the section above as the last valid
-    // stop and never rests on this one (same reasoning as the footer).
     scrollSnapAlign: "start",
   },
   container: {
