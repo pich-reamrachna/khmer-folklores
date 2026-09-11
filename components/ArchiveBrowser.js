@@ -31,6 +31,52 @@ function truncateSnippet(text) {
   return `${words.slice(0, SNIPPET_WORD_LIMIT).join(" ")}...`;
 }
 
+function escapeRegExp(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+// Splits a query into search terms: "quoted phrases" become one literal
+// term each (spaces inside stay part of that term); everything outside
+// quotes is split on whitespace into individual word terms.
+function parseSearchTerms(query) {
+  const terms = [];
+  const pattern = /"([^"]*)"|(\S+)/g;
+  let match;
+  while ((match = pattern.exec(query)) !== null) {
+    const term = (match[1] ?? match[2]).trim();
+    if (term) terms.push(term);
+  }
+  return terms;
+}
+
+// Every term must match as a whole word (or, for a quoted multi-word
+// term, an exact contiguous phrase) somewhere in the haystack — \b word
+// boundaries are what make "sa" not match "Sambor" while "temple" still
+// matches "the temple grounds". Terms are ANDed: all must be present.
+function matchesAllTerms(haystack, terms) {
+  return terms.every((term) => {
+    const pattern = new RegExp(`\\b${escapeRegExp(term)}\\b`, "i");
+    return pattern.test(haystack);
+  });
+}
+
+const NO_RESULTS_QUERY_MAX_LENGTH = 30;
+
+// Only for the "no results" message — the actual search above always runs
+// against the full, untruncated query. Strips one surrounding pair of
+// double quotes (so a literal-phrase search doesn't show as ""dragon""),
+// then truncates long input so the message stays on one clean line.
+function formatQueryForDisplay(rawQuery) {
+  let display = rawQuery.trim();
+  if (display.length >= 2 && display.startsWith('"') && display.endsWith('"')) {
+    display = display.slice(1, -1);
+  }
+  if (display.length > NO_RESULTS_QUERY_MAX_LENGTH) {
+    display = `${display.slice(0, NO_RESULTS_QUERY_MAX_LENGTH)}...`;
+  }
+  return display;
+}
+
 const styles = {
   section: {
     backgroundColor: "#0D0812",
@@ -212,14 +258,13 @@ export default function ArchiveBrowser({ stories }) {
   const router = useRouter();
   const [query, setQuery] = useState("");
 
-  const normalizedQuery = query.trim().toLowerCase();
-  const filteredStories = normalizedQuery
+  const searchTerms = parseSearchTerms(query);
+  const filteredStories = searchTerms.length
     ? stories.filter((entry) => {
-        const haystack = [entry.title, entry.contributor, entry.place, entry.description]
+        const haystack = [entry.title, entry.description, entry.place, entry.category]
           .filter(Boolean)
-          .join(" ")
-          .toLowerCase();
-        return haystack.includes(normalizedQuery);
+          .join(" ");
+        return matchesAllTerms(haystack, searchTerms);
       })
     : stories;
 
@@ -278,7 +323,9 @@ export default function ArchiveBrowser({ stories }) {
             ))}
           </ul>
         ) : (
-          <p style={styles.snippet}>No stories match your search.</p>
+          <p style={styles.snippet}>
+            &quot;{formatQueryForDisplay(query)}&quot; does not match any stories.
+          </p>
         )}
       </div>
 
