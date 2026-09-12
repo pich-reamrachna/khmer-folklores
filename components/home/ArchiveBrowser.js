@@ -14,7 +14,7 @@ import ArchiveSearch from "./ArchiveSearch.js";
 // The search input itself lives in ArchiveSearch.js (presentational only);
 // this component owns the query state and does the actual filtering, since
 // it's the one holding the `stories` data to filter.
-// "use client" is required here for useState and the <style jsx> block.
+// "use client" is required here for useState and the router.push navigation.
 
 const ROW_HEIGHT = 104;
 const ROW_GAP = 14;
@@ -89,7 +89,7 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     // Makes this a valid stop for <main>'s scroll-snap-type: y mandatory —
     // without this, a scroll gesture from the hero skips straight past
     // this section to the next one that has scroll-snap-align set.
@@ -119,7 +119,7 @@ const styles = {
     textTransform: "uppercase",
   },
   title: {
-    fontFamily: "'Cinzel', serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "2.75rem",
     fontWeight: 600,
     color: "#F5EFE6",
@@ -157,7 +157,7 @@ const styles = {
   },
   // Shows exactly VISIBLE_ROWS rows; the rest scroll into view — matches
   // the mockup's "5 stories in view" scrollable panel with a gold
-  // scrollbar (see the <style jsx> block below for .archive-scroll).
+  // scrollbar (see app/globals.css's .archive-scroll rule).
   list: {
     listStyle: "none",
     margin: 0,
@@ -169,14 +169,11 @@ const styles = {
     maxHeight: VISIBLE_ROWS * ROW_HEIGHT + (VISIBLE_ROWS - 1) * ROW_GAP,
     overflowY: "auto",
   },
-  // border and backgroundColor live in the .archive-row stylesheet rule
-  // below, not here — an inline style on this element would always beat
-  // the .archive-row:hover stylesheet rule for the same properties, so
-  // the hover effect would never be visible. This is a <button>, not a
-  // styled <li> — reset the button-specific defaults that DON'T conflict
-  // with that stylesheet rule (width/text-align/font), and let the class
-  // supply background-color/border on its own (an author class already
-  // beats the UA default button chrome, no inline reset needed for those).
+  // border/backgroundColor live in app/globals.css's .archive-row rule —
+  // needed for :hover, and a plain stylesheet avoids a hydration-gap
+  // flash (see globals.css). This is a <button>, not a styled <li> — the
+  // properties reset here (width/text-align/font) are just the ones that
+  // don't conflict with that class.
   row: {
     width: "100%",
     textAlign: "left",
@@ -204,7 +201,7 @@ const styles = {
     margin: "0 0 0.2rem",
   },
   rowTitle: {
-    fontFamily: "'Cinzel', serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "1.2rem",
     fontWeight: 600,
     color: "#F5EFE6",
@@ -235,9 +232,9 @@ const styles = {
   },
   // The PNG is recolored gold via mask-image (background-color shows
   // through wherever the image is opaque), same technique as the other
-  // icons in this app. The hover-triggered nudge lives in the
-  // .archive-row:hover stylesheet rule below, not here — an inline
-  // transform would always beat that rule for the same property.
+  // icons in this app. The hover-triggered nudge lives in app/globals.css's
+  // .archive-row:hover rule, not here — an inline transform would always
+  // beat that rule for the same property.
   placeIcon: {
     display: "inline-block",
     width: 10,
@@ -328,42 +325,6 @@ export default function ArchiveBrowser({ stories }) {
           </p>
         )}
       </div>
-
-      {/* :hover and ::-webkit-scrollbar can't be expressed as inline
-          styles — styled-jsx (built into Next.js) scopes real CSS to
-          just this component without a separate stylesheet. */}
-      <style jsx>{`
-        .archive-scroll {
-          scrollbar-width: thin;
-          scrollbar-color: #c5a059 rgba(255, 255, 255, 0.06);
-        }
-        .archive-scroll::-webkit-scrollbar {
-          width: 8px;
-        }
-        .archive-scroll::-webkit-scrollbar-track {
-          background: rgba(255, 255, 255, 0.06);
-          border-radius: 8px;
-        }
-        .archive-scroll::-webkit-scrollbar-thumb {
-          background-color: #c5a059;
-          border-radius: 8px;
-        }
-        .archive-row {
-          border: 1px solid #2a172f;
-          background-color: #120916;
-          transition: background-color 150ms ease, border-color 150ms ease;
-        }
-        .archive-row:hover {
-          background-color: #1d1024;
-          border-color: #c5a059;
-        }
-        .archive-row-icon {
-          transition: transform 150ms ease;
-        }
-        .archive-row:hover .archive-row-icon {
-          transform: translate(3px, -3px);
-        }
-      `}</style>
     </section>
   );
 }

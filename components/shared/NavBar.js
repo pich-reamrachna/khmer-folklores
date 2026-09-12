@@ -28,7 +28,7 @@ const styles = {
     backgroundColor: "transparent",
     borderBottom: "1px solid transparent",
     transition: "background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
-    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
   },
   navScrolled: {
     backgroundColor: "rgba(10, 6, 12, 0.95)",
@@ -55,7 +55,7 @@ const styles = {
     textDecoration: "none",
   },
   siteName: {
-    fontFamily: "'Cinzel', serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "1.55rem",
     fontWeight: 700,
     color: "#F5EFE6",
@@ -70,13 +70,10 @@ const styles = {
     textTransform: "uppercase",
     marginTop: 4,
   },
-  // display and gap for the links row live in app/globals.css (the
-  // .nav-links class), not here — an inline `display` would always beat
-  // the media query trying to hide/show this block on phone, and `gap`
-  // needs to shrink fluidly through the tablet range, neither of which a
-  // plain inline value can express. It's in globals.css rather than a
-  // <style jsx> block in this file specifically to avoid a hydration-gap
-  // flash — see the comment in globals.css for why.
+  // display/gap for the links row live in app/globals.css's .nav-links
+  // rule, not here — needed for the phone media query and fluid tablet
+  // gap, and a plain stylesheet avoids the hydration-gap flash a <style
+  // jsx> block here would have (see globals.css).
   linkActive: {
     textDecoration: "none",
     color: "#F5EFE6",
@@ -122,11 +119,9 @@ const styles = {
   },
   // Dropdown panel for the mobile menu. Absolutely positioned so it never
   // adds to `nav`'s own height — StoryHero/ArchiveBrowser/StoryDetails all
-  // hardcode 130px of top padding assuming a fixed 90px NavBar, so this
-  // panel has to float over the page instead of pushing the bar taller.
-  // display/opacity/transform live in app/globals.css (hidden ≥641px as a
-  // safety net for a menu left open before a manual browser resize, and
-  // opacity/transform drive the open/close animation).
+  // assume a fixed 90px NavBar for their top padding. display/opacity/
+  // transform (open/close animation, plus a >=641px safety hide) live in
+  // app/globals.css.
   mobilePanel: {
     position: "absolute",
     top: "100%",

@@ -11,18 +11,15 @@ const styles = {
     cursor: "pointer",
     padding: "1.2rem 1.4rem",
     backgroundColor: "#120916",
-    // Width and style are constant (2px solid) across active/inactive/
-    // hover states — only the color ever changes. The card's height is
-    // auto (content-driven), so box-sizing: border-box does NOT protect
-    // it from a genuine border-WIDTH change the way it does for the
-    // explicit flex-basis width; a 1px-to-2px animated width difference
-    // between the deactivating and activating card briefly desynced the
-    // carousel row's stretch-height (both cards mid-transition at once),
-    // nudging the vertically-centered hero content above it for a frame.
+    // Width/style stay constant across active/inactive/hover — only
+    // color changes. A border-WIDTH change here would shift the card's
+    // auto height (box-sizing doesn't protect against that), which
+    // desyncs the carousel row's stretch-height and nudges the hero
+    // content above it.
     border: "2px solid #2A172F",
     borderRadius: 16,
     color: "#F5EFE6",
-    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     display: "flex",
     alignItems: "center",
     transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
@@ -87,7 +84,7 @@ const styles = {
     textAlign: "right",
   },
   title: {
-    fontFamily: "'Cinzel', serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "1.15rem",
     fontWeight: 600,
     color: "#F5EFE6",

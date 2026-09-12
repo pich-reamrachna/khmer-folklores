@@ -4,23 +4,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import EntryCard from "./EntryCard.js";
 
 // The hero-carousel-wrapper from the mockup. Arrows are real flex
-// siblings of the track (not an absolute overlay) — flexbox physically
-// can't place two siblings in the same space, so this can't reproduce
-// an arrow-over-card overlap.
+// siblings of the track (not an absolute overlay), so they can't overlap
+// a card.
 //
-// cardSlot needs min-width: 0. Flex items default to min-width: auto,
-// which means a flex item can never shrink below its content's natural
-// minimum size — and text with white-space: nowrap (the card title) has
-// a minimum content width equal to its entire unwrapped width. Without
-// min-width: 0 here, every card silently got forced wider than its
-// flex-basis by its own title's length, which is why card widths were
-// inconsistent regardless of what the width formula said.
+// cardSlot needs min-width: 0 — flex items default to min-width: auto,
+// so a card could never shrink below its nowrap title's full width
+// otherwise, breaking the CARD_WIDTH formula.
 //
-// No side padding on the track. scroll-snap-type: x mandatory only ever
-// rests at an actual snap point (each card), never in a padding-only
-// zone before/after them — so side padding here was never actually
-// visible at rest on either end, just dead scrollable space that threw
-// off the width math and looked inconsistent next to the real card gap.
+// No side padding on the track — scroll-snap-type: x mandatory never
+// rests in a padding-only zone, so it would just be dead scrollable
+// space, not a visible gap.
 
 const GAP = 20; // 1.25rem
 const CARDS_PER_VIEW = 3;
@@ -63,7 +56,7 @@ const styles = {
     border: "1px solid #2A172F",
     backgroundColor: "#120916",
     color: "#C5A059",
-    fontFamily: "'Cinzel', serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "1.5rem",
     cursor: "pointer",
     display: "flex",

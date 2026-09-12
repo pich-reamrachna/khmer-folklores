@@ -33,22 +33,19 @@ main {
   animation: hero-fade-in 350ms ease;
 }
 
-/* NavBar.js's mobile menu — kept here instead of in NavBar's own
-   <style jsx> block on purpose: styled-jsx CSS is only applied once
-   React hydrates on the client, so for the ~100-600ms gap between first
-   paint and hydration finishing, these elements would render with
-   unstyled browser defaults (display: block, opacity: 1) instead of the
-   correct hidden/shown state — a real, visible flash of broken layout on
-   every hard refresh. A plain stylesheet like this one is present in the
-   server-rendered HTML from the very first paint, so there's no gap. */
+/* Rules below are kept here instead of in each component's own <style
+   jsx> block on purpose: styled-jsx CSS only applies once React
+   hydrates, so anything visible at first paint (not just :hover) would
+   flash browser defaults for ~100-600ms on every hard refresh otherwise.
+   A plain stylesheet is present in the server-rendered HTML immediately. */
+
+/* NavBar.js's mobile menu. */
 .nav-links {
   display: flex;
   align-items: center;
-  /* Shrinks fluidly from 2.5rem (40px) down to 0.5rem (8px) as the
-     viewport narrows from 1024px to 640px, then holds at 8px below
-     that — closes the real overlap measured in the 641–699px band
-     without a hard breakpoint. Reaches its 2.5rem ceiling exactly at
-     1024px, so 1025px+ (desktop) is untouched. */
+  /* Shrinks fluidly from 2.5rem to 0.5rem as the viewport narrows from
+     1024px to 640px — closes the overlap in the 641-699px band without a
+     hard breakpoint, and is back to 2.5rem by 1025px (desktop). */
   gap: clamp(0.5rem, calc(8.3vw - 45.3px), 2.5rem);
 }
 .nav-toggle {
@@ -81,4 +78,102 @@ main {
   .nav-mobile-panel {
     display: none;
   }
+}
+
+/* StoryHero.js's "Read This Story" link and "Scroll to open ledger". */
+.scroll-cue-link {
+  color: #e6c575;
+  font-size: 0.85rem;
+  transition: color 0.2s ease;
+}
+.scroll-cue-link:hover {
+  color: #ffffff;
+}
+/* Plain class, not :global() — a normal stylesheet doesn't need
+   styled-jsx's scoping hash the way a same-component <style jsx> would. */
+.read-link {
+  color: #e6c575;
+  border-bottom-color: #c5a059;
+  transition: color 0.2s ease, border-bottom-color 0.2s ease;
+}
+.read-link:hover {
+  color: #ffffff;
+  border-bottom-color: #ffffff;
+}
+.scroll-cue-icon {
+  background-color: #e6c575;
+  transition: background-color 0.2s ease;
+}
+.scroll-cue-link:hover .scroll-cue-icon {
+  background-color: #ffffff;
+}
+@keyframes scroll-cue-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(4px);
+  }
+}
+
+/* BackButton.js's "Go Back" link. */
+.back-button {
+  color: #c5a059;
+  transition: color 0.2s ease;
+}
+.back-button:hover {
+  color: #ffffff;
+}
+.back-button-icon {
+  background-color: #c5a059;
+  transition: background-color 0.2s ease;
+}
+.back-button:hover .back-button-icon {
+  background-color: #ffffff;
+}
+
+/* ArchiveBrowser.js's story-list rows and scrollbar. */
+.archive-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c5a059 rgba(255, 255, 255, 0.06);
+}
+.archive-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+.archive-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 8px;
+}
+.archive-scroll::-webkit-scrollbar-thumb {
+  background-color: #c5a059;
+  border-radius: 8px;
+}
+.archive-row {
+  border: 1px solid #2a172f;
+  background-color: #120916;
+  transition: background-color 150ms ease, border-color 150ms ease;
+}
+.archive-row:hover {
+  background-color: #1d1024;
+  border-color: #c5a059;
+}
+.archive-row-icon {
+  transition: transform 150ms ease;
+}
+.archive-row:hover .archive-row-icon {
+  transform: translate(3px, -3px);
+}
+
+/* ArchiveSearch.js's search pill. */
+.archive-search-input::placeholder {
+  color: #8a7f91;
+}
+.archive-search-bar {
+  border: 1px solid #2a172f;
+  flex: 0 1 290px;
+  max-width: 520px;
+}
+.archive-search-bar:focus-within {
+  border-color: #c5a059;
 }

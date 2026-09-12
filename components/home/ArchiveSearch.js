@@ -3,12 +3,12 @@
 // Presentational search pill for the browse-archive section. This owns
 // only its own markup/styling — ArchiveBrowser.js owns the query state
 // and the actual filtering logic, passing it down as value/onChange.
+// "use client" is required for the input's onChange handler.
 
 const styles = {
-  // border, flex, and max-width live in the .archive-search-bar stylesheet
-  // rule below, not here — an inline value for any of these would always
-  // beat the :focus-within stylesheet rule for the same property, so the
-  // gold outline and the widen-on-focus effect could never actually show.
+  // border/flex/max-width live in app/globals.css's .archive-search-bar
+  // rule — needed for :focus-within, and a plain stylesheet avoids a
+  // hydration-gap flash (see globals.css).
   bar: {
     display: "flex",
     alignItems: "center",
@@ -60,23 +60,6 @@ export default function ArchiveSearch({ value, onChange }) {
         style={styles.input}
         className="archive-search-input"
       />
-
-      {/* ::placeholder and reacting to the input's focus from its parent
-          (:focus-within) can't be expressed as inline styles — styled-jsx
-          (built into Next.js) scopes real CSS to just this component. */}
-      <style jsx>{`
-        .archive-search-input::placeholder {
-          color: #8a7f91;
-        }
-        .archive-search-bar {
-          border: 1px solid #2a172f;
-          flex: 0 1 290px;
-          max-width: 520px;
-        }
-        .archive-search-bar:focus-within {
-          border-color: #c5a059;
-        }
-      `}</style>
     </div>
   );
 }

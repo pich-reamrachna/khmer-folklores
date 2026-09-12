@@ -6,8 +6,7 @@ import Link from "next/link";
 // CTA, and a meta tag, laid out as a two-column grid. `children` (the entry
 // card carousel) renders below the grid, inside the same container, so it
 // shares this section's padding/max-width/gap instead of managing its own.
-// "use client" is required for the scroll-cue's onClick handler and the
-// <style jsx> keyframes below.
+// "use client" is required for the scroll-cue's onClick handler.
 
 const styles = {
   section: {
@@ -25,7 +24,7 @@ const styles = {
     backgroundColor: "#08040A",
     boxSizing: "border-box",
     scrollSnapAlign: "start",
-    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
   },
   container: {
@@ -75,7 +74,7 @@ const styles = {
     margin: "0 0 0.5rem",
   },
   title: {
-    fontFamily: "'Cinzel', serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "clamp(2.8rem, 6vw, 5.2rem)",
     fontWeight: 600,
     color: "#F5EFE6",
@@ -106,10 +105,9 @@ const styles = {
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
   },
-  // color and borderBottomColor live in the .read-link stylesheet rule
-  // below, not here — same reason as scrollCueLink: an inline value would
-  // always beat the :hover rule for the same property, so hovering could
-  // never turn the text/underline white.
+  // color/borderBottomColor live in app/globals.css's .read-link rule —
+  // needed for :hover to work, and a plain stylesheet avoids the
+  // hydration-gap flash a <style jsx> block here would have.
   readLink: {
     display: "inline-flex",
     alignItems: "center",
@@ -144,10 +142,8 @@ const styles = {
     justifyContent: "center",
     paddingTop: "0.5rem",
   },
-  // color and font-size live in the .scroll-cue-link stylesheet rule below,
-  // not here — an inline value for either would always beat the :hover
-  // stylesheet rule for the same property, so hovering could never turn
-  // the text white or grow it.
+  // color/font-size live in app/globals.css's .scroll-cue-link rule, same
+  // reason as readLink above.
   scrollCueLink: {
     display: "inline-flex",
     alignItems: "center",
@@ -160,11 +156,9 @@ const styles = {
     cursor: "pointer",
     fontFamily: "inherit",
   },
-  // The PNG is recolored via mask-image (background-color shows through
-  // wherever the image is opaque), same technique as the ArchiveSearch
-  // icon — the source asset's own color doesn't matter. background-color
-  // lives in the stylesheet below for the same inline-vs-:hover reason as
-  // scrollCueLink above. The float animation's @keyframes are there too.
+  // Recolored via mask-image, same technique as the other icons in this
+  // app. background-color and the float animation's @keyframes live in
+  // app/globals.css, same reason as scrollCueLink above.
   scrollCueIcon: {
     display: "inline-block",
     width: 14,
@@ -246,49 +240,6 @@ export default function StoryHero({ entry, children }) {
           </button>
         </div>
       </div>
-
-      {/* @keyframes can't be expressed as an inline style — styled-jsx
-          (built into Next.js) scopes real CSS to just this component. */}
-      <style jsx>{`
-        @keyframes scroll-cue-float {
-          0%,
-          100% {
-            transform: translateY(0);
-          }
-          50% {
-            transform: translateY(4px);
-          }
-        }
-        .scroll-cue-link {
-          color: #e6c575;
-          font-size: 0.85rem;
-          transition: color 0.2s ease;
-        }
-        .scroll-cue-link:hover {
-          color: #ffffff;
-        }
-        /* :global — Link is a custom component, not a plain DOM element,
-           so styled-jsx can't auto-inject its scoping hash class onto the
-           <a> it renders the way it does for the button elements above.
-           Matching on the class name alone (no hash) is what actually
-           reaches the rendered <a>. */
-        :global(.read-link) {
-          color: #e6c575;
-          border-bottom-color: #c5a059;
-          transition: color 0.2s ease, border-bottom-color 0.2s ease;
-        }
-        :global(.read-link:hover) {
-          color: #ffffff;
-          border-bottom-color: #ffffff;
-        }
-        .scroll-cue-icon {
-          background-color: #e6c575;
-          transition: background-color 0.2s ease;
-        }
-        .scroll-cue-link:hover .scroll-cue-icon {
-          background-color: #ffffff;
-        }
-      `}</style>
     </section>
   );
 }

@@ -14,7 +14,7 @@ const styles = {
     backgroundColor: "#0C0A12",
     padding: "56px 2rem",
     color: "#E8EDF2",
-    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     boxSizing: "border-box",
     scrollSnapAlign: "start",
   },
@@ -37,7 +37,7 @@ const styles = {
     maxWidth: 640,
   },
   siteName: {
-    fontFamily: "'Cinzel', serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "1.55rem",
     fontWeight: 700,
     color: "#F5EFE6",

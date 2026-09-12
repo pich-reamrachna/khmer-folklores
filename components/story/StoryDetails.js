@@ -13,7 +13,7 @@ const styles = {
     padding: "130px 2rem 3rem",
     boxSizing: "border-box",
     backgroundColor: "#08040A",
-    fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
     // Required for StoryPageShell's scroll-snap-type: y mandatory to stop
     // here, same as every snap section on the home page.
@@ -55,7 +55,7 @@ const styles = {
     margin: "0 0 0.5rem",
   },
   title: {
-    fontFamily: "'Cinzel', serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "clamp(2.8rem, 6vw, 5.2rem)",
     fontWeight: 600,
     color: "#F5EFE6",
