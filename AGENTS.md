@@ -12,6 +12,7 @@ One student's Khmer Living Archive, built in ICT 340 at AUPP. Every student buil
 - JavaScript only. No TypeScript, no .ts or .tsx files, ever.
 - Plain React. No CSS frameworks, no component libraries, no state libraries.
 - Styling follows the existing pattern: inline style objects (see `app/page.js`) or a plain CSS file.
+- Never set a property as an inline style AND target that same property on the same element from a stylesheet or `<style jsx>` rule (e.g. `:hover`, media query). Inline styles always win over stylesheet rules regardless of selector specificity, so the stylesheet rule silently becomes dead code. Put the property in one place only — inline if it never needs to change, in CSS if any rule (hover, focus, media query) needs to override it.
 - `collection.config.js` is the single source of the archive's identity (name, description, curator, source). Read from it; never hard-code those values.
 
 ## Hard rules
