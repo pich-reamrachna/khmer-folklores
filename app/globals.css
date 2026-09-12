@@ -32,3 +32,53 @@ main {
 .hero-fade {
   animation: hero-fade-in 350ms ease;
 }
+
+/* NavBar.js's mobile menu — kept here instead of in NavBar's own
+   <style jsx> block on purpose: styled-jsx CSS is only applied once
+   React hydrates on the client, so for the ~100-600ms gap between first
+   paint and hydration finishing, these elements would render with
+   unstyled browser defaults (display: block, opacity: 1) instead of the
+   correct hidden/shown state — a real, visible flash of broken layout on
+   every hard refresh. A plain stylesheet like this one is present in the
+   server-rendered HTML from the very first paint, so there's no gap. */
+.nav-links {
+  display: flex;
+  align-items: center;
+  /* Shrinks fluidly from 2.5rem (40px) down to 0.5rem (8px) as the
+     viewport narrows from 1024px to 640px, then holds at 8px below
+     that — closes the real overlap measured in the 641–699px band
+     without a hard breakpoint. Reaches its 2.5rem ceiling exactly at
+     1024px, so 1025px+ (desktop) is untouched. */
+  gap: clamp(0.5rem, calc(8.3vw - 45.3px), 2.5rem);
+}
+.nav-toggle {
+  display: none;
+}
+.nav-mobile-panel {
+  display: flex;
+  /* Closed by default: lifted and invisible. opacity/transform (not
+     display) drive the open/close so they can transition — toggling
+     display can't be animated. */
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+  transition: opacity 200ms ease, transform 200ms ease;
+}
+.nav-mobile-panel-open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+@media (max-width: 640px) {
+  .nav-links {
+    display: none;
+  }
+  .nav-toggle {
+    display: block;
+  }
+}
+@media (min-width: 641px) {
+  .nav-mobile-panel {
+    display: none;
+  }
+}

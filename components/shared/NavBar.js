@@ -70,11 +70,13 @@ const styles = {
     textTransform: "uppercase",
     marginTop: 4,
   },
-  links: {
-    display: "flex",
-    alignItems: "center",
-    gap: "2.5rem",
-  },
+  // display and gap for the links row live in app/globals.css (the
+  // .nav-links class), not here — an inline `display` would always beat
+  // the media query trying to hide/show this block on phone, and `gap`
+  // needs to shrink fluidly through the tablet range, neither of which a
+  // plain inline value can express. It's in globals.css rather than a
+  // <style jsx> block in this file specifically to avoid a hydration-gap
+  // flash — see the comment in globals.css for why.
   linkActive: {
     textDecoration: "none",
     color: "#F5EFE6",
@@ -94,10 +96,54 @@ const styles = {
     padding: "0.5rem 0",
     cursor: "default",
   },
+  // Mobile menu toggle — hamburger/close icons recolored gold via
+  // mask-image, same technique as every other icon in this project.
+  // display lives in the .nav-toggle rule in app/globals.css (hidden by
+  // default, shown only ≤640px) for the same inline-vs-media-query
+  // reason as the links row above.
+  toggleButton: {
+    background: "transparent",
+    border: "none",
+    padding: "0.5rem",
+    margin: "-0.5rem",
+    cursor: "pointer",
+  },
+  toggleIcon: {
+    display: "block",
+    width: 22,
+    height: 22,
+    backgroundColor: "#C5A059",
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+  },
+  // Dropdown panel for the mobile menu. Absolutely positioned so it never
+  // adds to `nav`'s own height — StoryHero/ArchiveBrowser/StoryDetails all
+  // hardcode 130px of top padding assuming a fixed 90px NavBar, so this
+  // panel has to float over the page instead of pushing the bar taller.
+  // display/opacity/transform live in app/globals.css (hidden ≥641px as a
+  // safety net for a menu left open before a manual browser resize, and
+  // opacity/transform drive the open/close animation).
+  mobilePanel: {
+    position: "absolute",
+    top: "100%",
+    left: 0,
+    right: 0,
+    flexDirection: "column",
+    gap: "1.25rem",
+    padding: "1.25rem 2rem 1.5rem",
+    boxSizing: "border-box",
+    backgroundColor: "rgba(10, 6, 12, 0.98)",
+    borderBottom: "1px solid #2A172F",
+  },
 };
 
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
     // The page scrolls inside <main>, not the window, and scroll events
@@ -119,7 +165,7 @@ export default function NavBar() {
           <span style={styles.kicker}>A Khmer Folklore Archive</span>
         </Link>
 
-        <div style={styles.links}>
+        <div className="nav-links">
           <Link href="/" style={styles.linkActive} aria-current="page">
             Browse the Archive
           </Link>
@@ -127,6 +173,41 @@ export default function NavBar() {
             Share a Memory
           </span>
         </div>
+
+        <button
+          type="button"
+          className="nav-toggle"
+          style={styles.toggleButton}
+          onClick={() => setMenuOpen((open) => !open)}
+          aria-expanded={menuOpen}
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+        >
+          <span
+            style={{
+              ...styles.toggleIcon,
+              WebkitMaskImage: `url(/icons/${menuOpen ? "close" : "menus"}.png)`,
+              maskImage: `url(/icons/${menuOpen ? "close" : "menus"}.png)`,
+            }}
+          />
+        </button>
+      </div>
+
+      <div
+        style={styles.mobilePanel}
+        className={`nav-mobile-panel${menuOpen ? " nav-mobile-panel-open" : ""}`}
+        aria-hidden={!menuOpen}
+      >
+        <Link
+          href="/"
+          style={styles.linkActive}
+          aria-current="page"
+          onClick={() => setMenuOpen(false)}
+        >
+          Browse the Archive
+        </Link>
+        <span style={styles.linkInert} aria-disabled="true">
+          Share a Memory
+        </span>
       </div>
     </nav>
   );
