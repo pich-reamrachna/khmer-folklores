@@ -43,8 +43,12 @@ const styles = {
     flex: "1 1 0%",
     minWidth: 0,
   },
+  // flex-basis lives in this file's own plain <style> tag below, not here
+  // — needed so the ≤640px media query can override it (an inline value
+  // always wins over a stylesheet rule, media query or not), and a plain
+  // <style> (not <style jsx>) avoids the hydration-gap flash a styled-jsx
+  // block would have, since card width is visible at first paint.
   cardSlot: {
-    flex: `0 0 ${CARD_WIDTH}`,
     minWidth: 0,
     scrollSnapAlign: "start",
   },
@@ -118,7 +122,7 @@ export default function EntryCardRow({ entries, selectedIndex, onSelect }) {
         aria-label="Entries in the archive"
       >
         {entries.map((entry, index) => (
-          <div key={entry.id} style={styles.cardSlot}>
+          <div key={entry.id} style={styles.cardSlot} className="entry-card-slot">
             <EntryCard
               entry={entry}
               place={entry.place}
@@ -139,6 +143,22 @@ export default function EntryCardRow({ entries, selectedIndex, onSelect }) {
       >
         {">"}
       </button>
+
+      {/* Plain <style>, not <style jsx> — its CSS text renders straight into
+          the server-rendered HTML, so this phone card width is correct from
+          the first paint instead of only after hydration. Base rule reuses
+          GAP/CARDS_PER_VIEW so the tablet/desktop formula stays a single
+          source of truth instead of a duplicated magic number. */}
+      <style>{`
+        .entry-card-slot {
+          flex: 0 0 ${CARD_WIDTH};
+        }
+        @media (max-width: 640px) {
+          .entry-card-slot {
+            flex-basis: 100%;
+          }
+        }
+      `}</style>
     </div>
   );
 }
