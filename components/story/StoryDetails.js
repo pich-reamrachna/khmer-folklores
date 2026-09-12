@@ -7,7 +7,6 @@ import BackButton from "../shared/BackButton.js";
 
 const styles = {
   section: {
-    minHeight: "100vh",
     width: "100%",
     // Top padding clears the fixed 90px NavBar, matching StoryHero/ArchiveBrowser.
     padding: "130px 2rem 3rem",
@@ -15,9 +14,6 @@ const styles = {
     backgroundColor: "#08040A",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
-    // Required for StoryPageShell's scroll-snap-type: y mandatory to stop
-    // here, same as every snap section on the home page.
-    scrollSnapAlign: "start",
   },
   container: {
     maxWidth: 1560,

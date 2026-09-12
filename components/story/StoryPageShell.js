@@ -3,9 +3,9 @@
 import { useRef } from "react";
 import Footer from "../shared/Footer.js";
 
-// Scroll-snap <main> wrapper for a story's dedicated page — same pattern
-// as app/page.js's <main>, so the page snaps section-by-section and ends
-// on the same reusable Footer with a working "back to top" button.
+// <main> wrapper for a story's dedicated page — ends on the same reusable
+// Footer as the home page, with a working "back to top" button. Scrolls
+// freely; no scroll-snapping on this page.
 // "use client" is required for the ref/back-to-top handler.
 
 export default function StoryPageShell({ children }) {
@@ -18,7 +18,6 @@ export default function StoryPageShell({ children }) {
         backgroundColor: "#0C0A12",
         height: "100vh",
         overflowY: "auto",
-        scrollSnapType: "y mandatory",
         scrollBehavior: "smooth",
       }}
     >

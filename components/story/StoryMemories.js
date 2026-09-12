@@ -6,20 +6,14 @@
 
 const styles = {
   section: {
-    // minHeight: 100vh — without it, mandatory scroll-snap can't reach
-    // this section's own start (Footer follows it and is shorter than a
-    // viewport), so it'd glue to the footer as one stop instead of two.
-    minHeight: "100vh",
     width: "100%",
     boxSizing: "border-box",
     padding: "4rem 2rem 6rem",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
     backgroundColor: "#08040A",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
-    scrollSnapAlign: "start",
   },
   container: {
     maxWidth: 1560,
