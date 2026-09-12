@@ -62,6 +62,11 @@ const styles = {
     color: "#C5A059",
     margin: 0,
   },
+  // flex-direction switches to column ≤640px via the plain <style> tag
+  // below (not <style jsx> — that only applies after hydration, which
+  // would flash this row layout on every phone-width cold load). gap
+  // stays 3.5rem in both directions on purpose, so it never needs to
+  // move out of this inline object.
   rightCol: {
     display: "flex",
     gap: "3.5rem",
@@ -138,7 +143,7 @@ export default function Footer({ onBackToTop }) {
             </p>
           </div>
 
-          <div style={styles.rightCol}>
+          <div style={styles.rightCol} className="footer-right-col">
             <div style={styles.navGroup}>
               <p style={styles.navHeading}>Archive Navigation</p>
               <Link href="/" style={styles.navLink}>
@@ -168,6 +173,17 @@ export default function Footer({ onBackToTop }) {
           </p>
         </div>
       </div>
+
+      {/* Plain <style>, not <style jsx> — its CSS text renders straight into
+          the server-rendered HTML, so this phone layout is correct from the
+          first paint instead of only after hydration. */}
+      <style>{`
+        @media (max-width: 640px) {
+          .footer-right-col {
+            flex-direction: column;
+          }
+        }
+      `}</style>
     </footer>
   );
 }
