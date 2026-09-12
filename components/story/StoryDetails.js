@@ -42,6 +42,8 @@ const styles = {
     textTransform: "uppercase",
     whiteSpace: "nowrap",
   },
+  // overflowWrap: Khmer script often has no spaces to break on, so a long
+  // khmerTitle is effectively one unbreakable word without this.
   khmerTitle: {
     fontFamily: "'Kantumruy Pro', serif",
     fontSize: "2.2rem",
@@ -49,7 +51,10 @@ const styles = {
     color: "#D4AF37",
     letterSpacing: "0.04em",
     margin: "0 0 0.5rem",
+    overflowWrap: "break-word",
   },
+  // overflowWrap: lets a single long word (e.g. "Reincarnation") break
+  // instead of overflowing the page at the clamp's smallest size.
   title: {
     fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "clamp(2.8rem, 6vw, 5.2rem)",
@@ -58,6 +63,7 @@ const styles = {
     lineHeight: 1.05,
     letterSpacing: "-0.01em",
     margin: "0 0 1.5rem",
+    overflowWrap: "break-word",
   },
   description: {
     fontSize: "1.05rem",
@@ -79,7 +85,7 @@ export default function StoryDetails({ entry }) {
 
         <p style={styles.eyebrow}>
           <span style={styles.eyebrowLine} />
-          <span style={styles.eyebrowText}>
+          <span style={styles.eyebrowText} className="details-eyebrow-text">
             {entry.category}
             {entry.category && entry.place ? " • " : ""}
             {entry.place}
@@ -95,6 +101,18 @@ export default function StoryDetails({ entry }) {
 
         <p style={styles.description}>{entry.description}</p>
       </div>
+
+      {/* Plain <style>, not <style jsx> — its CSS text renders straight into
+          the server-rendered HTML, so this phone truncation is correct from
+          the first paint instead of only after hydration. */}
+      <style>{`
+        @media (max-width: 640px) {
+          .details-eyebrow-text {
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      `}</style>
     </section>
   );
 }

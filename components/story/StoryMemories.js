@@ -38,9 +38,12 @@ const styles = {
     letterSpacing: "0.25em",
     textTransform: "uppercase",
   },
+  // fontSize: fluid, capped at the same 2.75rem desktop already used —
+  // matches StoryDetails.js's h1 clamp formula instead of a fixed size
+  // that doesn't shrink on phone.
   title: {
     fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "2.75rem",
+    fontSize: "clamp(2rem, 6vw, 2.75rem)",
     fontWeight: 600,
     color: "#F5EFE6",
     lineHeight: 1.15,
