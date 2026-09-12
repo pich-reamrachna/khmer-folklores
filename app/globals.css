@@ -33,6 +33,12 @@ main {
   animation: hero-fade-in 350ms ease;
 }
 
+/* Whole-page fade-in on route navigation — app/page.js and
+   StoryPageShell.js's <main>. Same keyframe/timing as .hero-fade above. */
+.page-fade-in {
+  animation: hero-fade-in 350ms ease;
+}
+
 /* Rules below are kept here instead of in each component's own <style
    jsx> block on purpose: styled-jsx CSS only applies once React
    hydrates, so anything visible at first paint (not just :hover) would

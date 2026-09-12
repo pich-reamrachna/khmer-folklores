@@ -21,11 +21,15 @@ export default function StoryPageShell({ children }) {
         scrollBehavior: "smooth",
       }}
     >
-      {children}
+      {/* page-fade-in lives on this wrapper, not <main> itself — see
+          app/page.js for why (main's own background must stay solid). */}
+      <div className="page-fade-in">
+        {children}
 
-      <Footer
-        onBackToTop={() => mainRef.current?.scrollTo({ top: 0, behavior: "smooth" })}
-      />
+        <Footer
+          onBackToTop={() => mainRef.current?.scrollTo({ top: 0, behavior: "smooth" })}
+        />
+      </div>
     </main>
   );
 }

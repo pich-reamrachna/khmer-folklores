@@ -43,21 +43,28 @@ export default function Home() {
         scrollBehavior: "smooth",
       }}
     >
-      <NavBar />
+      {/* page-fade-in lives on this wrapper, not <main> itself — main's own
+          backgroundColor needs to stay solid immediately (matching
+          StoryHero's .hero-section), or the whole screen would visibly
+          fade up from black on every navigation instead of just the
+          content appearing. */}
+      <div className="page-fade-in">
+        <NavBar />
 
-      <StoryHero entry={selectedEntry}>
-        <EntryCardRow
-          entries={flattenedStories}
-          selectedIndex={selectedIndex}
-          onSelect={setSelectedIndex}
+        <StoryHero entry={selectedEntry}>
+          <EntryCardRow
+            entries={flattenedStories}
+            selectedIndex={selectedIndex}
+            onSelect={setSelectedIndex}
+          />
+        </StoryHero>
+
+        <ArchiveBrowser stories={flattenedStories} />
+
+        <Footer
+          onBackToTop={() => mainRef.current?.scrollTo({ top: 0, behavior: "smooth" })}
         />
-      </StoryHero>
-
-      <ArchiveBrowser stories={flattenedStories} />
-
-      <Footer
-        onBackToTop={() => mainRef.current?.scrollTo({ top: 0, behavior: "smooth" })}
-      />
+      </div>
     </main>
   );
 }
