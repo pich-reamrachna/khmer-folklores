@@ -2,11 +2,11 @@
 
 import { useRef, useState } from "react";
 import stories from "../data/entries.js";
-import StoryHero from "../components/StoryHero.js";
-import NavBar from "../components/NavBar.js";
-import EntryCardRow from "../components/EntryCardRow.js";
-import ArchiveBrowser from "../components/ArchiveBrowser.js";
-import Footer from "../components/Footer.js";
+import StoryHero from "../components/home/StoryHero.js";
+import NavBar from "../components/shared/NavBar.js";
+import EntryCardRow from "../components/home/EntryCardRow.js";
+import ArchiveBrowser from "../components/home/ArchiveBrowser.js";
+import Footer from "../components/shared/Footer.js";
 
 export default function Home() {
   // <main> is the scroll container; the footer's "Back to top" button

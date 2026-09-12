@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import stories from "../../data/entries.js";
-import NavBar from "../../components/NavBar.js";
-import StoryDetails from "../../components/StoryDetails.js";
-import StoryMemories from "../../components/StoryMemories.js";
-import StoryPageShell from "../../components/StoryPageShell.js";
+import NavBar from "../../components/shared/NavBar.js";
+import StoryDetails from "../../components/story/StoryDetails.js";
+import StoryMemories from "../../components/story/StoryMemories.js";
+import StoryPageShell from "../../components/story/StoryPageShell.js";
 
 export default async function StoryPage({ params }) {
   const { id } = await params;

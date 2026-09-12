@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import collection from "../collection.config.js";
+import collection from "../../collection.config.js";
 
 // The archive's trailing footer — name/description, curator, source, nav
 // links, and a "back to top" button. Reused as the last snap-stop on both

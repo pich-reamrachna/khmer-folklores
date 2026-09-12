@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import Footer from "./Footer.js";
+import Footer from "../shared/Footer.js";
 
 // Scroll-snap <main> wrapper for a story's dedicated page — same pattern
 // as app/page.js's <main>, so the page snaps section-by-section and ends

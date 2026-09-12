@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import collection from "../collection.config.js";
+import collection from "../../collection.config.js";
 
 // Text-only nav bar: site lockup on the left, page links on the right.
 // No logo/icon — the archive's identity comes from collection.config.js.

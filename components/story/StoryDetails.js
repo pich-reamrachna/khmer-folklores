@@ -1,4 +1,4 @@
-import BackButton from "./BackButton.js";
+import BackButton from "../shared/BackButton.js";
 
 // First section of a story's dedicated page: eyebrow (category • place),
 // optional Khmer title, English title, and the full description. No
