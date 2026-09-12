@@ -44,6 +44,8 @@ const styles = {
     position: "relative",
     zIndex: 2,
   },
+  // justifyContent: centered on phone instead of left-aligned — lives in
+  // this file's own <style> tag below since it needs a media query.
   eyebrow: {
     display: "flex",
     alignItems: "center",
@@ -61,6 +63,10 @@ const styles = {
     color: "#E6C575",
     letterSpacing: "0.25em",
     textTransform: "uppercase",
+    // Centers a short second line under a longer first line when this
+    // wraps on phone — plain left-align stranded it flush left, leaving
+    // visible dead space to its right.
+    textAlign: "center",
   },
   // grid-template-columns: 1 column on phone. minHeight: shrinks on short
   // viewports.
@@ -138,7 +144,10 @@ const styles = {
     alignSelf: "flex-end",
     paddingBottom: "1rem",
   },
-  // white-space: wraps on phone instead of overflowing the section.
+  // white-space/overflow/textOverflow: truncates to one line on phone
+  // instead of wrapping — wrapping let this box's height vary by entry
+  // (1 line vs 2), which grew `main` and pushed the card row/scroll cue
+  // below it up or down when switching entries.
   metaTag: {
     margin: 0,
     fontSize: "0.8rem",
@@ -201,7 +210,7 @@ export default function StoryHero({ entry, children }) {
   return (
     <section ref={sectionRef} style={styles.section} className="hero-section">
       <div style={styles.container} className="hero-container">
-        <p style={styles.eyebrow}>
+        <p style={styles.eyebrow} className="hero-eyebrow">
           <span style={styles.eyebrowLine} />
           <span style={styles.eyebrowText}>A Story from the Living Archive</span>
           <span style={styles.eyebrowLine} />
@@ -276,6 +285,9 @@ export default function StoryHero({ entry, children }) {
         .hero-meta-tag {
           white-space: nowrap;
         }
+        .hero-eyebrow {
+          justify-content: flex-start;
+        }
         .hero-title {
           font-size: clamp(2.8rem, 6vw, 5.2rem);
           margin-bottom: 1.2rem;
@@ -290,10 +302,18 @@ export default function StoryHero({ entry, children }) {
         }
         @media (max-width: 640px) {
           .hero-main-grid {
-            grid-template-columns: 1fr;
+            /* minmax(0, ...), not plain 1fr — a bare 1fr track's automatic
+               min-width is its content's min-content size, so .hero-meta-tag's
+               nowrap text (needed for its ellipsis) would force this column
+               wider than the viewport instead of being clipped inside it. */
+            grid-template-columns: minmax(0, 1fr);
           }
           .hero-meta-tag {
-            white-space: normal;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .hero-eyebrow {
+            justify-content: center;
           }
         }
         /* minHeight:100vh above lets this section grow taller than a short
