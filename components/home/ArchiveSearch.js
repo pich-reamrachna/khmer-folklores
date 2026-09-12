@@ -45,6 +45,35 @@ const styles = {
     fontFamily: "inherit",
     fontSize: "0.95rem",
   },
+  // Only rendered once there's a query, so there's no hydration-gap flash
+  // risk here (unlike bar/icon above). backgroundColor is left out of
+  // clearIcon on purpose: an inline style always beats a stylesheet rule
+  // regardless of selector specificity, which would make the :hover rule
+  // in this file's own <style jsx> below unable to ever override it.
+  clearButton: {
+    flex: "0 0 18px",
+    width: 18,
+    height: 18,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: "transparent",
+    border: "none",
+    padding: 0,
+    cursor: "pointer",
+  },
+  clearIcon: {
+    width: 12,
+    height: 12,
+    WebkitMaskImage: "url(/icons/close.png)",
+    maskImage: "url(/icons/close.png)",
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+  },
 };
 
 export default function ArchiveSearch({ value, onChange }) {
@@ -60,6 +89,31 @@ export default function ArchiveSearch({ value, onChange }) {
         style={styles.input}
         className="archive-search-input"
       />
+      {value ? (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          style={styles.clearButton}
+          className="archive-clear-button"
+          aria-label="Clear search"
+        >
+          <span style={styles.clearIcon} className="archive-clear-icon" aria-hidden="true" />
+        </button>
+      ) : null}
+
+      {/* :hover can't be expressed as an inline style — styled-jsx (built
+          into Next.js) scopes real CSS to just this component. Safe here
+          (unlike bar/input above) since this button only ever exists
+          after a user has typed something, never at first paint. */}
+      <style jsx>{`
+        .archive-clear-icon {
+          background-color: #c5a059;
+          transition: background-color 0.15s ease;
+        }
+        .archive-clear-button:hover .archive-clear-icon {
+          background-color: #ffffff;
+        }
+      `}</style>
     </div>
   );
 }
