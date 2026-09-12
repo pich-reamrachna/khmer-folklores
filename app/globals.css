@@ -177,3 +177,20 @@ main {
 .archive-search-bar:focus-within {
   border-color: #c5a059;
 }
+
+/* Phone-only: search bar spans full width, and rows lose their individual
+   card border/background inside ArchiveBrowser.js's dropdown (the only
+   place .archive-row renders at this width) — plain rows with a hover
+   highlight instead, matching a typeahead dropdown rather than a stacked
+   card list. Tablet/desktop are untouched. */
+@media (max-width: 640px) {
+  .archive-search-bar {
+    flex: 1 1 auto;
+    max-width: none;
+  }
+  .archive-row {
+    border: none;
+    background-color: transparent;
+    border-radius: 10px;
+  }
+}

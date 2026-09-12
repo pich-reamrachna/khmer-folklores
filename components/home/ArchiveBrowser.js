@@ -78,6 +78,10 @@ function formatQueryForDisplay(rawQuery) {
 }
 
 const styles = {
+  // justifyContent lives in this file's own plain <style> tag below — on
+  // phone it switches from centering to top-aligned, so the dropdown gets
+  // the space that centering would otherwise leave unused above the
+  // content instead of running out of room below the search bar.
   section: {
     backgroundColor: "#0D0812",
     minHeight: "100vh",
@@ -88,7 +92,6 @@ const styles = {
     boxSizing: "border-box",
     display: "flex",
     flexDirection: "column",
-    justifyContent: "center",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     // Makes this a valid stop for <main>'s scroll-snap-type: y mandatory —
     // without this, a scroll gesture from the hero skips straight past
@@ -155,9 +158,10 @@ const styles = {
     textTransform: "uppercase",
     margin: 0,
   },
-  // Shows exactly VISIBLE_ROWS rows; the rest scroll into view — matches
-  // the mockup's "5 stories in view" scrollable panel with a gold
-  // scrollbar (see app/globals.css's .archive-scroll rule).
+  // Shows exactly VISIBLE_ROWS rows before scrolling — matches the
+  // mockup's gold scrollbar (app/globals.css's .archive-scroll rule).
+  // maxHeight/overflowY live in this file's own <style> tag below,
+  // capped tighter on phone.
   list: {
     listStyle: "none",
     margin: 0,
@@ -166,22 +170,17 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     gap: ROW_GAP,
-    maxHeight: VISIBLE_ROWS * ROW_HEIGHT + (VISIBLE_ROWS - 1) * ROW_GAP,
-    overflowY: "auto",
   },
-  // border/backgroundColor live in app/globals.css's .archive-row rule —
-  // needed for :hover, and a plain stylesheet avoids a hydration-gap
-  // flash (see globals.css). This is a <button>, not a styled <li> — the
-  // properties reset here (width/text-align/font) are just the ones that
-  // don't conflict with that class.
+  // border/backgroundColor live in globals.css's .archive-row rule (hover +
+  // avoids hydration-gap flash). alignItems/justifyContent live in this
+  // file's own <style> tag — phone stacks rows instead of centering a
+  // wrapped title beside the place tag, which would overlap it.
   row: {
     width: "100%",
     textAlign: "left",
     fontFamily: "inherit",
     color: "inherit",
     display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
     gap: "1.25rem",
     minHeight: ROW_HEIGHT,
     boxSizing: "border-box",
@@ -266,7 +265,7 @@ export default function ArchiveBrowser({ stories }) {
     : stories;
 
   return (
-    <section style={styles.section}>
+    <section style={styles.section} className="archive-section">
       <div style={styles.container}>
         <p style={styles.eyebrow}>
           <span style={styles.eyebrowLine} />
@@ -279,52 +278,133 @@ export default function ArchiveBrowser({ stories }) {
           memories that keep them alive.
         </p>
 
-        <div style={styles.searchRow}>
-          <ArchiveSearch value={query} onChange={setQuery} />
+        <div className={`archive-search-panel${query ? " has-query" : ""}`}>
+          <div style={styles.searchRow}>
+            <ArchiveSearch value={query} onChange={setQuery} />
+          </div>
+
+          <div className="archive-results">
+            <div style={styles.listHeader}>
+              <p style={styles.listCount}>{filteredStories.length} Stories in View</p>
+            </div>
+
+            {filteredStories.length > 0 ? (
+              <ul style={styles.list} className="archive-scroll">
+                {filteredStories.map((entry) => (
+                  <li key={entry.id}>
+                    <button
+                      type="button"
+                      onClick={() => router.push(`/${entry.id}`)}
+                      style={styles.row}
+                      className="archive-row"
+                    >
+                      <div style={styles.textCol}>
+                        {entry.khmerTitle ? (
+                          <p style={styles.khmerTitle}>{entry.khmerTitle}</p>
+                        ) : null}
+                        <h3 style={styles.rowTitle}>{entry.title}</h3>
+                        <p style={styles.snippet} className="archive-snippet">
+                          {truncateSnippet(entry.description)}
+                        </p>
+                      </div>
+
+                      {entry.place ? (
+                        <span style={styles.placeGroup}>
+                          <span style={styles.place}>{entry.place}</span>
+                          <span
+                            style={styles.placeIcon}
+                            className="archive-row-icon"
+                            aria-hidden="true"
+                          />
+                        </span>
+                      ) : null}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p style={styles.snippet}>
+                &quot;{formatQueryForDisplay(query)}&quot; does not match any stories.
+              </p>
+            )}
+          </div>
         </div>
-
-        <div style={styles.listHeader}>
-          <p style={styles.listCount}>{filteredStories.length} Stories in View</p>
-        </div>
-
-        {filteredStories.length > 0 ? (
-          <ul style={styles.list} className="archive-scroll">
-            {filteredStories.map((entry) => (
-              <li key={entry.id}>
-                <button
-                  type="button"
-                  onClick={() => router.push(`/${entry.id}`)}
-                  style={styles.row}
-                  className="archive-row"
-                >
-                  <div style={styles.textCol}>
-                    {entry.khmerTitle ? (
-                      <p style={styles.khmerTitle}>{entry.khmerTitle}</p>
-                    ) : null}
-                    <h3 style={styles.rowTitle}>{entry.title}</h3>
-                    <p style={styles.snippet}>{truncateSnippet(entry.description)}</p>
-                  </div>
-
-                  {entry.place ? (
-                    <span style={styles.placeGroup}>
-                      <span style={styles.place}>{entry.place}</span>
-                      <span
-                        style={styles.placeIcon}
-                        className="archive-row-icon"
-                        aria-hidden="true"
-                      />
-                    </span>
-                  ) : null}
-                </button>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p style={styles.snippet}>
-            &quot;{formatQueryForDisplay(query)}&quot; does not match any stories.
-          </p>
-        )}
       </div>
+
+      {/* Plain <style>, not <style jsx> — its CSS text renders straight into
+          the server-rendered HTML, so this phone layout and the dropdown's
+          hidden-by-default state are correct from the first paint instead
+          of only after hydration. */}
+      <style>{`
+        .archive-section {
+          justify-content: center;
+        }
+        .archive-search-panel {
+          position: relative;
+        }
+        .archive-row {
+          align-items: center;
+          justify-content: space-between;
+        }
+        .archive-scroll {
+          max-height: ${VISIBLE_ROWS * ROW_HEIGHT + (VISIBLE_ROWS - 1) * ROW_GAP}px;
+          overflow-y: auto;
+        }
+        @media (max-width: 640px) {
+          /* Top-aligned instead of centered — centering left space unused
+             above the content while the dropdown ran out of room below the
+             search bar and got clipped by the viewport edge. */
+          .archive-section {
+            justify-content: flex-start;
+          }
+          .archive-row {
+            flex-direction: column;
+            align-items: stretch;
+            justify-content: flex-start;
+          }
+          .archive-results {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            z-index: 20;
+            background: #0D0812;
+            border: 1px solid #2A172F;
+            border-radius: 18px;
+            padding: 1rem;
+            box-sizing: border-box;
+            opacity: 0;
+            pointer-events: none;
+            transform: translateY(-4px);
+            transition: opacity 0.18s ease, transform 0.18s ease;
+            overflow-x: hidden;
+            /* Fixed px, not vh — the section centers its content, so a
+               taller screen mostly adds space above the search bar, not
+               below it; vh wouldn't track available space. */
+            max-height: 240px;
+          }
+          .archive-search-panel.has-query .archive-results {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+          }
+          /* .archive-scroll (not .archive-results) is the one that scrolls
+             — keeps the header a plain, un-scrolled block above it, since
+             rows (119px) are taller than the header (~30px) and a sticky
+             header could otherwise rest mid-row. */
+          .archive-scroll {
+            max-height: 156px;
+            overflow-y: auto;
+            overflow-x: hidden;
+          }
+          /* Deliberately shorter than "however much the row width allows"
+             — ellipsis kicks in sooner than it would at the row's full
+             (now full-viewport) width. */
+          .archive-snippet {
+            max-width: 200px;
+          }
+        }
+      `}</style>
     </section>
   );
 }
