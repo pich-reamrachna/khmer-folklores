@@ -1,6 +1,7 @@
 import { Cinzel, Kantumruy_Pro, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import collection from "../collection.config.js";
+import { LanguageProvider } from "../components/shared/LanguageContext.js";
 
 // Self-hosted via next/font instead of a Google Fonts <link>, so there's
 // no per-page-load network round trip. Exposed as CSS variables on
@@ -55,7 +56,7 @@ export default function RootLayout({ children }) {
           minHeight: "100vh",
         }}
       >
-        {children}
+        <LanguageProvider>{children}</LanguageProvider>
       </body>
     </html>
   );
