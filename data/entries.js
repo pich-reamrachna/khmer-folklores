@@ -53,6 +53,16 @@ const stories = [
         descriptionKhmer:
           "នេះជារឿងអំពីស្ត្រីម្នាក់ដែលមកស៊ីពោះវៀនរបស់អ្នក បើអ្នកមិនគេងថ្ងៃត្រង់ដោយយកចិត្តទុកដាក់។ វាជារឿងដែលគេច្រើននិយាយប្រាប់ក្មេងៗ ដើម្បីឲ្យពួកគេគេងថ្ងៃត្រង់ទាន់ពេលវេលា។",
       },
+      {
+        contributor: "Vongwathiny",
+        date: "2026-09-13",
+        place: "Phnom Penh",
+        placeKhmer: "ភ្នំពេញ",
+        description:
+          "I've also heard this story as well when I was young, my father told me if I don't go to sleep then a man in black will come and rip apart my stomach and eat my intestines. A pretty gruesome story to tell a kid but it was very effective.",
+        descriptionKhmer:
+          "ខ្ញុំក៏ធ្លាប់ឮរឿងនេះដែរនៅពេលដែលខ្ញុំនៅក្មេង។ ឪពុករបស់ខ្ញុំធ្លាប់ប្រាប់ខ្ញុំថា បើខ្ញុំមិនព្រមចូលគេងទេ នោះបុរសពាក់ខ្មៅម្នាក់នឹងមកហែកពោះខ្ញុំ ហើយស៊ីពោះវៀនរបស់ខ្ញុំ។ វាជារឿងដ៏សាហាវមួយសម្រាប់និយាយប្រាប់ក្មេង ប៉ុន្តែវាមានប្រសិទ្ធភាពខ្លាំងណាស់",
+      },
     ],
   },
   {
@@ -145,8 +155,39 @@ const stories = [
         descriptionKhmer:
           "គេថាបើអ្នកគេងក្រោមដើមចេក នឹងមានខ្មោចមួយឈ្មោះអ្នកនាថមកយាយី។ នាងបង្ហាញខ្លួនក្នុងឈុតសម្លៀកបំពាក់ពណ៌សវែង ដៃទាំងពីរលូកលើពោះដែលមានផ្ទៃពោះ។ គេថានាងបានស្លាប់ក្នុងពេលសម្រាលកូន ខណៈពេលដែលប្ដីនាងចាកឆ្ងាយ ដែលនាំឱ្យនាងក្លាយជាខ្មោចដែលមានចិត្តចង់សងសឹក។",
       },
+      {
+        contributor: "Vongwathiny",
+        date: "2026-09-13",
+        place: "Phnom Penh",
+        placeKhmer: "ភ្នំពេញ",
+        description:
+          "I heard this story too, but with a twist at the end. Neang Neath really did die during labor while her husband was away working outside the province. The twist is that when he came back home and found out his wife had died, he didn't believe it, because he could still see his wife and their child. In reality, what he saw was just her spirit, but he never realized she wasn't really there anymore. As for why she's associated with banana trees, I honestly don't know either.",
+        descriptionKhmer:
+          "ខ្ញុំក៏ធ្លាប់ឮរឿងនេះដែរ ប៉ុន្តែមានការបញ្ច្រាសនៅចុងបញ្ចប់។ នាងនាថពិតជាបានស្លាប់ក្នុងពេលសម្រាលកូនមែន ខណៈពេលដែលប្ដីរបស់នាងកំពុងធ្វើការនៅខាងក្រៅខេត្ត។ ការបញ្ច្រាសនោះគឺ នៅពេលដែលគាត់ត្រឡប់មកផ្ទះវិញ ហើយដឹងថាប្រពន្ធរបស់គាត់បានស្លាប់ គាត់មិនជឿទេ ព្រោះគាត់នៅតែឃើញប្រពន្ធនិងកូនរបស់គាត់។ តាមពិតទៅ អ្វីដែលគាត់ឃើញនោះគ្រាន់តែជាវិញ្ញាណរបស់នាងប៉ុណ្ណោះ ប៉ុន្តែគាត់មិនដែលដឹងថានោះមិនមែនជានាងទៀតទេ។ ចំណែកឯមូលហេតុដែលនាងទាក់ទងនឹងដើមចេក ខ្ញុំក៏មិនដឹងដែរ។",
+      },
     ],
   },
+  {
+    id: "boeung-yeak-lorm",
+    title: "Boeung Yeak Lorm",
+    khmerTitle: "បឹងយក្សឡោម",
+    category: "Legend",
+    categoryKhmer: "រឿងព្រេង",
+    summary:
+      "A story about how a Lake in Ratanakiri Provincce was created.",
+    summaryKhmer:
+      "រឿងអំពីរបៀបដែលបឹងមួយនៅខេត្តរតនគិរីត្រូវបានបង្កើតឡើង។",
+    versions: [
+      {
+        contributor: "Nida",
+        date: "2026-09-13",
+        place: "Ratanakiri",
+        placeKhmer: "រតនគិរី",
+        description:
+          "From what I remember, the lake was created when a Giant King ordered his soldiers to dig the land in order to find his daughter, because she ran away from an arranged marriage."
+      }
+    ]
+  }
 ];
 
 export default stories;
