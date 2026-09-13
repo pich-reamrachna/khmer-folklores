@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslation } from "../shared/uiText.js";
+
 // Presentational search pill for the browse-archive section. This owns
 // only its own markup/styling — ArchiveBrowser.js owns the query state
 // and the actual filtering logic, passing it down as value/onChange.
@@ -42,7 +44,10 @@ const styles = {
     outline: "none",
     background: "transparent",
     color: "#F5EFE6",
-    fontFamily: "inherit",
+    // Not "inherit" — the placeholder is now translated, and a visitor
+    // may type Khmer into this field too, so it needs var(--font-khmer)
+    // explicitly rather than inheriting a Latin-only stack.
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.95rem",
   },
   // Only rendered once there's a query, so there's no hydration-gap flash
@@ -77,6 +82,7 @@ const styles = {
 };
 
 export default function ArchiveSearch({ value, onChange }) {
+  const t = useTranslation();
   return (
     <div style={styles.bar} className="archive-search-bar">
       <span style={styles.icon} aria-hidden="true" />
@@ -84,8 +90,8 @@ export default function ArchiveSearch({ value, onChange }) {
         type="text"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder="Search by name, place, or story"
-        aria-label="Search stories"
+        placeholder={t("searchPlaceholder")}
+        aria-label={t("searchAriaLabel")}
         style={styles.input}
         className="archive-search-input"
       />
@@ -95,7 +101,7 @@ export default function ArchiveSearch({ value, onChange }) {
           onClick={() => onChange("")}
           style={styles.clearButton}
           className="archive-clear-button"
-          aria-label="Clear search"
+          aria-label={t("clearSearchAriaLabel")}
         >
           <span style={styles.clearIcon} className="archive-clear-icon" aria-hidden="true" />
         </button>

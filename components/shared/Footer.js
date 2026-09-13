@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import collection from "../../collection.config.js";
+import { pickText, useLanguage } from "./LanguageContext.js";
+import { useTranslation } from "./uiText.js";
 
 // The archive's trailing footer — name/description, curator, source, nav
 // links, and a "back to top" button. Reused as the last snap-stop on both
@@ -43,6 +45,8 @@ const styles = {
     color: "#F5EFE6",
     margin: 0,
   },
+  // kicker: deliberately not translated, matching NavBar's lockup — the
+  // site name + tagline reads as one fixed brand unit in both places.
   kicker: {
     fontSize: "0.68rem",
     fontWeight: 600,
@@ -51,13 +55,18 @@ const styles = {
     textTransform: "uppercase",
     margin: "4px 0 0",
   },
+  // fontFamily on description/creditLine: still translated, so still
+  // need var(--font-khmer) explicitly instead of inheriting `footer`'s
+  // Latin-only stack.
   description: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1rem",
     color: "#B4AEC2",
     lineHeight: 1.6,
     margin: 0,
   },
   creditLine: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.85rem",
     color: "#C5A059",
     margin: 0,
@@ -76,7 +85,15 @@ const styles = {
     flexDirection: "column",
     gap: "0.75rem",
   },
+  // letterSpacing is a Latin tracking convention that pries apart Khmer's
+  // stacked glyph clusters — spread this in when the text is Khmer.
+  trackingNone: {
+    letterSpacing: "normal",
+  },
+  // fontFamily on navHeading/navLink/navLinkInert/backToTopBtn: same
+  // reasoning as kicker/description/creditLine above.
   navHeading: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.72rem",
     fontWeight: 700,
     color: "#C5A059",
@@ -85,11 +102,13 @@ const styles = {
     margin: 0,
   },
   navLink: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.95rem",
     color: "#F5EFE6",
     textDecoration: "none",
   },
   navLinkInert: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.95rem",
     color: "#8A7F91",
     cursor: "default",
@@ -103,6 +122,7 @@ const styles = {
     border: "1px solid #2A172F",
     backgroundColor: "#120916",
     color: "#F5EFE6",
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.85rem",
     fontWeight: 700,
     cursor: "pointer",
@@ -119,7 +139,9 @@ const styles = {
     gap: "1.5rem",
     flexWrap: "wrap",
   },
+  // Translated ("Built in ICT 340…" line) — needs var(--font-khmer).
   bottomText: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.8rem",
     color: "#5A6373",
     margin: 0,
@@ -128,6 +150,14 @@ const styles = {
 };
 
 export default function Footer({ onBackToTop }) {
+  const { language } = useLanguage();
+  const t = useTranslation();
+  // collection.config.js's own content (not app UI copy) — same
+  // pickText fallback rule as entry data. curator (a name) never
+  // translates, same as a story's contributor.
+  const description = pickText(language, collection.descriptionKhmer, collection.description);
+  const source = pickText(language, collection.sourceKhmer, collection.source);
+
   return (
     <footer style={styles.footer}>
       <div style={styles.inner}>
@@ -137,27 +167,31 @@ export default function Footer({ onBackToTop }) {
               <p style={styles.siteName}>{collection.name}</p>
               <p style={styles.kicker}>A Khmer Folklore Archive</p>
             </div>
-            <p style={styles.description}>{collection.description}</p>
+            <p style={styles.description}>{description}</p>
             <p style={styles.creditLine}>
-              Curated by {collection.curator} · Source: {collection.source}
+              {t("footerCreditLine")} {collection.curator} · {t("footerSourceLine")} {source}
             </p>
           </div>
 
           <div style={styles.rightCol} className="footer-right-col">
             <div style={styles.navGroup}>
-              <p style={styles.navHeading}>Archive Navigation</p>
+              <p style={{ ...styles.navHeading, ...(language === "km" ? styles.trackingNone : null) }}>
+                {t("footerNavHeading")}
+              </p>
               <Link href="/" style={styles.navLink}>
-                Browse the Archive
+                {t("navBrowseArchive")}
               </Link>
               <span style={styles.navLinkInert} aria-disabled="true">
-                Share a Memory
+                {t("navShareMemory")}
               </span>
             </div>
 
             <div style={styles.navGroup}>
-              <p style={styles.navHeading}>Ascend</p>
+              <p style={{ ...styles.navHeading, ...(language === "km" ? styles.trackingNone : null) }}>
+                {t("footerAscendHeading")}
+              </p>
               <button type="button" style={styles.backToTopBtn} onClick={onBackToTop}>
-                Back to top ↑
+                {t("footerBackToTop")}
               </button>
             </div>
           </div>
@@ -166,11 +200,7 @@ export default function Footer({ onBackToTop }) {
         <hr style={styles.divider} />
 
         <div style={styles.bottomRow}>
-          <p style={styles.bottomText}>
-            Built in ICT 340 — Vibe Coding, American University of Phnom
-            Penh, Fall 2026. This archive is under construction all
-            semester. Come back in December.
-          </p>
+          <p style={styles.bottomText}>{t("footerBuiltIn")}</p>
         </div>
       </div>
 

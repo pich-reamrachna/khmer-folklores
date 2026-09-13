@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import collection from "../../collection.config.js";
 import { useLanguage } from "./LanguageContext.js";
+import { useTranslation } from "./uiText.js";
 
 // Text-only nav bar: site lockup on the left, page links on the right.
 // No logo/icon — the archive's identity comes from collection.config.js.
@@ -63,6 +64,9 @@ const styles = {
     letterSpacing: "0.02em",
     lineHeight: 1.1,
   },
+  // kicker/linkActive/linkInert: deliberately not translated — the whole
+  // top bar reads as fixed site branding, like the site name itself.
+  // Only the language switcher (below) actually needs both languages.
   kicker: {
     fontSize: "0.68rem",
     fontWeight: 600,
@@ -137,6 +141,12 @@ const styles = {
   },
   langSwitcher: {
     position: "relative",
+  },
+  // letterSpacing is a Latin tracking convention that pries apart Khmer's
+  // stacked glyph clusters — spread this in whenever the pill/chip is
+  // currently displaying "ខ្មែរ" rather than "EN".
+  trackingNone: {
+    letterSpacing: "normal",
   },
   langPill: {
     display: "inline-flex",
@@ -275,6 +285,7 @@ export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const { language, setLanguage } = useLanguage();
+  const t = useTranslation();
   const langSwitcherRef = useRef(null);
 
   useEffect(() => {
@@ -319,11 +330,11 @@ export default function NavBar() {
           <div style={styles.langSwitcher} ref={langSwitcherRef}>
             <button
               type="button"
-              style={styles.langPill}
+              style={{ ...styles.langPill, ...(language === "km" ? styles.trackingNone : null) }}
               onClick={() => setLangMenuOpen((open) => !open)}
               aria-expanded={langMenuOpen}
               aria-haspopup="listbox"
-              aria-label="Change language"
+              aria-label={t("navChangeLanguage")}
             >
               {language === "km" ? "ខ្មែរ" : "EN"}
               <span
@@ -371,7 +382,7 @@ export default function NavBar() {
           style={styles.toggleButton}
           onClick={() => setMenuOpen((open) => !open)}
           aria-expanded={menuOpen}
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-label={menuOpen ? t("navCloseMenu") : t("navOpenMenu")}
         >
           <span
             style={{
@@ -411,7 +422,11 @@ export default function NavBar() {
           </button>
           <button
             type="button"
-            style={{ ...styles.mobileLangChip, ...(language === "km" ? styles.mobileLangChipSelected : null) }}
+            style={{
+              ...styles.mobileLangChip,
+              ...styles.trackingNone,
+              ...(language === "km" ? styles.mobileLangChipSelected : null),
+            }}
             aria-pressed={language === "km"}
             onClick={() => setLanguage("km")}
           >

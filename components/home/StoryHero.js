@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
+import { useTranslation } from "../shared/uiText.js";
 
 // StoryHero — the hero-section from the mockup: eyebrow, title, summary,
 // CTA, and a meta tag, laid out as a two-column grid. `children` (the entry
@@ -142,11 +143,23 @@ const styles = {
     borderBottomWidth: 2,
     borderBottomStyle: "solid",
     cursor: "pointer",
-    fontFamily: "inherit",
+    // "inherit" isn't enough now that this label is translated — the
+    // nearest ancestor with an explicit fontFamily is `section`'s
+    // Latin-only stack, so Khmer text would fall back to a generic
+    // system font instead of the loaded Kantumruy Pro.
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
   },
   metaAside: {
     alignSelf: "flex-end",
     paddingBottom: "1rem",
+  },
+  // Letter-spacing is a Latin small-caps convention — applied to Khmer,
+  // it pries apart the stacked consonant/vowel signs that make up a
+  // single visual glyph cluster, since it inserts a gap after every
+  // Unicode code point rather than every whole cluster. Spread this in
+  // (after the base style) whenever the text might be Khmer.
+  trackingNone: {
+    letterSpacing: "normal",
   },
   // white-space/overflow/textOverflow: truncates to one line on phone
   // instead of wrapping — wrapping let this box's height vary by entry
@@ -180,7 +193,8 @@ const styles = {
     letterSpacing: "0.22em",
     textTransform: "uppercase",
     cursor: "pointer",
-    fontFamily: "inherit",
+    // Same reasoning as readLink above — this label is now translated.
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
   },
   // Recolored via mask-image, same technique as the other icons in this
   // app. background-color and the float animation's @keyframes live in
@@ -204,6 +218,7 @@ const styles = {
 export default function StoryHero({ entry, children }) {
   const sectionRef = useRef(null);
   const { language } = useLanguage();
+  const t = useTranslation();
 
   // Scrolls to this section's actual next sibling, not a fixed
   // one-viewport-height guess — this section's height varies (minHeight:
@@ -226,6 +241,8 @@ export default function StoryHero({ entry, children }) {
       <div style={styles.container} className="hero-container">
         <p style={styles.eyebrow} className="hero-eyebrow">
           <span style={styles.eyebrowLine} />
+          {/* Deliberately not translated — decorative label, kept English
+              like the site's other stylistic branding text. */}
           <span style={styles.eyebrowText}>A Story from the Living Archive</span>
           <span style={styles.eyebrowLine} />
         </p>
@@ -242,18 +259,18 @@ export default function StoryHero({ entry, children }) {
 
             <Link
               href={`/${entry.id}`}
-              style={styles.readLink}
+              style={{ ...styles.readLink, ...(language === "km" ? styles.trackingNone : null) }}
               className="read-link"
-              aria-label="Read this story"
+              aria-label={t("heroReadStory")}
             >
-              Read This Story
+              {t("heroReadStory")}
             </Link>
           </div>
 
           {category || place ? (
             <div style={styles.metaAside}>
               <p
-                style={styles.metaTag}
+                style={{ ...styles.metaTag, ...(language === "km" ? styles.trackingNone : null) }}
                 key={entry.id}
                 className="hero-fade hero-meta-tag"
               >
@@ -270,12 +287,12 @@ export default function StoryHero({ entry, children }) {
         <div style={styles.scrollCue} className="hero-scroll-cue">
           <button
             type="button"
-            style={styles.scrollCueLink}
+            style={{ ...styles.scrollCueLink, ...(language === "km" ? styles.trackingNone : null) }}
             className="scroll-cue-link"
             onClick={scrollToNextSection}
-            aria-label="Scroll to the next section"
+            aria-label={t("heroScrollCue")}
           >
-            Scroll to open ledger
+            {t("heroScrollCue")}
             <span style={styles.scrollCueIcon} className="scroll-cue-icon" aria-hidden="true" />
           </button>
         </div>

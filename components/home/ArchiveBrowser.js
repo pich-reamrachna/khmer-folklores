@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ArchiveSearch from "./ArchiveSearch.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
+import { useTranslation } from "../shared/uiText.js";
 
 // The "browse the archive" section beneath the hero. This implements the
 // eyebrow, title, subtitle, a search bar, and the stacked list of stories
@@ -115,6 +116,8 @@ const styles = {
     width: 32,
     backgroundColor: "rgba(197, 160, 89, 0.65)",
   },
+  // eyebrowText: deliberately not translated — a decorative label, kept
+  // English like the site's other stylistic branding text.
   eyebrowText: {
     fontSize: "0.75rem",
     fontWeight: 600,
@@ -122,8 +125,12 @@ const styles = {
     letterSpacing: "0.25em",
     textTransform: "uppercase",
   },
+  // title/subtitle: this section's own static heading copy (not a
+  // story's title, which always stays English per Step 5) and are
+  // translated, so each needs var(--font-khmer) explicitly instead of
+  // inheriting `section`'s Latin-only stack.
   title: {
-    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
+    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "2.75rem",
     fontWeight: 600,
     color: "#F5EFE6",
@@ -131,6 +138,7 @@ const styles = {
     margin: "0 0 1rem",
   },
   subtitle: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1.05rem",
     color: "#BBAEBF",
     fontWeight: 300,
@@ -143,6 +151,13 @@ const styles = {
     justifyContent: "flex-end",
     marginBottom: "1.5rem",
   },
+  // Letter-spacing is a Latin small-caps convention — applied to Khmer,
+  // it pries apart the stacked consonant/vowel signs that make up a
+  // single visual glyph cluster. Spread this in (after the base style)
+  // wherever the text might be Khmer.
+  trackingNone: {
+    letterSpacing: "normal",
+  },
   listHeader: {
     display: "flex",
     alignItems: "center",
@@ -151,7 +166,9 @@ const styles = {
     paddingBottom: "0.85rem",
     marginBottom: "1.25rem",
   },
+  // Translated ("Stories in View" label) — needs var(--font-khmer).
   listCount: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 700,
     color: "#8A7F91",
@@ -259,6 +276,7 @@ const styles = {
 export default function ArchiveBrowser({ stories }) {
   const router = useRouter();
   const { language } = useLanguage();
+  const t = useTranslation();
   const [query, setQuery] = useState("");
 
   const searchTerms = parseSearchTerms(query);
@@ -290,11 +308,8 @@ export default function ArchiveBrowser({ stories }) {
           <span style={styles.eyebrowText}>Open the Ledger</span>
         </p>
 
-        <h2 style={styles.title}>Find a story to follow.</h2>
-        <p style={styles.subtitle}>
-          A living archive of Khmer legends, spirits, and the community
-          memories that keep them alive.
-        </p>
+        <h2 style={styles.title}>{t("archiveTitle")}</h2>
+        <p style={styles.subtitle}>{t("archiveSubtitle")}</p>
 
         <div className={`archive-search-panel${query ? " has-query" : ""}`}>
           <div style={styles.searchRow}>
@@ -303,7 +318,9 @@ export default function ArchiveBrowser({ stories }) {
 
           <div className="archive-results">
             <div style={styles.listHeader}>
-              <p style={styles.listCount}>{filteredStories.length} Stories in View</p>
+              <p style={{ ...styles.listCount, ...(language === "km" ? styles.trackingNone : null) }}>
+                {filteredStories.length} {t("archiveStoriesInView")}
+              </p>
             </div>
 
             {filteredStories.length > 0 ? (
@@ -334,7 +351,9 @@ export default function ArchiveBrowser({ stories }) {
 
                         {place ? (
                           <span style={styles.placeGroup}>
-                            <span style={styles.place}>{place}</span>
+                            <span style={{ ...styles.place, ...(language === "km" ? styles.trackingNone : null) }}>
+                              {place}
+                            </span>
                             <span
                               style={styles.placeIcon}
                               className="archive-row-icon"
@@ -349,7 +368,7 @@ export default function ArchiveBrowser({ stories }) {
               </ul>
             ) : (
               <p style={styles.snippet}>
-                &quot;{formatQueryForDisplay(query)}&quot; does not match any stories.
+                &quot;{formatQueryForDisplay(query)}&quot; {t("archiveNoResultsSuffix")}
               </p>
             )}
           </div>

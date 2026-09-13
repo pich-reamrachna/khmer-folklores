@@ -37,10 +37,10 @@ const styles = {
     width: 48,
     backgroundColor: "rgba(197, 160, 89, 0.65)",
   },
-  // Can now show categoryKhmer/placeKhmer, so needs var(--font-khmer)
-  // explicitly instead of inheriting `section`'s Latin-only stack.
+  // Deliberately not translated — same eyebrow visual pattern (flanking
+  // lines + small caps) as StoryHero/ArchiveBrowser/StoryMemories' own
+  // eyebrows, which all stay English regardless of entry data.
   eyebrowText: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 600,
     color: "#E6C575",
@@ -85,10 +85,10 @@ const styles = {
 
 export default function StoryDetails({ entry }) {
   const { language } = useLanguage();
-  // khmerTitle/title stack (both shown together) regardless of language —
-  // everything else swaps, falling back to English when untranslated.
-  const category = pickText(language, entry.categoryKhmer, entry.category);
-  const place = pickText(language, entry.placeKhmer, entry.place);
+  // khmerTitle/title stack (both shown together) regardless of language,
+  // and the eyebrow (category • place) always stays English too — same
+  // eyebrow-style-stays-fixed rule as everywhere else. Only description
+  // swaps, falling back to English when untranslated.
   const description = pickText(language, entry.descriptionKhmer, entry.description);
 
   return (
@@ -101,9 +101,9 @@ export default function StoryDetails({ entry }) {
         <p style={styles.eyebrow}>
           <span style={styles.eyebrowLine} />
           <span style={styles.eyebrowText} className="details-eyebrow-text">
-            {category}
-            {category && place ? " • " : ""}
-            {place}
+            {entry.category}
+            {entry.category && entry.place ? " • " : ""}
+            {entry.place}
           </span>
           <span style={styles.eyebrowLine} />
         </p>

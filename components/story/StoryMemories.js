@@ -1,6 +1,7 @@
 "use client";
 
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
+import { useTranslation } from "../shared/uiText.js";
 
 // "What people remember" — the testimonial section on a story's page, one
 // card per contributor's telling (story.versions). No icons/quote-mark
@@ -35,6 +36,8 @@ const styles = {
     width: 32,
     backgroundColor: "rgba(197, 160, 89, 0.65)",
   },
+  // eyebrowText: deliberately not translated — a decorative label, kept
+  // English like the site's other stylistic branding text.
   eyebrowText: {
     fontSize: "0.75rem",
     fontWeight: 600,
@@ -42,11 +45,14 @@ const styles = {
     letterSpacing: "0.25em",
     textTransform: "uppercase",
   },
+  // title/subtitle: this section's own static heading copy is
+  // translated, so each needs var(--font-khmer) explicitly instead of
+  // inheriting `section`'s Latin-only stack.
   // fontSize: fluid, capped at the same 2.75rem desktop already used —
   // matches StoryDetails.js's h1 clamp formula instead of a fixed size
   // that doesn't shrink on phone.
   title: {
-    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
+    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "clamp(2rem, 6vw, 2.75rem)",
     fontWeight: 600,
     color: "#F5EFE6",
@@ -54,6 +60,7 @@ const styles = {
     margin: "0 0 1rem",
   },
   subtitle: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1.05rem",
     color: "#BBAEBF",
     fontWeight: 300,
@@ -99,6 +106,11 @@ const styles = {
     color: "#F5EFE6",
     margin: 0,
   },
+  // letterSpacing is a Latin tracking convention that pries apart Khmer's
+  // stacked glyph clusters — spread this in when the text is Khmer.
+  trackingNone: {
+    letterSpacing: "normal",
+  },
   // Can now show placeKhmer — same reasoning as quote above.
   place: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
@@ -114,6 +126,7 @@ const styles = {
 
 export default function StoryMemories({ versions }) {
   const { language } = useLanguage();
+  const t = useTranslation();
   if (!versions || versions.length === 0) return null;
 
   return (
@@ -124,11 +137,8 @@ export default function StoryMemories({ versions }) {
           <span style={styles.eyebrowText}>Voices from the Community</span>
         </p>
 
-        <h2 style={styles.title}>What people remember.</h2>
-        <p style={styles.subtitle}>
-          Each memory is a small lantern showing how folklore lives in daily
-          Cambodian conversation.
-        </p>
+        <h2 style={styles.title}>{t("memoriesTitle")}</h2>
+        <p style={styles.subtitle}>{t("memoriesSubtitle")}</p>
 
         <div style={styles.list}>
           {versions.map((version, index) => {
@@ -141,7 +151,11 @@ export default function StoryMemories({ versions }) {
                 <p style={styles.quote}>&ldquo;{description}&rdquo;</p>
                 <div style={styles.footer}>
                   <p style={styles.contributor}>{version.contributor}</p>
-                  {place ? <p style={styles.place}>{place}</p> : null}
+                  {place ? (
+                    <p style={{ ...styles.place, ...(language === "km" ? styles.trackingNone : null) }}>
+                      {place}
+                    </p>
+                  ) : null}
                 </div>
               </div>
             );
