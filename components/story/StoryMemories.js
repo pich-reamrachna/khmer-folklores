@@ -6,8 +6,24 @@ import { useTranslation } from "../shared/uiText.js";
 // "What people remember" — the testimonial section on a story's page, one
 // card per contributor's telling (story.versions). No icons/quote-mark
 // graphics, no profile pictures, and no "Contribute a Memory" CTA — those
-// aren't built yet. Only contributor and place are shown per card; date
-// exists in data/entries.js but isn't displayed here yet.
+// aren't built yet.
+
+// Manual month names, not toLocaleDateString("km-KH", ...) — Khmer
+// locale data isn't reliably bundled across browsers (confirmed
+// Intl.DateTimeFormat.supportedLocalesOf(["km"]) returns empty in some
+// Chrome builds), which silently falls back to English instead of
+// erroring. This also sidesteps Date's UTC-midnight parsing of "YYYY-MM-DD"
+// shifting the day in timezones behind UTC, since it never touches Date.
+const MONTH_NAMES = {
+  en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
+  km: ["មករា", "កុម្ភៈ", "មីនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"],
+};
+
+function formatDate(dateString, language) {
+  const [year, month, day] = dateString.split("-").map(Number);
+  const monthName = MONTH_NAMES[language][month - 1];
+  return language === "km" ? `${day} ${monthName} ${year}` : `${monthName} ${day}, ${year}`;
+}
 
 const styles = {
   section: {
@@ -100,10 +116,23 @@ const styles = {
     paddingTop: "1rem",
     borderTop: "1px solid #2A172F",
   },
+  contributorGroup: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.2rem",
+  },
   contributor: {
     fontSize: "0.95rem",
     fontWeight: 700,
     color: "#F5EFE6",
+    margin: 0,
+  },
+  // Locale-formatted date can include a Khmer month name (km-KH), so
+  // needs var(--font-khmer) explicitly like the other swappable text.
+  date: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.8rem",
+    color: "#8A7F91",
     margin: 0,
   },
   // letterSpacing is a Latin tracking convention that pries apart Khmer's
@@ -150,7 +179,10 @@ export default function StoryMemories({ versions }) {
               <div key={`${version.contributor}-${index}`} style={styles.card}>
                 <p style={styles.quote}>&ldquo;{description}&rdquo;</p>
                 <div style={styles.footer}>
-                  <p style={styles.contributor}>{version.contributor}</p>
+                  <div style={styles.contributorGroup}>
+                    <p style={styles.contributor}>{version.contributor}</p>
+                    {version.date ? <p style={styles.date}>{formatDate(version.date, language)}</p> : null}
+                  </div>
                   {place ? (
                     <p style={{ ...styles.place, ...(language === "km" ? styles.trackingNone : null) }}>
                       {place}
