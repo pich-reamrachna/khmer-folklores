@@ -37,6 +37,15 @@ function escapeRegExp(text) {
   return text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+// Zero-width space/joiners are invisible, so pasted Khmer text can carry
+// one without any visual sign — strip them before matching, or a copy
+// with a stray hint character silently fails to match the clean stored
+// text even though the two look identical.
+const INVISIBLE_CHARS = /[\u200b-\u200d\ufeff]/g;
+function stripInvisible(text) {
+  return text.replace(INVISIBLE_CHARS, "");
+}
+
 // Splits a query into search terms: "quoted phrases" become one literal
 // term each (spaces inside stay part of that term); everything outside
 // quotes is split on whitespace into individual word terms.
@@ -45,7 +54,7 @@ function parseSearchTerms(query) {
   const pattern = /"([^"]*)"|(\S+)/g;
   let match;
   while ((match = pattern.exec(query)) !== null) {
-    const term = (match[1] ?? match[2]).trim();
+    const term = stripInvisible((match[1] ?? match[2]).trim());
     if (term) terms.push(term);
   }
   return terms;
