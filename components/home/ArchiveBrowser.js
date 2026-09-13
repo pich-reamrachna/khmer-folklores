@@ -305,13 +305,14 @@ export default function ArchiveBrowser({ stories }) {
     ? stories.filter((entry) => {
         // Always matches both languages regardless of the switcher, so a
         // visitor can search in either language and still find results.
+        // searchIndex (built in app/page.js) covers every version's place/
+        // description/contributor, not just the one telling this row
+        // displays — otherwise a term only present in a second or third
+        // version could never be found.
         const haystack = [
           entry.title,
           entry.khmerTitle,
-          entry.description,
-          entry.descriptionKhmer,
-          entry.place,
-          entry.placeKhmer,
+          entry.searchIndex,
           entry.category,
           entry.categoryKhmer,
         ]

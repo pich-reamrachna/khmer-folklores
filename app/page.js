@@ -23,9 +23,17 @@ export default function Home() {
     ...story.versions[0],
   };
   // Same flatten, applied to every story, so each card can read entry.place.
+  // searchIndex covers every version (not just versions[0]), so a term only
+  // present in a second/third telling — its place, contributor, or text —
+  // is still findable in ArchiveBrowser's search, even though the card
+  // itself only displays the first telling.
   const flattenedStories = stories.map((s) => ({
     ...s,
     ...s.versions[0],
+    searchIndex: s.versions
+      .flatMap((v) => [v.contributor, v.place, v.placeKhmer, v.description, v.descriptionKhmer])
+      .filter(Boolean)
+      .join(" "),
   }));
 
   return (
