@@ -51,13 +51,25 @@ function parseSearchTerms(query) {
   return terms;
 }
 
-// Every term must match as a whole word (or, for a quoted multi-word
-// term, an exact contiguous phrase) somewhere in the haystack — \b word
-// boundaries are what make "sa" not match "Sambor" while "temple" still
-// matches "the temple grounds". Terms are ANDed: all must be present.
+// Khmer script doesn't put spaces between syllables/words, so there's no
+// boundary for a Khmer term to anchor "whole word" matching on — a term
+// missing a mid-word diacritic could match a false boundary, while the
+// exact substring wouldn't match at all if it's not immediately followed
+// by real whitespace. Substring matching is used for Khmer terms instead.
+const KHMER_SCRIPT = /[ក-៿]/;
+
+// Every term must match somewhere in the haystack, ANDed together —
+// whole-word for Latin terms (\p{L}/\p{N} lookaround, not \b, which is
+// ASCII-only and never matches around Khmer text), substring for Khmer.
 function matchesAllTerms(haystack, terms) {
   return terms.every((term) => {
-    const pattern = new RegExp(`\\b${escapeRegExp(term)}\\b`, "i");
+    if (KHMER_SCRIPT.test(term)) {
+      return haystack.toLowerCase().includes(term.toLowerCase());
+    }
+    const pattern = new RegExp(
+      `(?<![\\p{L}\\p{N}])${escapeRegExp(term)}(?![\\p{L}\\p{N}])`,
+      "iu"
+    );
     return pattern.test(haystack);
   });
 }
