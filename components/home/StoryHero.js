@@ -246,7 +246,7 @@ export default function StoryHero({ entry, children }) {
           <span style={styles.eyebrowLine} />
           {/* Deliberately not translated — decorative label, kept English
               like the site's other stylistic branding text. */}
-          <span style={styles.eyebrowText}>A Story from the Living Archive</span>
+          <span style={styles.eyebrowText}>Featured Stories of Khmer Folklores</span>
           <span style={styles.eyebrowLine} />
         </p>
 
