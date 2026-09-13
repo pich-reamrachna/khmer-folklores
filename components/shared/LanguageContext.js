@@ -44,3 +44,12 @@ export function LanguageProvider({ children }) {
 export function useLanguage() {
   return useContext(LanguageContext);
 }
+
+// The one fallback rule every component uses when swapping entry text by
+// language: Khmer if selected and present, otherwise English. Doesn't
+// apply to khmerTitle/title — those stack (both shown together) rather
+// than swap, per how khmerTitle already worked before this switcher
+// existed.
+export function pickText(language, khmerValue, englishValue) {
+  return language === "km" && khmerValue ? khmerValue : englishValue;
+}
