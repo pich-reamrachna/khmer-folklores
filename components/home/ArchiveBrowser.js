@@ -312,6 +312,8 @@ export default function ArchiveBrowser({ stories }) {
         const haystack = [
           entry.title,
           entry.khmerTitle,
+          entry.summary,
+          entry.summaryKhmer,
           entry.searchIndex,
           entry.category,
           entry.categoryKhmer,
