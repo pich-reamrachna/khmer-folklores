@@ -45,7 +45,7 @@ const styles = {
   // overflowWrap: Khmer script often has no spaces to break on, so a long
   // khmerTitle is effectively one unbreakable word without this.
   khmerTitle: {
-    fontFamily: "'Kantumruy Pro', serif",
+    fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
     fontSize: "2.2rem",
     fontWeight: 600,
     color: "#D4AF37",

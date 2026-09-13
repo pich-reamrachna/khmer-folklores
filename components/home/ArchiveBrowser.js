@@ -193,7 +193,7 @@ const styles = {
     flex: 1,
   },
   khmerTitle: {
-    fontFamily: "'Kantumruy Pro', serif",
+    fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
     fontSize: "0.9rem",
     fontWeight: 600,
     color: "#D4AF37",

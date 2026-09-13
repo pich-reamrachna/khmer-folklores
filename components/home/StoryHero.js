@@ -79,7 +79,7 @@ const styles = {
     maxWidth: 760,
   },
   khmerTitle: {
-    fontFamily: "'Kantumruy Pro', serif",
+    fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
     fontSize: "2.2rem",
     fontWeight: 600,
     color: "#D4AF37",

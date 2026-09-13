@@ -1,4 +1,4 @@
-import { Cinzel, Plus_Jakarta_Sans } from "next/font/google";
+import { Cinzel, Kantumruy_Pro, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import collection from "../collection.config.js";
 
@@ -22,6 +22,18 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
 });
 
+// khmerTitle styles (StoryHero.js, StoryDetails.js, ArchiveBrowser.js)
+// referenced 'Kantumruy Pro' as a bare CSS fallback before this — relying
+// on it being installed system-wide, which most visitors won't have.
+// Loading it here actually serves the font. subsets: ["khmer"] only —
+// Latin text already uses the fonts above.
+const kantumruyPro = Kantumruy_Pro({
+  weight: ["300", "400", "500", "600", "700"],
+  subsets: ["khmer"],
+  display: "swap",
+  variable: "--font-khmer",
+});
+
 export const metadata = {
   title: `${collection.name} — Khmer Living Archive`,
   description: collection.description,
@@ -29,7 +41,10 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" className={`${cinzel.variable} ${plusJakartaSans.variable}`}>
+    <html
+      lang="en"
+      className={`${cinzel.variable} ${plusJakartaSans.variable} ${kantumruyPro.variable}`}
+    >
       <body
         style={{
           margin: 0,
