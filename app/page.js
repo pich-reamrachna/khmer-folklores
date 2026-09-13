@@ -36,6 +36,10 @@ export default function Home() {
       .filter(Boolean)
       .join(" "),
   }));
+  // Carousel only features the first 5 stories — ArchiveBrowser below still
+  // searches/lists all of them, so the last story stays fully reachable,
+  // just not in the featured row.
+  const featuredStories = flattenedStories.slice(0, 5);
 
   return (
     <main
@@ -62,7 +66,7 @@ export default function Home() {
 
         <StoryHero entry={selectedEntry}>
           <EntryCardRow
-            entries={flattenedStories}
+            entries={featuredStories}
             selectedIndex={selectedIndex}
             onSelect={setSelectedIndex}
           />
