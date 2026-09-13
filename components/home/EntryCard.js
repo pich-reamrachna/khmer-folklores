@@ -18,7 +18,13 @@ const styles = {
     // auto height (box-sizing doesn't protect against that), which
     // desyncs the carousel row's stretch-height and nudges the hero
     // content above it.
-    border: "2px solid #2A172F",
+    //
+    // borderWidth/Style/Color kept separate, not the border shorthand —
+    // cardActive below overrides only borderColor, and mixing a
+    // shorthand base with a longhand override triggers a React warning.
+    borderWidth: 2,
+    borderStyle: "solid",
+    borderColor: "#2A172F",
     borderRadius: 16,
     color: "#F5EFE6",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
