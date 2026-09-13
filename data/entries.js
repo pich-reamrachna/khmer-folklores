@@ -44,7 +44,7 @@ const stories = [
       "រឿងព្រេងព្រមានមួយ ដែលប្រើសម្រាប់លើកទឹកចិត្តកូនក្មេងឲ្យគេងថ្ងៃត្រង់ ដោយព្រមានពីវិញ្ញាណដែលចាប់អ្នកមិនព្រមគេង។",
     versions: [
       {
-        contributor: "Rachna",
+        contributor: "Pich Ream Rachna",
         date: "2026-08-27",
         place: "Kampong Cham",
         placeKhmer: "កំពង់ចាម",
@@ -54,7 +54,7 @@ const stories = [
           "នេះជារឿងអំពីស្ត្រីម្នាក់ដែលមកស៊ីពោះវៀនរបស់អ្នក បើអ្នកមិនគេងថ្ងៃត្រង់ដោយយកចិត្តទុកដាក់។ វាជារឿងដែលគេច្រើននិយាយប្រាប់ក្មេងៗ ដើម្បីឲ្យពួកគេគេងថ្ងៃត្រង់ទាន់ពេលវេលា។",
       },
       {
-        contributor: "Vongwathiny",
+        contributor: "Sreng Vongwathiny",
         date: "2026-09-13",
         place: "Phnom Penh",
         placeKhmer: "ភ្នំពេញ",
@@ -77,7 +77,7 @@ const stories = [
       "រឿងព្រេងដ៏ល្បីមួយនៅតាមជនបទ អំពីក្បាលអណ្ដែតរបស់ស្ត្រី ដែលចេញរកមាន់នៅពេលយប់។",
     versions: [
       {
-        contributor: "Numpang",
+        contributor: "Piseth Tyvirakpoung",
         date: "2026-08-27",
         place: "Prey Veng",
         placeKhmer: "ព្រៃវែង",
@@ -100,7 +100,7 @@ const stories = [
       "ទំនៀមទម្លាប់មង្គលការមួយ ដែលមានប្រភពពីរឿងព្រេងដូនពេញ អ្នកបង្កើតទីក្រុងភ្នំពេញ ដែលគេជឿថានឹងដាក់បណ្ដាសាកូនក្រមុំដែលទៅវត្តរបស់នាង។",
     versions: [
       {
-        contributor: "Kimyou",
+        contributor: "Ngov Kimyou",
         date: "2026-08-29",
         place: "Phnom Penh",
         placeKhmer: "ភ្នំពេញ",
@@ -123,7 +123,7 @@ const stories = [
       "ជំនឿអបិយមន្តទូទៅមួយរបស់ខ្មែរ ព្រមានថាការគេងភ្លាមៗបន្ទាប់ពីញ៉ាំបាយ នាំឲ្យចាប់កំណើតជាក្រពើនៅជាតិក្រោយ។",
     versions: [
       {
-        contributor: "Rachna's Mother",
+        contributor: "Heng leangmeng",
         date: "2026-08-29",
         place: "Cambodia",
         placeKhmer: "កម្ពុជា",
@@ -146,17 +146,17 @@ const stories = [
       "រឿងខ្មោចមួយអំពីវិញ្ញាណដែលបានស្លាប់ក្នុងពេលសម្រាលកូន ហើយឥឡូវនេះមករំខានអ្នកដែលគេងក្រោមដើមចេក។",
     versions: [
       {
-        contributor: "Grandmother",
+        contributor: "Pich Ream",
         date: "2026-08-29",
         place: "Kandal",
         placeKhmer: "កណ្ដាល",
         description:
-          "It is said that if you sleep under a banana tree, a ghost called Neak Neath will come and haunt you. She appears in a long white dress, holding her pregnant belly. It is said that she died during labor while her husband was away, which led to her to becoming a vengeful spirit.",
+          "It is said that if you sleep under a banana tree, a ghost called Neak Neath will come and haunt you. She appears in a long white dress, holding her pregnant belly. It is said that she died during labor while her husband was away, which led to her to becoming a vengeful spirit. The husband, upon coming back home, found her restless spirit and seek help from a monk. However, at night, her vengeful spirit then exploit a banana tree that is extending to a window of the monk's house into the room where the husband resides in. In the end, she killed the husband.",
         descriptionKhmer:
-          "គេថាបើអ្នកគេងក្រោមដើមចេក នឹងមានខ្មោចមួយឈ្មោះអ្នកនាថមកយាយី។ នាងបង្ហាញខ្លួនក្នុងឈុតសម្លៀកបំពាក់ពណ៌សវែង ដៃទាំងពីរលូកលើពោះដែលមានផ្ទៃពោះ។ គេថានាងបានស្លាប់ក្នុងពេលសម្រាលកូន ខណៈពេលដែលប្ដីនាងចាកឆ្ងាយ ដែលនាំឱ្យនាងក្លាយជាខ្មោចដែលមានចិត្តចង់សងសឹក។",
+          "គេថាបើអ្នកគេងក្រោមដើមចេក នឹងមានខ្មោចមួយឈ្មោះអ្នកនាថមកយាយី។ នាងបង្ហាញខ្លួនក្នុងឈុតសម្លៀកបំពាក់ពណ៌សវែង ដៃទាំងពីរលូកលើពោះដែលមានផ្ទៃពោះ។ គេថានាងបានស្លាប់ក្នុងពេលសម្រាលកូន ខណៈពេលដែលប្ដីនាងចាកឆ្ងាយ ដែលនាំឱ្យនាងក្លាយជាខ្មោចដែលមានចិត្តចង់សងសឹក។ ប្ដីរបស់នាង នៅពេលដែលត្រឡប់មកផ្ទះវិញ បានឃើញវិញ្ញាណដែលមិនស្ងប់របស់នាង ហើយបានទៅសុំជំនួយពីលោកសង្ឃមួយអង្គ។ ប៉ុន្តែនៅពេលយប់ វិញ្ញាណដែលចង់សងសឹករបស់នាង បានប្រើប្រាស់ដើមចេកមួយដើមដែលលូតលាស់លាតសន្ធឹងដល់បង្អួចផ្ទះលោកសង្ឃ ជាផ្លូវចូលទៅដល់បន្ទប់ដែលប្ដីនាងកំពុងស្នាក់នៅ។ ជាចុងក្រោយ នាងបានសម្លាប់ប្ដីរបស់នាង។",
       },
       {
-        contributor: "Vongwathiny",
+        contributor: "Sreng Vongwathiny",
         date: "2026-09-13",
         place: "Phnom Penh",
         placeKhmer: "ភ្នំពេញ",
@@ -179,7 +179,7 @@ const stories = [
       "រឿងអំពីរបៀបដែលបឹងមួយនៅខេត្តរតនគិរីត្រូវបានបង្កើតឡើង។",
     versions: [
       {
-        contributor: "Nida",
+        contributor: "Lorn Nida",
         date: "2026-09-13",
         place: "Ratanakiri",
         placeKhmer: "រតនគិរី",
