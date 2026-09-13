@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import collection from "../../collection.config.js";
+import { useLanguage } from "./LanguageContext.js";
 
 // Text-only nav bar: site lockup on the left, page links on the right.
 // No logo/icon — the archive's identity comes from collection.config.js.
@@ -134,11 +135,147 @@ const styles = {
     backgroundColor: "rgba(10, 6, 12, 0.98)",
     borderBottom: "1px solid #2A172F",
   },
+  langSwitcher: {
+    position: "relative",
+  },
+  langPill: {
+    display: "inline-flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+    // Fixed width, not padding-driven — "EN" and "ខ្មែរ" render at
+    // different widths, and without this the pill (and the mobile
+    // toggle after it) would nudge sideways on every switch.
+    width: 70,
+    padding: "0.45rem 0",
+    border: "1px solid #2A172F",
+    borderRadius: 999,
+    backgroundColor: "transparent",
+    color: "#E6C575",
+    // Khmer first, not "inherit" — this label alternates between "EN"
+    // and "ខ្មែរ", and --font-khmer has no Latin glyphs (subsets:
+    // ["khmer"] in layout.js), so "EN" still falls through to
+    // --font-jakarta automatically without any conditional logic.
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.72rem",
+    fontWeight: 700,
+    letterSpacing: "0.15em",
+    textTransform: "uppercase",
+    cursor: "pointer",
+  },
+  // Recolored via mask-image, same technique as every other icon in this
+  // project (BackButton.js, StoryHero.js's scroll cue). Rotates 180deg
+  // open, same base+open merge pattern as langDropdown below.
+  langPillIcon: {
+    display: "inline-block",
+    width: 10,
+    height: 10,
+    backgroundColor: "#E6C575",
+    WebkitMaskImage: "url(/icons/arrow-down-sign-to-navigate.png)",
+    maskImage: "url(/icons/arrow-down-sign-to-navigate.png)",
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+    transition: "transform 0.2s ease",
+  },
+  langPillIconOpen: {
+    transform: "rotate(180deg)",
+  },
+  // Closed by default: lifted, invisible, and inert — opacity/transform
+  // (not display) drive the open/close so they can transition, same
+  // pattern as nav/navScrolled above.
+  langDropdown: {
+    position: "absolute",
+    top: "calc(100% + 10px)",
+    right: 0,
+    minWidth: 168,
+    // Solid, not translucent — this floats over whatever page content
+    // sits beneath the nav, so a see-through background let that content
+    // show through it.
+    backgroundColor: "#0A060C",
+    border: "1px solid #2A172F",
+    borderRadius: 14,
+    padding: 6,
+    boxSizing: "border-box",
+    opacity: 0,
+    transform: "translateY(-6px)",
+    pointerEvents: "none",
+    transition: "opacity 160ms ease, transform 160ms ease",
+  },
+  langDropdownOpen: {
+    opacity: 1,
+    transform: "translateY(0)",
+    pointerEvents: "auto",
+  },
+  // backgroundColor (not the background shorthand) since langOptionSelected
+  // below overrides only that — same shorthand/longhand reasoning as
+  // mobileLangChip.
+  langOption: {
+    display: "flex",
+    alignItems: "center",
+    width: "100%",
+    textAlign: "left",
+    backgroundColor: "transparent",
+    border: "none",
+    borderRadius: 9,
+    padding: "0.6rem 0.7rem",
+    color: "#F5EFE6",
+    // Khmer first — same reasoning as langPill above (one option reads
+    // "English", the other "ខ្មែរ").
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    cursor: "pointer",
+  },
+  // Golden background instead of a checkmark to mark the selected option.
+  langOptionSelected: {
+    backgroundColor: "#3A2C12",
+    color: "#E6C575",
+  },
+  mobileLangRow: {
+    display: "flex",
+    gap: "0.6rem",
+    paddingTop: "0.5rem",
+    borderTop: "1px solid #2A172F",
+  },
+  // borderWidth/Style/Color kept separate, not the border shorthand — the
+  // selected variant below overrides only borderColor, and mixing a
+  // shorthand base with a longhand override triggers a React warning
+  // (same issue already hit once in EntryCard.js).
+  mobileLangChip: {
+    flex: 1,
+    textAlign: "center",
+    padding: "0.55rem",
+    borderRadius: 10,
+    borderWidth: 1,
+    borderStyle: "solid",
+    borderColor: "#2A172F",
+    backgroundColor: "transparent",
+    color: "#BBAEBF",
+    // Khmer first — same reasoning as langPill above.
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.75rem",
+    fontWeight: 700,
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    cursor: "pointer",
+  },
+  mobileLangChipSelected: {
+    borderColor: "#C5A059",
+    color: "#E6C575",
+    backgroundColor: "#1D1024",
+  },
 };
 
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
+  const { language, setLanguage } = useLanguage();
+  const langSwitcherRef = useRef(null);
 
   useEffect(() => {
     // The page scrolls inside <main>, not the window, and scroll events
@@ -151,6 +288,17 @@ export default function NavBar() {
     document.addEventListener("scroll", onScroll, true);
     return () => document.removeEventListener("scroll", onScroll, true);
   }, []);
+
+  useEffect(() => {
+    if (!langMenuOpen) return;
+    const handleClickOutside = (event) => {
+      if (langSwitcherRef.current && !langSwitcherRef.current.contains(event.target)) {
+        setLangMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [langMenuOpen]);
 
   return (
     <nav style={{ ...styles.nav, ...(scrolled ? styles.navScrolled : null) }} aria-label="Primary">
@@ -167,6 +315,54 @@ export default function NavBar() {
           <span style={styles.linkInert} aria-disabled="true">
             Share a Memory
           </span>
+
+          <div style={styles.langSwitcher} ref={langSwitcherRef}>
+            <button
+              type="button"
+              style={styles.langPill}
+              onClick={() => setLangMenuOpen((open) => !open)}
+              aria-expanded={langMenuOpen}
+              aria-haspopup="listbox"
+              aria-label="Change language"
+            >
+              {language === "km" ? "ខ្មែរ" : "EN"}
+              <span
+                aria-hidden="true"
+                style={{ ...styles.langPillIcon, ...(langMenuOpen ? styles.langPillIconOpen : null) }}
+              />
+            </button>
+
+            <div
+              style={{ ...styles.langDropdown, ...(langMenuOpen ? styles.langDropdownOpen : null) }}
+              role="listbox"
+              aria-hidden={!langMenuOpen}
+            >
+              <button
+                type="button"
+                style={{ ...styles.langOption, ...(language === "en" ? styles.langOptionSelected : null) }}
+                role="option"
+                aria-selected={language === "en"}
+                onClick={() => {
+                  setLanguage("en");
+                  setLangMenuOpen(false);
+                }}
+              >
+                English
+              </button>
+              <button
+                type="button"
+                style={{ ...styles.langOption, ...(language === "km" ? styles.langOptionSelected : null) }}
+                role="option"
+                aria-selected={language === "km"}
+                onClick={() => {
+                  setLanguage("km");
+                  setLangMenuOpen(false);
+                }}
+              >
+                ខ្មែរ
+              </button>
+            </div>
+          </div>
         </div>
 
         <button
@@ -203,6 +399,25 @@ export default function NavBar() {
         <span style={styles.linkInert} aria-disabled="true">
           Share a Memory
         </span>
+
+        <div style={styles.mobileLangRow}>
+          <button
+            type="button"
+            style={{ ...styles.mobileLangChip, ...(language === "en" ? styles.mobileLangChipSelected : null) }}
+            aria-pressed={language === "en"}
+            onClick={() => setLanguage("en")}
+          >
+            EN
+          </button>
+          <button
+            type="button"
+            style={{ ...styles.mobileLangChip, ...(language === "km" ? styles.mobileLangChipSelected : null) }}
+            aria-pressed={language === "km"}
+            onClick={() => setLanguage("km")}
+          >
+            ខ្មែរ
+          </button>
+        </div>
       </div>
     </nav>
   );
