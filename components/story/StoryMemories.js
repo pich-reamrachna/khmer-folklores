@@ -84,6 +84,24 @@ const styles = {
     maxWidth: 640,
     margin: "0 0 2.5rem",
   },
+  // Matches ArchiveBrowser.js's listHeader/listCount pattern.
+  listHeader: {
+    display: "flex",
+    alignItems: "center",
+    borderBottom: "1px solid #2A172F",
+    paddingBottom: "0.85rem",
+    marginBottom: "1.25rem",
+  },
+  // Translated ("Tellings" label) — needs var(--font-khmer).
+  listCount: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.75rem",
+    fontWeight: 700,
+    color: "#8A7F91",
+    letterSpacing: "0.15em",
+    textTransform: "uppercase",
+    margin: 0,
+  },
   list: {
     display: "flex",
     flexDirection: "column",
@@ -168,6 +186,12 @@ export default function StoryMemories({ versions }) {
 
         <h2 style={styles.title}>{t("memoriesTitle")}</h2>
         <p style={styles.subtitle}>{t("memoriesSubtitle")}</p>
+
+        <div style={styles.listHeader}>
+          <p style={{ ...styles.listCount, ...(language === "km" ? styles.trackingNone : null) }}>
+            {versions.length} {t("memoriesTellingsCount")}
+          </p>
+        </div>
 
         <div style={styles.list}>
           {versions.map((version, index) => {

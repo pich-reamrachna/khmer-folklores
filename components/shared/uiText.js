@@ -50,6 +50,7 @@ const uiText = {
     en: "Each memory is a small lantern showing how folklore lives in daily Cambodian conversation.",
     km: "ការចងចាំនីមួយៗគឺជាចង្កៀងតូចមួយ បង្ហាញពីរបៀបដែលរឿងព្រេងនៅរស់ក្នុងការសន្ទនាប្រចាំថ្ងៃរបស់ខ្មែរ។",
   },
+  memoriesTellingsCount: { en: "Tellings", km: "ការនិទាន" },
 
   // Footer.js
   footerNavHeading: { en: "Archive Navigation", km: "ការរុករកបណ្ណសារ" },
