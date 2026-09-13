@@ -4,9 +4,10 @@ import BackButton from "../shared/BackButton.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 
 // First section of a story's dedicated page: eyebrow (category • place),
-// optional Khmer title, English title, and the full description. No
-// image/graphic/shape and no "share what you heard" button — those belong
-// to later sections that aren't built yet.
+// optional Khmer title, English title, and the story-level summary (not
+// any one contributor's description — see StoryMemories.js for those).
+// No image/graphic/shape and no "share what you heard" button — those
+// belong to later sections that aren't built yet.
 
 const styles = {
   section: {
@@ -71,8 +72,8 @@ const styles = {
     margin: "0 0 1.5rem",
     overflowWrap: "break-word",
   },
-  // Can now show descriptionKhmer — same reasoning as eyebrowText above.
-  description: {
+  // Can now show summaryKhmer — same reasoning as eyebrowText above.
+  summary: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1.05rem",
     color: "#BBAEBF",
@@ -87,9 +88,10 @@ export default function StoryDetails({ entry }) {
   const { language } = useLanguage();
   // khmerTitle/title stack (both shown together) regardless of language,
   // and the eyebrow (category • place) always stays English too — same
-  // eyebrow-style-stays-fixed rule as everywhere else. Only description
+  // eyebrow-style-stays-fixed rule as everywhere else. summary (story-
+  // level), not description (StoryMemories.js's per-contributor telling),
   // swaps, falling back to English when untranslated.
-  const description = pickText(language, entry.descriptionKhmer, entry.description);
+  const summary = pickText(language, entry.summaryKhmer, entry.summary);
 
   return (
     <section style={styles.section}>
@@ -114,7 +116,7 @@ export default function StoryDetails({ entry }) {
 
         <h1 style={styles.title}>{entry.title}</h1>
 
-        <p style={styles.description}>{description}</p>
+        <p style={styles.summary}>{summary}</p>
       </div>
 
       {/* Plain <style>, not <style jsx> — its CSS text renders straight into

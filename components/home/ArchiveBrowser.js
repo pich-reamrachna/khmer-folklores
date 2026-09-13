@@ -339,9 +339,10 @@ export default function ArchiveBrowser({ stories }) {
               <ul style={styles.list} className="archive-scroll">
                 {filteredStories.map((entry) => {
                   // khmerTitle/title stack (both shown together) regardless
-                  // of language — description/place swap, same rule as
-                  // every other component.
-                  const description = pickText(language, entry.descriptionKhmer, entry.description);
+                  // of language. summary (story-level), not description
+                  // (one contributor's specific telling) — same reasoning
+                  // as StoryHero.js.
+                  const summary = pickText(language, entry.summaryKhmer, entry.summary);
                   const place = pickText(language, entry.placeKhmer, entry.place);
                   return (
                     <li key={entry.id}>
@@ -357,7 +358,7 @@ export default function ArchiveBrowser({ stories }) {
                           ) : null}
                           <h3 style={styles.rowTitle}>{entry.title}</h3>
                           <p style={styles.snippet} className="archive-snippet">
-                            {truncateSnippet(description)}
+                            {truncateSnippet(summary)}
                           </p>
                         </div>
 

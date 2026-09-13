@@ -232,7 +232,10 @@ export default function StoryHero({ entry, children }) {
 
   // khmerTitle/title stack (both shown together) regardless of language —
   // everything else swaps, falling back to English when untranslated.
-  const description = pickText(language, entry.descriptionKhmer, entry.description);
+  // summary (story-level), not description (one contributor's specific
+  // telling) — description is reserved for StoryMemories.js, where each
+  // version is shown separately and correctly attributed.
+  const summary = pickText(language, entry.summaryKhmer, entry.summary);
   const category = pickText(language, entry.categoryKhmer, entry.category);
   const place = pickText(language, entry.placeKhmer, entry.place);
 
@@ -255,7 +258,7 @@ export default function StoryHero({ entry, children }) {
 
             <h1 style={styles.title} className="hero-title">{entry.title}</h1>
 
-            <p style={styles.summary} className="hero-summary">{description}</p>
+            <p style={styles.summary} className="hero-summary">{summary}</p>
 
             <Link
               href={`/${entry.id}`}
