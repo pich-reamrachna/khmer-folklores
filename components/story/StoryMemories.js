@@ -1,8 +1,12 @@
+"use client";
+
+import { pickText, useLanguage } from "../shared/LanguageContext.js";
+
 // "What people remember" — the testimonial section on a story's page, one
 // card per contributor's telling (story.versions). No icons/quote-mark
 // graphics, no profile pictures, and no "Contribute a Memory" CTA — those
-// aren't built yet. Only contributor and place are shown per card; there's
-// no date field in data/entries.js, so nothing is fabricated for it.
+// aren't built yet. Only contributor and place are shown per card; date
+// exists in data/entries.js but isn't displayed here yet.
 
 const styles = {
   section: {
@@ -70,8 +74,11 @@ const styles = {
     border: "1px solid #2A172F",
     backgroundColor: "#120916",
   },
+  // Can now show descriptionKhmer — needs var(--font-khmer) explicitly,
+  // since Georgia has no Khmer glyphs (would fall back to a generic
+  // system Khmer font instead of the loaded Kantumruy Pro).
   quote: {
-    fontFamily: "Georgia, 'Times New Roman', serif",
+    fontFamily: "var(--font-khmer), Georgia, 'Times New Roman', serif",
     fontStyle: "italic",
     fontSize: "1.1rem",
     lineHeight: 1.7,
@@ -92,7 +99,9 @@ const styles = {
     color: "#F5EFE6",
     margin: 0,
   },
+  // Can now show placeKhmer — same reasoning as quote above.
   place: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 600,
     color: "#8A7F91",
@@ -104,6 +113,7 @@ const styles = {
 };
 
 export default function StoryMemories({ versions }) {
+  const { language } = useLanguage();
   if (!versions || versions.length === 0) return null;
 
   return (
@@ -121,15 +131,21 @@ export default function StoryMemories({ versions }) {
         </p>
 
         <div style={styles.list}>
-          {versions.map((version, index) => (
-            <div key={`${version.contributor}-${index}`} style={styles.card}>
-              <p style={styles.quote}>&ldquo;{version.description}&rdquo;</p>
-              <div style={styles.footer}>
-                <p style={styles.contributor}>{version.contributor}</p>
-                {version.place ? <p style={styles.place}>{version.place}</p> : null}
+          {versions.map((version, index) => {
+            // contributor is never translated (it's a name); description
+            // and place swap by language, same rule as everywhere else.
+            const description = pickText(language, version.descriptionKhmer, version.description);
+            const place = pickText(language, version.placeKhmer, version.place);
+            return (
+              <div key={`${version.contributor}-${index}`} style={styles.card}>
+                <p style={styles.quote}>&ldquo;{description}&rdquo;</p>
+                <div style={styles.footer}>
+                  <p style={styles.contributor}>{version.contributor}</p>
+                  {place ? <p style={styles.place}>{place}</p> : null}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

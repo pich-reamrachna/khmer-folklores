@@ -1,4 +1,7 @@
+"use client";
+
 import BackButton from "../shared/BackButton.js";
+import { pickText, useLanguage } from "../shared/LanguageContext.js";
 
 // First section of a story's dedicated page: eyebrow (category • place),
 // optional Khmer title, English title, and the full description. No
@@ -34,7 +37,10 @@ const styles = {
     width: 48,
     backgroundColor: "rgba(197, 160, 89, 0.65)",
   },
+  // Can now show categoryKhmer/placeKhmer, so needs var(--font-khmer)
+  // explicitly instead of inheriting `section`'s Latin-only stack.
   eyebrowText: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 600,
     color: "#E6C575",
@@ -65,7 +71,9 @@ const styles = {
     margin: "0 0 1.5rem",
     overflowWrap: "break-word",
   },
+  // Can now show descriptionKhmer — same reasoning as eyebrowText above.
   description: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1.05rem",
     color: "#BBAEBF",
     fontWeight: 300,
@@ -76,6 +84,13 @@ const styles = {
 };
 
 export default function StoryDetails({ entry }) {
+  const { language } = useLanguage();
+  // khmerTitle/title stack (both shown together) regardless of language —
+  // everything else swaps, falling back to English when untranslated.
+  const category = pickText(language, entry.categoryKhmer, entry.category);
+  const place = pickText(language, entry.placeKhmer, entry.place);
+  const description = pickText(language, entry.descriptionKhmer, entry.description);
+
   return (
     <section style={styles.section}>
       <div style={styles.container}>
@@ -86,9 +101,9 @@ export default function StoryDetails({ entry }) {
         <p style={styles.eyebrow}>
           <span style={styles.eyebrowLine} />
           <span style={styles.eyebrowText} className="details-eyebrow-text">
-            {entry.category}
-            {entry.category && entry.place ? " • " : ""}
-            {entry.place}
+            {category}
+            {category && place ? " • " : ""}
+            {place}
           </span>
           <span style={styles.eyebrowLine} />
         </p>
@@ -99,7 +114,7 @@ export default function StoryDetails({ entry }) {
 
         <h1 style={styles.title}>{entry.title}</h1>
 
-        <p style={styles.description}>{entry.description}</p>
+        <p style={styles.description}>{description}</p>
       </div>
 
       {/* Plain <style>, not <style jsx> — its CSS text renders straight into
