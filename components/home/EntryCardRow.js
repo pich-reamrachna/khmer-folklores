@@ -125,7 +125,6 @@ export default function EntryCardRow({ entries, selectedIndex, onSelect }) {
           <div key={entry.id} style={styles.cardSlot} className="entry-card-slot">
             <EntryCard
               entry={entry}
-              place={entry.place}
               index={index}
               isActive={index === selectedIndex}
               onSelect={onSelect}

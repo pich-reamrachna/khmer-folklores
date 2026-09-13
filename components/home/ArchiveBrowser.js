@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ArchiveSearch from "./ArchiveSearch.js";
+import { pickText, useLanguage } from "../shared/LanguageContext.js";
 
 // The "browse the archive" section beneath the hero. This implements the
 // eyebrow, title, subtitle, a search bar, and the stacked list of stories
@@ -206,7 +207,11 @@ const styles = {
     color: "#F5EFE6",
     margin: 0,
   },
+  // fontFamily on snippet/place: both can now show a Khmer field
+  // (description/place swap by language) — see EntryCard.js for why this
+  // needs var(--font-khmer) explicitly.
   snippet: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.88rem",
     color: "#8A7F91",
     margin: "0.3rem 0 0",
@@ -221,6 +226,7 @@ const styles = {
     flex: "0 0 auto",
   },
   place: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 700,
     color: "#BBAEBF",
@@ -252,12 +258,24 @@ const styles = {
 
 export default function ArchiveBrowser({ stories }) {
   const router = useRouter();
+  const { language } = useLanguage();
   const [query, setQuery] = useState("");
 
   const searchTerms = parseSearchTerms(query);
   const filteredStories = searchTerms.length
     ? stories.filter((entry) => {
-        const haystack = [entry.title, entry.description, entry.place, entry.category]
+        // Always matches both languages regardless of the switcher, so a
+        // visitor can search in either language and still find results.
+        const haystack = [
+          entry.title,
+          entry.khmerTitle,
+          entry.description,
+          entry.descriptionKhmer,
+          entry.place,
+          entry.placeKhmer,
+          entry.category,
+          entry.categoryKhmer,
+        ]
           .filter(Boolean)
           .join(" ");
         return matchesAllTerms(haystack, searchTerms);
@@ -290,37 +308,44 @@ export default function ArchiveBrowser({ stories }) {
 
             {filteredStories.length > 0 ? (
               <ul style={styles.list} className="archive-scroll">
-                {filteredStories.map((entry) => (
-                  <li key={entry.id}>
-                    <button
-                      type="button"
-                      onClick={() => router.push(`/${entry.id}`)}
-                      style={styles.row}
-                      className="archive-row"
-                    >
-                      <div style={styles.textCol}>
-                        {entry.khmerTitle ? (
-                          <p style={styles.khmerTitle}>{entry.khmerTitle}</p>
-                        ) : null}
-                        <h3 style={styles.rowTitle}>{entry.title}</h3>
-                        <p style={styles.snippet} className="archive-snippet">
-                          {truncateSnippet(entry.description)}
-                        </p>
-                      </div>
+                {filteredStories.map((entry) => {
+                  // khmerTitle/title stack (both shown together) regardless
+                  // of language — description/place swap, same rule as
+                  // every other component.
+                  const description = pickText(language, entry.descriptionKhmer, entry.description);
+                  const place = pickText(language, entry.placeKhmer, entry.place);
+                  return (
+                    <li key={entry.id}>
+                      <button
+                        type="button"
+                        onClick={() => router.push(`/${entry.id}`)}
+                        style={styles.row}
+                        className="archive-row"
+                      >
+                        <div style={styles.textCol}>
+                          {entry.khmerTitle ? (
+                            <p style={styles.khmerTitle}>{entry.khmerTitle}</p>
+                          ) : null}
+                          <h3 style={styles.rowTitle}>{entry.title}</h3>
+                          <p style={styles.snippet} className="archive-snippet">
+                            {truncateSnippet(description)}
+                          </p>
+                        </div>
 
-                      {entry.place ? (
-                        <span style={styles.placeGroup}>
-                          <span style={styles.place}>{entry.place}</span>
-                          <span
-                            style={styles.placeIcon}
-                            className="archive-row-icon"
-                            aria-hidden="true"
-                          />
-                        </span>
-                      ) : null}
-                    </button>
-                  </li>
-                ))}
+                        {place ? (
+                          <span style={styles.placeGroup}>
+                            <span style={styles.place}>{place}</span>
+                            <span
+                              style={styles.placeIcon}
+                              className="archive-row-icon"
+                              aria-hidden="true"
+                            />
+                          </span>
+                        ) : null}
+                      </button>
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p style={styles.snippet}>

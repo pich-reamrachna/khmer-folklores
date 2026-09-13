@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import Link from "next/link";
+import { pickText, useLanguage } from "../shared/LanguageContext.js";
 
 // StoryHero — the hero-section from the mockup: eyebrow, title, summary,
 // CTA, and a meta tag, laid out as a two-column grid. `children` (the entry
@@ -107,8 +108,11 @@ const styles = {
     overflow: "hidden",
   },
   // height/WebkitLineClamp/marginBottom: 2 lines instead of 3 on short
-  // viewports.
+  // viewports. fontFamily: this can now show descriptionKhmer, which
+  // otherwise inherits `section`'s Latin-only stack and falls back to a
+  // generic system Khmer font instead of the loaded Kantumruy Pro.
   summary: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1.05rem",
     color: "#BBAEBF",
     fontWeight: 300,
@@ -150,6 +154,9 @@ const styles = {
   // below it up or down when switching entries.
   metaTag: {
     margin: 0,
+    // Can now show categoryKhmer/placeKhmer — see summary above for why
+    // this needs var(--font-khmer) explicitly instead of inheriting.
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.8rem",
     fontWeight: 700,
     color: "#E6C575",
@@ -196,6 +203,7 @@ const styles = {
 
 export default function StoryHero({ entry, children }) {
   const sectionRef = useRef(null);
+  const { language } = useLanguage();
 
   // Scrolls to this section's actual next sibling, not a fixed
   // one-viewport-height guess — this section's height varies (minHeight:
@@ -206,6 +214,12 @@ export default function StoryHero({ entry, children }) {
       block: "start",
     });
   };
+
+  // khmerTitle/title stack (both shown together) regardless of language —
+  // everything else swaps, falling back to English when untranslated.
+  const description = pickText(language, entry.descriptionKhmer, entry.description);
+  const category = pickText(language, entry.categoryKhmer, entry.category);
+  const place = pickText(language, entry.placeKhmer, entry.place);
 
   return (
     <section ref={sectionRef} style={styles.section} className="hero-section">
@@ -224,7 +238,7 @@ export default function StoryHero({ entry, children }) {
 
             <h1 style={styles.title} className="hero-title">{entry.title}</h1>
 
-            <p style={styles.summary} className="hero-summary">{entry.description}</p>
+            <p style={styles.summary} className="hero-summary">{description}</p>
 
             <Link
               href={`/${entry.id}`}
@@ -236,16 +250,16 @@ export default function StoryHero({ entry, children }) {
             </Link>
           </div>
 
-          {entry.category || entry.place ? (
+          {category || place ? (
             <div style={styles.metaAside}>
               <p
                 style={styles.metaTag}
                 key={entry.id}
                 className="hero-fade hero-meta-tag"
               >
-                {entry.category}
-                {entry.category && entry.place ? " • " : ""}
-                {entry.place}
+                {category}
+                {category && place ? " • " : ""}
+                {place}
               </p>
             </div>
           ) : null}

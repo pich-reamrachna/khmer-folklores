@@ -1,5 +1,7 @@
 "use client";
 
+import { pickText, useLanguage } from "../shared/LanguageContext.js";
+
 // The mockup's .story-card. Dark surface, gold active border, no icon.
 // "use client" is required for the <style jsx> hover rules below.
 
@@ -74,7 +76,12 @@ const styles = {
     margin: 0,
     flex: "0 0 auto",
   },
+  // fontFamily on place/title/category: each of these can now show a
+  // Khmer field (title swaps to khmerTitle), so each needs var(--font-khmer)
+  // explicitly — otherwise they'd inherit/use a Latin-only stack and fall
+  // back to a generic system Khmer font instead of the loaded Kantumruy Pro.
   place: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.65rem",
     fontWeight: 600,
     color: "#C5A059",
@@ -84,7 +91,7 @@ const styles = {
     textAlign: "right",
   },
   title: {
-    fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
+    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "1.15rem",
     fontWeight: 600,
     color: "#F5EFE6",
@@ -94,6 +101,7 @@ const styles = {
     textOverflow: "ellipsis",
   },
   category: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.68rem",
     fontWeight: 600,
     color: "#7A697F",
@@ -103,7 +111,14 @@ const styles = {
   },
 };
 
-export default function EntryCard({ entry, place, index, isActive, onSelect }) {
+export default function EntryCard({ entry, index, isActive, onSelect }) {
+  const { language } = useLanguage();
+  // Unlike StoryHero/StoryDetails/ArchiveBrowser, the card swaps its title
+  // rather than stacking both — too little room here for two title lines.
+  const title = pickText(language, entry.khmerTitle, entry.title);
+  const category = pickText(language, entry.categoryKhmer, entry.category);
+  const place = pickText(language, entry.placeKhmer, entry.place);
+
   return (
     <button
       type="button"
@@ -117,8 +132,8 @@ export default function EntryCard({ entry, place, index, isActive, onSelect }) {
           <p style={styles.number}>{String(index + 1).padStart(2, "0")}</p>
           {place ? <p style={styles.place}>{place}</p> : null}
         </div>
-        <h2 style={styles.title}>{entry.title}</h2>
-        <p style={styles.category}>{entry.category}</p>
+        <h2 style={styles.title}>{title}</h2>
+        <p style={styles.category}>{category}</p>
       </div>
 
       {!isActive ? (
