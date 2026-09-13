@@ -92,11 +92,16 @@ export default function EntryCardRow({ entries, selectedIndex, onSelect }) {
   const scrollByPage = (direction) => {
     const el = scrollRef.current;
     if (!el) return;
-    // An approximate nudge is enough — scroll-snap-align on each card
-    // pulls the final rest position to the exact card boundary regardless
-    // of small overshoot/undershoot here.
+    // Measured from the actual rendered card, not clientWidth / CARDS_PER_VIEW
+    // — that constant is only correct at the desktop/tablet breakpoint. On
+    // phone, a media query overrides each card to flex-basis: 100% (one
+    // card per view), so dividing by CARDS_PER_VIEW (3) only scrolled a
+    // third of a card — never far enough to cross into the next card's
+    // scroll-snap zone.
+    const firstCard = el.firstElementChild;
+    const cardWidth = firstCard ? firstCard.getBoundingClientRect().width : el.clientWidth / CARDS_PER_VIEW;
     el.scrollBy({
-      left: direction * (el.clientWidth / CARDS_PER_VIEW),
+      left: direction * (cardWidth + GAP),
       behavior: "smooth",
     });
     setTimeout(updateEdges, 350);
