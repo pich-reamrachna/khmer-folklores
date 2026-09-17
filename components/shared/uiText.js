@@ -62,6 +62,19 @@ const uiText = {
     en: "Built in ICT 340 — Vibe Coding, American University of Phnom Penh, Fall 2026. This archive is under construction all semester. Come back in December.",
     km: "សាងសង់ក្នុងមុខវិជ្ជា ICT 340 — Vibe Coding សាកលវិទ្យាល័យអាមេរិកកាំងភ្នំពេញ រដូវស្លឹកឈើជ្រុះ ២០២៦។ បណ្ណសារនេះកំពុងសាងសង់ពេញមួយឆមាស។ សូមត្រឡប់មកម្ដងទៀតនៅខែធ្នូ។",
   },
+
+  // app/login/page.js, app/signup/page.js. Khmer strings below are
+  // AI-drafted, not written by the curator like the rest of this
+  // file — flag for the curator to review/correct before relying on
+  // them.
+  authEmailLabel: { en: "Email", km: "អ៊ីមែល" },
+  authPasswordLabel: { en: "Password", km: "ពាក្យសម្ងាត់" },
+  authLoginTitle: { en: "Log In", km: "ចូលគណនី" },
+  authLoginButton: { en: "Log In", km: "ចូលគណនី" },
+  authLoginError: { en: "Invalid email or password", km: "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ" },
+  authSignupTitle: { en: "Sign Up", km: "បង្កើតគណនី" },
+  authSignupButton: { en: "Sign Up", km: "បង្កើតគណនី" },
+  authSignupError: { en: "Something went wrong. Try again.", km: "មានបញ្ហាកើតឡើង។ សូមព្យាយាមម្តងទៀត។" },
 };
 
 // Falls back to English if a key or its Khmer translation is missing —
