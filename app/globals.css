@@ -139,6 +139,16 @@ main {
   background-color: #ffffff;
 }
 
+/* NavBar.js's Sign In / Get Started links. Plain stylesheet, not
+   <style jsx>, for the same reason as BackButton.js above — styled-jsx
+   only auto-scopes native lowercase elements, not a custom component
+   like next/link's Link, so a scoped :hover rule here would never
+   match the rendered <a>. */
+.auth-link:hover,
+.auth-primary-btn:hover {
+  opacity: 0.8;
+}
+
 /* ArchiveBrowser.js's story-list rows and scrollbar. */
 .archive-scroll {
   scrollbar-width: thin;

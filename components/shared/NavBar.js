@@ -5,6 +5,7 @@ import Link from "next/link";
 import collection from "../../collection.config.js";
 import { useLanguage } from "./LanguageContext.js";
 import { useTranslation } from "./uiText.js";
+import { createClient } from "../../utils/supabase/client.js";
 
 // Text-only nav bar: site lockup on the left, page links on the right.
 // No logo/icon — the archive's identity comes from collection.config.js.
@@ -278,6 +279,165 @@ const styles = {
     color: "#E6C575",
     backgroundColor: "#1D1024",
   },
+  // Sign In: plain nav-link typography, same as linkActive minus the
+  // "current page" underline.
+  authLink: {
+    textDecoration: "none",
+    color: "#F5EFE6",
+    fontSize: "0.78rem",
+    fontWeight: 700,
+    letterSpacing: "0.18em",
+    textTransform: "uppercase",
+    padding: "0.5rem 0",
+  },
+  // Get Started: filled gold pill, same shape/weight as Footer.js's
+  // backToTopBtn.
+  authPrimaryBtn: {
+    display: "inline-flex",
+    alignItems: "center",
+    padding: "0.55rem 1.2rem",
+    borderRadius: 999,
+    border: "none",
+    backgroundColor: "#C5A059",
+    color: "#08040A",
+    textDecoration: "none",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.78rem",
+    fontWeight: 700,
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    cursor: "pointer",
+  },
+  userMenu: {
+    position: "relative",
+  },
+  userIconButton: {
+    width: 36,
+    height: 36,
+    borderRadius: "50%",
+    border: "1px solid #2A172F",
+    backgroundColor: "transparent",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 0,
+    cursor: "pointer",
+  },
+  // Recolored via mask-image, same technique as every other icon in this
+  // project.
+  userIcon: {
+    display: "inline-block",
+    width: 18,
+    height: 18,
+    backgroundColor: "#C5A059",
+    WebkitMaskImage: "url(/icons/user.png)",
+    maskImage: "url(/icons/user.png)",
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+  },
+  // Same open/close mechanics as langDropdown above: opacity/transform
+  // (not display) so it can transition, solid (not translucent)
+  // background since it floats over page content.
+  userDropdown: {
+    position: "absolute",
+    top: "calc(100% + 10px)",
+    right: 0,
+    minWidth: 220,
+    backgroundColor: "#0A060C",
+    border: "1px solid #2A172F",
+    borderRadius: 14,
+    padding: "0.85rem",
+    boxSizing: "border-box",
+    opacity: 0,
+    transform: "translateY(-6px)",
+    pointerEvents: "none",
+    transition: "opacity 160ms ease, transform 160ms ease",
+  },
+  userDropdownOpen: {
+    opacity: 1,
+    transform: "translateY(0)",
+    pointerEvents: "auto",
+  },
+  userEmail: {
+    fontSize: "0.8rem",
+    color: "#BBAEBF",
+    wordBreak: "break-all",
+    margin: "0 0 0.75rem",
+    paddingBottom: "0.75rem",
+    borderBottom: "1px solid #2A172F",
+  },
+  userLogoutBtn: {
+    width: "100%",
+    textAlign: "left",
+    backgroundColor: "transparent",
+    border: "none",
+    borderRadius: 9,
+    padding: "0.4rem 0",
+    color: "#F5EFE6",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    cursor: "pointer",
+  },
+  mobileAuthRow: {
+    display: "flex",
+    flexDirection: "column",
+    gap: "0.75rem",
+    paddingTop: "0.5rem",
+    borderTop: "1px solid #2A172F",
+  },
+  mobileAuthLink: {
+    textAlign: "center",
+    padding: "0.6rem",
+    borderRadius: 10,
+    border: "1px solid #2A172F",
+    color: "#F5EFE6",
+    textDecoration: "none",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.78rem",
+    fontWeight: 700,
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+  },
+  mobileAuthPrimaryBtn: {
+    textAlign: "center",
+    padding: "0.6rem",
+    borderRadius: 10,
+    border: "none",
+    backgroundColor: "#C5A059",
+    color: "#08040A",
+    textDecoration: "none",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.78rem",
+    fontWeight: 700,
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    cursor: "pointer",
+  },
+  mobileUserEmail: {
+    fontSize: "0.8rem",
+    color: "#BBAEBF",
+    wordBreak: "break-all",
+    margin: 0,
+  },
+  mobileLogoutBtn: {
+    textAlign: "center",
+    padding: "0.6rem",
+    borderRadius: 10,
+    border: "1px solid #2A172F",
+    backgroundColor: "transparent",
+    color: "#F5EFE6",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.78rem",
+    fontWeight: 700,
+    letterSpacing: "0.1em",
+    textTransform: "uppercase",
+    cursor: "pointer",
+  },
 };
 
 export default function NavBar() {
@@ -287,6 +447,10 @@ export default function NavBar() {
   const { language, setLanguage } = useLanguage();
   const t = useTranslation();
   const langSwitcherRef = useRef(null);
+  const [supabase] = useState(() => createClient());
+  const [user, setUser] = useState(null);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
 
   useEffect(() => {
     // The page scrolls inside <main>, not the window, and scroll events
@@ -311,6 +475,37 @@ export default function NavBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [langMenuOpen]);
 
+  // No session exists yet on the very first render (nothing has been
+  // fetched from the client), so this intentionally starts logged-out —
+  // same accepted flash tradeoff as the language default above.
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setUser(data.session?.user ?? null);
+    });
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+    return () => listener.subscription.unsubscribe();
+  }, [supabase]);
+
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [userMenuOpen]);
+
+  // No redirect afterward — the header re-renders to the logged-out
+  // state and the visitor stays on whatever page they're on.
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUserMenuOpen(false);
+  };
+
   return (
     <nav style={{ ...styles.nav, ...(scrolled ? styles.navScrolled : null) }} aria-label="Primary">
       <div style={styles.inner}>
@@ -326,6 +521,40 @@ export default function NavBar() {
           <span style={styles.linkInert} aria-disabled="true">
             Share a Memory
           </span>
+
+          {user ? (
+            <div style={styles.userMenu} ref={userMenuRef}>
+              <button
+                type="button"
+                style={styles.userIconButton}
+                onClick={() => setUserMenuOpen((open) => !open)}
+                aria-expanded={userMenuOpen}
+                aria-haspopup="true"
+                aria-label="Account menu"
+              >
+                <span style={styles.userIcon} aria-hidden="true" />
+              </button>
+
+              <div
+                style={{ ...styles.userDropdown, ...(userMenuOpen ? styles.userDropdownOpen : null) }}
+                aria-hidden={!userMenuOpen}
+              >
+                <p style={styles.userEmail}>{user.email}</p>
+                <button type="button" style={styles.userLogoutBtn} onClick={handleLogout}>
+                  Log Out
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
+              <Link href="/login" style={styles.authLink} className="auth-link">
+                Sign In
+              </Link>
+              <Link href="/signup" style={styles.authPrimaryBtn} className="auth-primary-btn">
+                Get Started
+              </Link>
+            </>
+          )}
 
           <div style={styles.langSwitcher} ref={langSwitcherRef}>
             <button
@@ -410,6 +639,39 @@ export default function NavBar() {
         <span style={styles.linkInert} aria-disabled="true">
           Share a Memory
         </span>
+
+        {user ? (
+          <div style={styles.mobileAuthRow}>
+            <p style={styles.mobileUserEmail}>{user.email}</p>
+            <button
+              type="button"
+              style={styles.mobileLogoutBtn}
+              onClick={() => {
+                handleLogout();
+                setMenuOpen(false);
+              }}
+            >
+              Log Out
+            </button>
+          </div>
+        ) : (
+          <div style={styles.mobileAuthRow}>
+            <Link
+              href="/login"
+              style={styles.mobileAuthLink}
+              onClick={() => setMenuOpen(false)}
+            >
+              Sign In
+            </Link>
+            <Link
+              href="/signup"
+              style={styles.mobileAuthPrimaryBtn}
+              onClick={() => setMenuOpen(false)}
+            >
+              Get Started
+            </Link>
+          </div>
+        )}
 
         <div style={styles.mobileLangRow}>
           <button
