@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import stories from "../../data/entries.js";
+import { createClient } from "../../utils/supabase/server.js";
 import NavBar from "../../components/shared/NavBar.js";
 import StoryDetails from "../../components/story/StoryDetails.js";
 import StoryMemories from "../../components/story/StoryMemories.js";
@@ -7,19 +7,54 @@ import StoryPageShell from "../../components/story/StoryPageShell.js";
 
 export default async function StoryPage({ params }) {
   const { id } = await params;
-  const story = stories.find((s) => s.id === id);
 
-  if (!story) {
+  const supabase = await createClient();
+  const { data: story, error } = await supabase
+    .from("stories")
+    .select("*, entries(*)")
+    .eq("id", id)
+    .single();
+
+  // Missing id, an error, or a story with no tellings all 404 — same as
+  // when this page read the data file and found nothing.
+  if (error || !story || !story.entries?.length) {
     notFound();
   }
 
-  const entry = { ...story, ...story.versions[0] };
+  // One telling per entry row, mapped to the camelCase shape StoryMemories
+  // reads, oldest first (so versions[0] is the earliest telling, as before).
+  // No descriptionKhmer — entries store a single description; StoryMemories'
+  // pickText falls back to it regardless of the language toggle.
+  const versions = story.entries
+    .slice()
+    .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""))
+    .map((e) => ({
+      contributor: e.contributor,
+      date: e.date,
+      place: e.place,
+      placeKhmer: e.place_khmer,
+      description: e.description,
+    }));
+
+  // Story-level fields in camelCase + the first telling, flattened into the
+  // single object StoryDetails reads (title/summary from the story, place
+  // from its earliest telling).
+  const entry = {
+    id: story.id,
+    title: story.title,
+    khmerTitle: story.khmer_title,
+    category: story.category,
+    categoryKhmer: story.category_khmer,
+    summary: story.summary,
+    summaryKhmer: story.summary_khmer,
+    ...versions[0],
+  };
 
   return (
     <StoryPageShell>
       <NavBar />
       <StoryDetails entry={entry} />
-      <StoryMemories versions={story.versions} />
+      <StoryMemories versions={versions} />
     </StoryPageShell>
   );
 }
