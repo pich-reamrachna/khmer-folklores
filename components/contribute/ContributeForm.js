@@ -189,12 +189,21 @@ const styles = {
     color: "#8A7F91",
     margin: 0,
   },
-  // Live character counter, right-aligned under its field.
+  // One row under a counted field: error on the left, counter on the right.
+  metaRow: {
+    display: "flex",
+    alignItems: "baseline",
+    gap: "0.75rem",
+  },
+  // Live character counter — pinned right so it stays put with or without an
+  // error beside it.
   counter: {
     fontSize: "0.72rem",
     color: "#8A7F91",
     margin: 0,
-    textAlign: "right",
+    marginLeft: "auto",
+    flexShrink: 0,
+    whiteSpace: "nowrap",
   },
   counterOver: {
     color: "#E0736A",
@@ -203,6 +212,9 @@ const styles = {
     fontSize: "0.8rem",
     color: "#E0736A",
     margin: 0,
+    // Takes the left of the meta row; wraps instead of shoving the counter.
+    flex: 1,
+    minWidth: 0,
   },
   formError: {
     fontSize: "0.9rem",
@@ -317,11 +329,13 @@ export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, o
               onChange={(e) => setTitle(e.target.value)}
               maxLength={TITLE_MAX}
             />
-            <p style={{ ...styles.counter, ...(len(title.trim()) < TITLE_MIN ? styles.counterOver : null) }}>
-              {len(title)} / {TITLE_MAX}
-              {len(title.trim()) < TITLE_MIN ? ` ${fill(t("contributeMinHint"), { n: TITLE_MIN })}` : ""}
-            </p>
-            {errors.title ? <p style={styles.fieldError}>{errors.title}</p> : null}
+            <div style={styles.metaRow}>
+              {errors.title ? <p style={styles.fieldError}>{errors.title}</p> : null}
+              <p style={{ ...styles.counter, ...(len(title.trim()) < TITLE_MIN ? styles.counterOver : null) }}>
+                {len(title)} / {TITLE_MAX}
+                {len(title.trim()) < TITLE_MIN ? ` ${fill(t("contributeMinHint"), { n: TITLE_MIN })}` : ""}
+              </p>
+            </div>
           </div>
 
           <div style={styles.field}>
@@ -344,11 +358,13 @@ export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, o
               onChange={(e) => setDescription(e.target.value)}
               maxLength={DESC_MAX}
             />
-            <p style={{ ...styles.counter, ...(len(description.trim()) < DESC_MIN ? styles.counterOver : null) }}>
-              {len(description)} / {DESC_MAX.toLocaleString()}
-              {len(description.trim()) < DESC_MIN ? ` ${fill(t("contributeMinHint"), { n: DESC_MIN })}` : ""}
-            </p>
-            {errors.description ? <p style={styles.fieldError}>{errors.description}</p> : null}
+            <div style={styles.metaRow}>
+              {errors.description ? <p style={styles.fieldError}>{errors.description}</p> : null}
+              <p style={{ ...styles.counter, ...(len(description.trim()) < DESC_MIN ? styles.counterOver : null) }}>
+                {len(description)} / {DESC_MAX.toLocaleString()}
+                {len(description.trim()) < DESC_MIN ? ` ${fill(t("contributeMinHint"), { n: DESC_MIN })}` : ""}
+              </p>
+            </div>
           </div>
 
           <div style={styles.field}>
