@@ -8,6 +8,13 @@ import provinces from "../../data/provinces.js";
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const CONTENT_TYPES = { png: "image/png", jpg: "image/jpeg", webp: "image/webp" };
 
+// Length limits, single-sourced so validate(), the maxLength caps, and the
+// live character counters all stay in sync.
+const TITLE_MIN = 3;
+const TITLE_MAX = 100;
+const DESC_MIN = 50;
+const DESC_MAX = 2500;
+
 // True if the code point is invisible/unsafe for a title or story: control
 // chars, soft hyphen, zero-width chars, BOM, and text-direction (bidi)
 // overrides/isolates. Ordinary punctuation and Khmer marks are never flagged,
@@ -72,14 +79,14 @@ function validate({ title, place, description, photoFile }) {
   const errors = {};
 
   const t = title.trim();
-  if (len(t) < 3 || len(t) > 120) errors.title = "Title must be 3–120 characters.";
+  if (len(t) < TITLE_MIN || len(t) > TITLE_MAX) errors.title = `Title must be ${TITLE_MIN}–${TITLE_MAX} characters.`;
   else if (hasForbiddenChars(t, false)) errors.title = "Title contains characters that aren't allowed.";
 
   if (!place) errors.place = "Please choose a location.";
 
   const d = description.trim();
   const dClean = stripInvisible(d);
-  if (len(dClean) < 50 || len(dClean) > 2500) errors.description = "Story must be 50–2,500 characters.";
+  if (len(dClean) < DESC_MIN || len(dClean) > DESC_MAX) errors.description = `Story must be ${DESC_MIN}–${DESC_MAX.toLocaleString()} characters.`;
   else if (hasForbiddenChars(d, true)) errors.description = "Story contains characters that aren't allowed.";
 
   if (photoFile && photoFile.size > MAX_PHOTO_BYTES) errors.photo = "Photo must be 5 MB or smaller.";
@@ -172,6 +179,16 @@ const styles = {
     fontSize: "0.75rem",
     color: "#8A7F91",
     margin: 0,
+  },
+  // Live character counter, right-aligned under its field.
+  counter: {
+    fontSize: "0.72rem",
+    color: "#8A7F91",
+    margin: 0,
+    textAlign: "right",
+  },
+  counterOver: {
+    color: "#E0736A",
   },
   fieldError: {
     fontSize: "0.8rem",
@@ -281,8 +298,12 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
               style={styles.input}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              maxLength={120}
+              maxLength={TITLE_MAX}
             />
+            <p style={{ ...styles.counter, ...(len(title.trim()) < TITLE_MIN ? styles.counterOver : null) }}>
+              {len(title)} / {TITLE_MAX}
+              {len(title.trim()) < TITLE_MIN ? ` (min ${TITLE_MIN})` : ""}
+            </p>
             {errors.title ? <p style={styles.fieldError}>{errors.title}</p> : null}
           </div>
 
@@ -311,8 +332,12 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
               style={styles.textarea}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              maxLength={2500}
+              maxLength={DESC_MAX}
             />
+            <p style={{ ...styles.counter, ...(len(description.trim()) < DESC_MIN ? styles.counterOver : null) }}>
+              {len(description)} / {DESC_MAX.toLocaleString()}
+              {len(description.trim()) < DESC_MIN ? ` (min ${DESC_MIN})` : ""}
+            </p>
             {errors.description ? <p style={styles.fieldError}>{errors.description}</p> : null}
           </div>
 
