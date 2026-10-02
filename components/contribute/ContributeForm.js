@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client.js";
 import provinces from "../../data/provinces.js";
+import LocationSelect from "./LocationSelect.js";
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const CONTENT_TYPES = { png: "image/png", jpg: "image/jpeg", webp: "image/webp" };
@@ -309,19 +310,7 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
 
           <div style={styles.field}>
             <label style={styles.label} htmlFor="location">Location</label>
-            <select
-              id="location"
-              style={styles.input}
-              value={place}
-              onChange={(e) => setPlace(e.target.value)}
-            >
-              <option value="">Choose a province…</option>
-              {provinces.map((p) => (
-                <option key={p.en} value={p.en}>
-                  {p.en} — {p.km}
-                </option>
-              ))}
-            </select>
+            <LocationSelect id="location" value={place} onChange={setPlace} />
             {errors.place ? <p style={styles.fieldError}>{errors.place}</p> : null}
           </div>
 
