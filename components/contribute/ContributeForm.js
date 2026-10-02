@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client.js";
 import provinces from "../../data/provinces.js";
 import LocationSelect from "./LocationSelect.js";
+import { pickText, useLanguage } from "../shared/LanguageContext.js";
+import { useTranslation } from "../shared/uiText.js";
+
+// Fills {min}/{max}/{n} placeholders in a translated template string.
+const fill = (str, vars) => str.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
 
 const MAX_PHOTO_BYTES = 5 * 1024 * 1024;
 const CONTENT_TYPES = { png: "image/png", jpg: "image/jpeg", webp: "image/webp" };
@@ -76,21 +81,24 @@ async function detectImageExtension(file) {
 }
 
 // Synchronous checks (the photo's real type is checked async in handleSubmit).
-function validate({ title, place, description, photoFile }) {
+// `t` is the translation function, so messages follow the language toggle.
+function validate({ title, place, description, photoFile, t }) {
   const errors = {};
 
-  const t = title.trim();
-  if (len(t) < TITLE_MIN || len(t) > TITLE_MAX) errors.title = `Title must be ${TITLE_MIN}–${TITLE_MAX} characters.`;
-  else if (hasForbiddenChars(t, false)) errors.title = "Title contains characters that aren't allowed.";
+  const titleVal = title.trim();
+  if (len(titleVal) < TITLE_MIN || len(titleVal) > TITLE_MAX)
+    errors.title = fill(t("contributeTitleLenError"), { min: TITLE_MIN, max: TITLE_MAX });
+  else if (hasForbiddenChars(titleVal, false)) errors.title = t("contributeTitleCharError");
 
-  if (!place) errors.place = "Please choose a location.";
+  if (!place) errors.place = t("contributeLocationError");
 
   const d = description.trim();
   const dClean = stripInvisible(d);
-  if (len(dClean) < DESC_MIN || len(dClean) > DESC_MAX) errors.description = `Story must be ${DESC_MIN}–${DESC_MAX.toLocaleString()} characters.`;
-  else if (hasForbiddenChars(d, true)) errors.description = "Story contains characters that aren't allowed.";
+  if (len(dClean) < DESC_MIN || len(dClean) > DESC_MAX)
+    errors.description = fill(t("contributeStoryLenError"), { min: DESC_MIN, max: DESC_MAX.toLocaleString() });
+  else if (hasForbiddenChars(d, true)) errors.description = t("contributeStoryCharError");
 
-  if (photoFile && photoFile.size > MAX_PHOTO_BYTES) errors.photo = "Photo must be 5 MB or smaller.";
+  if (photoFile && photoFile.size > MAX_PHOTO_BYTES) errors.photo = t("contributePhotoSizeError");
 
   return errors;
 }
@@ -201,10 +209,16 @@ const styles = {
     color: "#E0736A",
     margin: "0 0 1.25rem",
   },
+  // Khmer's stacked glyph clusters shouldn't be pried apart by Latin letter-
+  // spacing — spread this in on the eyebrow/labels when the language is Khmer.
+  trackingNone: { letterSpacing: "normal" },
 };
 
-export default function ContributeForm({ storyId, storyTitle, onSuccess, embedded = false }) {
+export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, onSuccess, embedded = false }) {
   const router = useRouter();
+  const { language } = useLanguage();
+  const t = useTranslation();
+  const km = language === "km";
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
   const [description, setDescription] = useState("");
@@ -217,7 +231,7 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
     e.preventDefault();
     setFormError("");
 
-    const found = validate({ title, place, description, photoFile });
+    const found = validate({ title, place, description, photoFile, t });
     setErrors(found);
     if (Object.keys(found).length > 0) return;
 
@@ -229,14 +243,14 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
       const { data: auth } = await supabase.auth.getUser();
       const user = auth?.user;
       if (!user) {
-        setFormError("Your session has expired. Please log in again.");
+        setFormError(t("contributeSessionError"));
         setSubmitting(false);
         return;
       }
 
       const province = provinces.find((p) => p.en === place);
       if (!province) {
-        setErrors({ place: "Please choose a location from the list." });
+        setErrors({ place: t("contributeLocationInvalid") });
         setSubmitting(false);
         return;
       }
@@ -245,7 +259,7 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
       if (photoFile) {
         const ext = await detectImageExtension(photoFile);
         if (!ext) {
-          setErrors({ photo: "Photo must be a real JPG, PNG, or WEBP image." });
+          setErrors({ photo: t("contributePhotoTypeError") });
           setSubmitting(false);
           return;
         }
@@ -278,7 +292,7 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
     } catch (err) {
       // Real error for the developer; a generic, actionable line for the user.
       console.error("Contribute submit failed:", err);
-      setFormError("Something went wrong saving your telling. Please try again.");
+      setFormError(t("contributeSubmitError"));
       setSubmitting(false);
     }
   }
@@ -286,14 +300,16 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
   return (
     <section style={embedded ? styles.sectionEmbedded : styles.section}>
       <div style={styles.card}>
-        <p style={styles.eyebrow}>Add your telling</p>
-        <h1 style={styles.title}>{storyTitle}</h1>
+        <p style={{ ...styles.eyebrow, ...(km ? styles.trackingNone : null) }}>{t("contributeEyebrow")}</p>
+        <h1 style={styles.title}>{pickText(language, storyTitleKhmer, storyTitle)}</h1>
 
         <form onSubmit={handleSubmit} noValidate>
           {formError ? <p style={styles.formError}>{formError}</p> : null}
 
           <div style={styles.field}>
-            <label style={styles.label} htmlFor="title">Title</label>
+            <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="title">
+              {t("contributeTitleLabel")}
+            </label>
             <input
               id="title"
               style={styles.input}
@@ -303,19 +319,23 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
             />
             <p style={{ ...styles.counter, ...(len(title.trim()) < TITLE_MIN ? styles.counterOver : null) }}>
               {len(title)} / {TITLE_MAX}
-              {len(title.trim()) < TITLE_MIN ? ` (min ${TITLE_MIN})` : ""}
+              {len(title.trim()) < TITLE_MIN ? ` ${fill(t("contributeMinHint"), { n: TITLE_MIN })}` : ""}
             </p>
             {errors.title ? <p style={styles.fieldError}>{errors.title}</p> : null}
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label} htmlFor="location">Location</label>
+            <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="location">
+              {t("contributeLocationLabel")}
+            </label>
             <LocationSelect id="location" value={place} onChange={setPlace} />
             {errors.place ? <p style={styles.fieldError}>{errors.place}</p> : null}
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label} htmlFor="description">Your telling</label>
+            <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="description">
+              {t("contributeStoryLabel")}
+            </label>
             <textarea
               id="description"
               className="archive-scroll"
@@ -326,13 +346,15 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
             />
             <p style={{ ...styles.counter, ...(len(description.trim()) < DESC_MIN ? styles.counterOver : null) }}>
               {len(description)} / {DESC_MAX.toLocaleString()}
-              {len(description.trim()) < DESC_MIN ? ` (min ${DESC_MIN})` : ""}
+              {len(description.trim()) < DESC_MIN ? ` ${fill(t("contributeMinHint"), { n: DESC_MIN })}` : ""}
             </p>
             {errors.description ? <p style={styles.fieldError}>{errors.description}</p> : null}
           </div>
 
           <div style={styles.field}>
-            <label style={styles.label} htmlFor="photo">Photo (optional)</label>
+            <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="photo">
+              {t("contributePhotoLabel")}
+            </label>
             <input
               id="photo"
               type="file"
@@ -341,12 +363,16 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
               accept="image/jpeg,image/png,image/webp"
               onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
             />
-            <p style={styles.hint}>JPG, PNG, or WEBP · 5 MB max</p>
+            <p style={styles.hint}>{t("contributePhotoHint")}</p>
             {errors.photo ? <p style={styles.fieldError}>{errors.photo}</p> : null}
           </div>
 
-          <button type="submit" className="contribute-submit" disabled={submitting}>
-            {submitting ? "Saving…" : "Share your telling"}
+          <button
+            type="submit"
+            className={`contribute-submit${km ? " km" : ""}`}
+            disabled={submitting}
+          >
+            {submitting ? t("contributeSubmitting") : t("contributeSubmit")}
           </button>
         </form>
       </div>
@@ -367,6 +393,9 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
           letter-spacing: 0.05em;
           cursor: pointer;
           transition: background-color 0.2s ease, opacity 0.2s ease;
+        }
+        .contribute-submit.km {
+          letter-spacing: normal;
         }
         .contribute-submit:hover {
           background-color: #d4af37;

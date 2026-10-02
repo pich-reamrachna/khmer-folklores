@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import provinces from "../../data/provinces.js";
+import { useTranslation } from "../shared/uiText.js";
 
 // Searchable custom dropdown for the location field, replacing the native
 // <select> so (a) the option list is a real page element that can use the
@@ -77,6 +78,7 @@ const styles = {
 };
 
 export default function LocationSelect({ id, value, onChange }) {
+  const t = useTranslation();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState(value || "");
   const [activeIndex, setActiveIndex] = useState(0);
@@ -181,7 +183,7 @@ export default function LocationSelect({ id, value, onChange }) {
         aria-autocomplete="list"
         aria-activedescendant={open && filtered.length > 0 ? optionId(activeIndex) : undefined}
         autoComplete="off"
-        placeholder="Search a province (English or Khmer)…"
+        placeholder={t("locationPlaceholder")}
         value={query}
         onChange={(e) => {
           setQuery(e.target.value);
@@ -204,7 +206,7 @@ export default function LocationSelect({ id, value, onChange }) {
           style={styles.listbox}
         >
           {filtered.length === 0 ? (
-            <li style={styles.empty}>No matching province</li>
+            <li style={styles.empty}>{t("locationNoMatch")}</li>
           ) : (
             filtered.map((p, i) => {
               const isSelected = p.en === value;

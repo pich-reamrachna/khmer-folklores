@@ -55,7 +55,12 @@ export default async function StoryPage({ params }) {
     <StoryPageShell>
       <NavBar />
       <StoryDetails entry={entry} />
-      <StoryMemories versions={versions} storyId={story.id} storyTitle={story.title} />
+      <StoryMemories
+        versions={versions}
+        storyId={story.id}
+        storyTitle={story.title}
+        storyTitleKhmer={story.khmer_title}
+      />
     </StoryPageShell>
   );
 }

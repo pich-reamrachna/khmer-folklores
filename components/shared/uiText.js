@@ -79,6 +79,32 @@ const uiText = {
   authSignupTitle: { en: "Sign Up", km: "បង្កើតគណនី" },
   authSignupButton: { en: "Sign Up", km: "បង្កើតគណនី" },
   authSignupError: { en: "Something went wrong. Try again.", km: "មានបញ្ហាកើតឡើង។ សូមព្យាយាមម្តងទៀត។" },
+
+  // ContributeForm.js / ContributeModal.js / LocationSelect.js. Khmer strings
+  // below are AI-drafted — flag for the curator to review before relying on
+  // them. Templates use {min}/{max}/{n}, filled in at render.
+  contributeEyebrow: { en: "Add your telling", km: "បន្ថែមការនិទានរបស់អ្នក" },
+  contributeTitleLabel: { en: "Title", km: "ចំណងជើង" },
+  contributeLocationLabel: { en: "Location", km: "ទីតាំង" },
+  contributeStoryLabel: { en: "Your telling", km: "ការនិទានរបស់អ្នក" },
+  contributePhotoLabel: { en: "Photo (optional)", km: "រូបថត (ស្រេចចិត្ត)" },
+  contributePhotoHint: { en: "JPG, PNG, or WEBP · 5 MB max", km: "JPG, PNG, ឬ WEBP · អតិបរមា 5 MB" },
+  contributeSubmit: { en: "Share your telling", km: "ចែករំលែកការនិទានរបស់អ្នក" },
+  contributeSubmitting: { en: "Saving…", km: "កំពុងរក្សាទុក…" },
+  contributeClose: { en: "Close", km: "បិទ" },
+  contributeMinHint: { en: "(min {n})", km: "(យ៉ាងតិច {n})" },
+  contributeTitleLenError: { en: "Title must be {min}–{max} characters.", km: "ចំណងជើងត្រូវមានពី {min} ទៅ {max} តួអក្សរ។" },
+  contributeTitleCharError: { en: "Title contains characters that aren't allowed.", km: "ចំណងជើងមានតួអក្សរដែលមិនអនុញ្ញាត។" },
+  contributeLocationError: { en: "Please choose a location.", km: "សូមជ្រើសរើសទីតាំង។" },
+  contributeLocationInvalid: { en: "Please choose a location from the list.", km: "សូមជ្រើសរើសទីតាំងពីបញ្ជី។" },
+  contributeStoryLenError: { en: "Story must be {min}–{max} characters.", km: "រឿងត្រូវមានពី {min} ទៅ {max} តួអក្សរ។" },
+  contributeStoryCharError: { en: "Story contains characters that aren't allowed.", km: "រឿងមានតួអក្សរដែលមិនអនុញ្ញាត។" },
+  contributePhotoSizeError: { en: "Photo must be 5 MB or smaller.", km: "រូបថតត្រូវមានទំហំ 5 MB ឬតិចជាងនេះ។" },
+  contributePhotoTypeError: { en: "Photo must be a real JPG, PNG, or WEBP image.", km: "រូបថតត្រូវជា JPG, PNG, ឬ WEBP ពិតប្រាកដ។" },
+  contributeSessionError: { en: "Your session has expired. Please log in again.", km: "វគ្គរបស់អ្នកបានផុតកំណត់។ សូមចូលគណនីម្តងទៀត។" },
+  contributeSubmitError: { en: "Something went wrong saving your telling. Please try again.", km: "មានបញ្ហាក្នុងការរក្សាទុកការនិទានរបស់អ្នក។ សូមព្យាយាមម្តងទៀត។" },
+  locationPlaceholder: { en: "Search a province (English or Khmer)…", km: "ស្វែងរកខេត្ត (អង់គ្លេស ឬខ្មែរ)…" },
+  locationNoMatch: { en: "No matching province", km: "រកមិនឃើញខេត្តត្រូវគ្នា" },
 };
 
 // Falls back to English if a key or its Khmer translation is missing —

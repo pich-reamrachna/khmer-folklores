@@ -31,7 +31,7 @@ const styles = {
   },
 };
 
-export default function ContributeModal({ storyId, storyTitle, onClose }) {
+export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, onClose }) {
   const router = useRouter();
   const dialogRef = useRef(null);
   const restoreFocusRef = useRef(null);
@@ -98,6 +98,7 @@ export default function ContributeModal({ storyId, storyTitle, onClose }) {
         <ContributeForm
           storyId={storyId}
           storyTitle={storyTitle}
+          storyTitleKhmer={storyTitleKhmer}
           onSuccess={handleSuccess}
           embedded
         />

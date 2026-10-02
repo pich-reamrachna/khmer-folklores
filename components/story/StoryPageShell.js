@@ -20,7 +20,8 @@ export default function StoryPageShell({ children }) {
   // null when closed; { storyId, storyTitle } when open.
   const [modal, setModal] = useState(null);
 
-  const open = (storyId, storyTitle) => setModal({ storyId, storyTitle });
+  const open = (storyId, storyTitle, storyTitleKhmer) =>
+    setModal({ storyId, storyTitle, storyTitleKhmer });
   const close = () => setModal(null);
 
   // Freeze the scroll container (this <main>, not body) while the modal is open.
@@ -60,6 +61,7 @@ export default function StoryPageShell({ children }) {
         <ContributeModal
           storyId={modal.storyId}
           storyTitle={modal.storyTitle}
+          storyTitleKhmer={modal.storyTitleKhmer}
           onClose={close}
         />
       ) : null}

@@ -235,7 +235,7 @@ const styles = {
   },
 };
 
-export default function StoryMemories({ versions, storyId, storyTitle }) {
+export default function StoryMemories({ versions, storyId, storyTitle, storyTitleKhmer }) {
   const { language } = useLanguage();
   const t = useTranslation();
   const { open } = useContributeModal();
@@ -286,7 +286,7 @@ export default function StoryMemories({ versions, storyId, storyTitle }) {
             type="button"
             className="share-version-btn"
             style={{ ...styles.shareBtn, ...(language === "km" ? styles.trackingNone : null) }}
-            onClick={isLoggedIn ? () => open(storyId, storyTitle) : promptLogin}
+            onClick={isLoggedIn ? () => open(storyId, storyTitle, storyTitleKhmer) : promptLogin}
           >
             {t("memoriesShareButton")}
           </button>
