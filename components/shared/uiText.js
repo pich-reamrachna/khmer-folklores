@@ -51,6 +51,10 @@ const uiText = {
     km: "ការចងចាំនីមួយៗគឺជាចង្កៀងតូចមួយ បង្ហាញពីរបៀបដែលរឿងព្រេងនៅរស់ក្នុងការសន្ទនាប្រចាំថ្ងៃរបស់ខ្មែរ។",
   },
   memoriesTellingsCount: { en: "Tellings", km: "ការនិទាន" },
+  // These two Khmer strings are AI-drafted (like the auth section below) —
+  // flag for the curator to review before relying on them.
+  memoriesShareButton: { en: "Share Your Version", km: "ចែករំលែកការនិទានរបស់អ្នក" },
+  memoriesLoginToast: { en: "Log in to contribute", km: "សូមចូលគណនីដើម្បីចូលរួម" },
 
   // Footer.js
   footerNavHeading: { en: "Archive Navigation", km: "ការរុករកបណ្ណសារ" },

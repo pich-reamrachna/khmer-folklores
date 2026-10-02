@@ -149,6 +149,13 @@ main {
   opacity: 0.8;
 }
 
+/* StoryMemories.js's "Share Your Version" button. Base styles are inline on
+   the element; only :hover lives here, since styled-jsx can't scope through
+   next/link's Link (same reason as the rules above). */
+.share-version-btn:hover {
+  opacity: 0.8;
+}
+
 /* ArchiveBrowser.js's story-list rows and scrollbar. */
 .archive-scroll {
   scrollbar-width: thin;

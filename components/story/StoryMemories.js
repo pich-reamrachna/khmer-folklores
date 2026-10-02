@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import { createClient } from "../../utils/supabase/client.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 
@@ -88,6 +91,8 @@ const styles = {
   listHeader: {
     display: "flex",
     alignItems: "center",
+    justifyContent: "space-between",
+    gap: "1rem",
     borderBottom: "1px solid #2A172F",
     paddingBottom: "0.85rem",
     marginBottom: "1.25rem",
@@ -179,11 +184,86 @@ const styles = {
     margin: 0,
     whiteSpace: "nowrap",
   },
+  // The share button. Base is inline (only :hover lives in globals.css) so
+  // the Khmer tracking fix can be spread in without clashing with a
+  // stylesheet rule on the same property.
+  shareBtn: {
+    display: "inline-block",
+    padding: "0.55rem 1.2rem",
+    border: "none",
+    borderRadius: 10,
+    backgroundColor: "#C5A059",
+    color: "#0C0A12",
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.78rem",
+    fontWeight: 700,
+    letterSpacing: "0.12em",
+    textTransform: "uppercase",
+    textDecoration: "none",
+    whiteSpace: "nowrap",
+    cursor: "pointer",
+    transition: "opacity 0.2s ease",
+  },
+  // Transient "log in to contribute" notice for logged-out visitors who tap
+  // the share button. Kept mounted and toggled via toastHidden/toastVisible
+  // so it animates both in and out; the back-ease on transform gives the pop.
+  toast: {
+    position: "fixed",
+    bottom: "2rem",
+    left: "50%",
+    zIndex: 1000,
+    backgroundColor: "#1D1024",
+    border: "1px solid #C5A059",
+    color: "#F5EFE6",
+    padding: "0.8rem 1.4rem",
+    borderRadius: 10,
+    fontSize: "0.9rem",
+    fontWeight: 600,
+    boxShadow: "0 8px 30px rgba(0, 0, 0, 0.5)",
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    transition: "opacity 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1)",
+  },
+  toastHidden: {
+    opacity: 0,
+    transform: "translateX(-50%) translateY(14px) scale(0.9)",
+    pointerEvents: "none",
+  },
+  toastVisible: {
+    opacity: 1,
+    transform: "translateX(-50%) translateY(0) scale(1)",
+    pointerEvents: "auto",
+  },
 };
 
-export default function StoryMemories({ versions }) {
+export default function StoryMemories({ versions, storyId }) {
   const { language } = useLanguage();
   const t = useTranslation();
+  // Defaults to logged-out on first render (localStorage/session isn't read
+  // until mount) — same accepted one-frame flash NavBar documents.
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showToast, setShowToast] = useState(false);
+  const toastTimer = useRef(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getSession().then(({ data }) => setIsLoggedIn(!!data.session));
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) =>
+      setIsLoggedIn(!!session)
+    );
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => () => {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+  }, []);
+
+  // Logged-out visitors get a toast instead of a trip to the gated page.
+  const promptLogin = () => {
+    setShowToast(true);
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    toastTimer.current = setTimeout(() => setShowToast(false), 3000);
+  };
+
   if (!versions || versions.length === 0) return null;
 
   return (
@@ -201,6 +281,24 @@ export default function StoryMemories({ versions }) {
           <p style={{ ...styles.listCount, ...(language === "km" ? styles.trackingNone : null) }}>
             {versions.length} {t("memoriesTellingsCount")}
           </p>
+          {isLoggedIn ? (
+            <Link
+              href={`/${storyId}/contribute`}
+              className="share-version-btn"
+              style={{ ...styles.shareBtn, ...(language === "km" ? styles.trackingNone : null) }}
+            >
+              {t("memoriesShareButton")}
+            </Link>
+          ) : (
+            <button
+              type="button"
+              className="share-version-btn"
+              style={{ ...styles.shareBtn, ...(language === "km" ? styles.trackingNone : null) }}
+              onClick={promptLogin}
+            >
+              {t("memoriesShareButton")}
+            </button>
+          )}
         </div>
 
         <div style={styles.list}>
@@ -234,6 +332,15 @@ export default function StoryMemories({ versions }) {
             );
           })}
         </div>
+      </div>
+
+      <div
+        style={{ ...styles.toast, ...(showToast ? styles.toastVisible : styles.toastHidden) }}
+        role="status"
+        aria-live="polite"
+        aria-hidden={!showToast}
+      >
+        {t("memoriesLoginToast")}
       </div>
     </section>
   );
