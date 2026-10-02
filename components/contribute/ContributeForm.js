@@ -329,6 +329,7 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
             <label style={styles.label} htmlFor="description">Your telling</label>
             <textarea
               id="description"
+              className="archive-scroll"
               style={styles.textarea}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -346,6 +347,7 @@ export default function ContributeForm({ storyId, storyTitle, onSuccess, embedde
             <input
               id="photo"
               type="file"
+              className="contribute-file"
               style={styles.input}
               accept="image/jpeg,image/png,image/webp"
               onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
