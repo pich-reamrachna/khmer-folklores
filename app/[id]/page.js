@@ -34,6 +34,7 @@ export default async function StoryPage({ params }) {
       place: e.place,
       placeKhmer: e.place_khmer,
       description: e.description,
+      photoUrl: e.photo_url,
     }));
 
   // Story-level fields in camelCase + the first telling, flattened into the

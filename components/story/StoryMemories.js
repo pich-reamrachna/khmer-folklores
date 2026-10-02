@@ -115,6 +115,16 @@ const styles = {
     border: "1px solid #2A172F",
     backgroundColor: "#120916",
   },
+  // Optional contributor photo. Full card width, capped height so a tall
+  // portrait doesn't dominate the card; object-fit keeps it from stretching.
+  photo: {
+    width: "100%",
+    maxHeight: 360,
+    objectFit: "cover",
+    borderRadius: 12,
+    display: "block",
+    margin: "0 0 1.25rem",
+  },
   // Can now show descriptionKhmer — needs var(--font-khmer) explicitly,
   // since Georgia has no Khmer glyphs (would fall back to a generic
   // system Khmer font instead of the loaded Kantumruy Pro).
@@ -201,6 +211,13 @@ export default function StoryMemories({ versions }) {
             const place = pickText(language, version.placeKhmer, version.place);
             return (
               <div key={`${version.contributor}-${index}`} style={styles.card}>
+                {version.photoUrl ? (
+                  <img
+                    src={version.photoUrl}
+                    alt={place ? `Photo shared from ${place}` : "Photo shared with this telling"}
+                    style={styles.photo}
+                  />
+                ) : null}
                 <p style={styles.quote}>&ldquo;{description}&rdquo;</p>
                 <div style={styles.footer}>
                   <div style={styles.contributorGroup}>
