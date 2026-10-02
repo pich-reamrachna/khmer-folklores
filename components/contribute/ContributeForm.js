@@ -88,6 +88,7 @@ function validate({ title, place, description, photoFile }) {
 }
 
 const styles = {
+  // Standalone page: full-height, top padding clears the fixed NavBar.
   section: {
     width: "100%",
     boxSizing: "border-box",
@@ -96,6 +97,17 @@ const styles = {
     justifyContent: "center",
     backgroundColor: "#0C0A12",
     minHeight: "100vh",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    color: "#F5EFE6",
+  },
+  // Inside the modal: no full-height or NavBar padding, and the dialog owns
+  // the background, so none is set here.
+  sectionEmbedded: {
+    width: "100%",
+    boxSizing: "border-box",
+    padding: "2.5rem 2rem 2rem",
+    display: "flex",
+    justifyContent: "center",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
   },
@@ -173,7 +185,7 @@ const styles = {
   },
 };
 
-export default function ContributeForm({ storyId, storyTitle }) {
+export default function ContributeForm({ storyId, storyTitle, onSuccess, embedded = false }) {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [place, setPlace] = useState("");
@@ -241,7 +253,10 @@ export default function ContributeForm({ storyId, storyTitle }) {
       });
       if (insertError) throw insertError;
 
-      router.push(`/${storyId}`);
+      // In the modal, onSuccess closes it and refreshes the tellings; on the
+      // standalone page (no callback) fall back to navigating to the story.
+      if (onSuccess) onSuccess();
+      else router.push(`/${storyId}`);
     } catch (err) {
       // Real error for the developer; a generic, actionable line for the user.
       console.error("Contribute submit failed:", err);
@@ -251,7 +266,7 @@ export default function ContributeForm({ storyId, storyTitle }) {
   }
 
   return (
-    <section style={styles.section}>
+    <section style={embedded ? styles.sectionEmbedded : styles.section}>
       <div style={styles.card}>
         <p style={styles.eyebrow}>Add your telling</p>
         <h1 style={styles.title}>{storyTitle}</h1>

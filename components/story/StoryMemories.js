@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { createClient } from "../../utils/supabase/client.js";
+import { useContributeModal } from "../contribute/contributeModalContext.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 
@@ -235,9 +235,10 @@ const styles = {
   },
 };
 
-export default function StoryMemories({ versions, storyId }) {
+export default function StoryMemories({ versions, storyId, storyTitle }) {
   const { language } = useLanguage();
   const t = useTranslation();
+  const { open } = useContributeModal();
   // Defaults to logged-out on first render (localStorage/session isn't read
   // until mount) — same accepted one-frame flash NavBar documents.
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -281,24 +282,14 @@ export default function StoryMemories({ versions, storyId }) {
           <p style={{ ...styles.listCount, ...(language === "km" ? styles.trackingNone : null) }}>
             {versions.length} {t("memoriesTellingsCount")}
           </p>
-          {isLoggedIn ? (
-            <Link
-              href={`/${storyId}/contribute`}
-              className="share-version-btn"
-              style={{ ...styles.shareBtn, ...(language === "km" ? styles.trackingNone : null) }}
-            >
-              {t("memoriesShareButton")}
-            </Link>
-          ) : (
-            <button
-              type="button"
-              className="share-version-btn"
-              style={{ ...styles.shareBtn, ...(language === "km" ? styles.trackingNone : null) }}
-              onClick={promptLogin}
-            >
-              {t("memoriesShareButton")}
-            </button>
-          )}
+          <button
+            type="button"
+            className="share-version-btn"
+            style={{ ...styles.shareBtn, ...(language === "km" ? styles.trackingNone : null) }}
+            onClick={isLoggedIn ? () => open(storyId, storyTitle) : promptLogin}
+          >
+            {t("memoriesShareButton")}
+          </button>
         </div>
 
         <div style={styles.list}>
