@@ -6,22 +6,50 @@ import NavBar from "../../components/shared/NavBar.js";
 import { useTranslation } from "../../components/shared/uiText.js";
 import authFormStyles from "../../components/shared/authFormStyles.js";
 import { createClient } from "../../utils/supabase/client.js";
+import { normalizeUsername, validateUsername } from "../../utils/username.js";
 
 export default function SignupPage() {
   const router = useRouter();
   const t = useTranslation();
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [usernameError, setUsernameError] = useState("");
   const [error, setError] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
+    setUsernameError("");
+
+    const trimmedUsername = username.trim();
+    const formatKey = validateUsername(trimmedUsername);
+    if (formatKey) {
+      setUsernameError(t(formatKey));
+      return;
+    }
 
     const supabase = createClient();
+
+    // Pre-check availability for a clear message. The DB's unique index on the
+    // normalized username is the race-safe backstop if two people grab the
+    // same name at once (that signUp then fails with the generic error below).
+    const { data: taken } = await supabase
+      .from("profiles")
+      .select("id")
+      .eq("username_normalized", normalizeUsername(trimmedUsername))
+      .maybeSingle();
+    if (taken) {
+      setUsernameError(t("usernameTaken"));
+      return;
+    }
+
+    // Username rides along in user metadata; a DB trigger creates the profile
+    // row from it (atomically, so a race just rolls the signup back).
     const { error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: { data: { username: trimmedUsername } },
     });
 
     // Deliberately generic — doesn't reveal whether the email is
@@ -43,6 +71,24 @@ export default function SignupPage() {
       <section style={authFormStyles.section}>
         <form style={authFormStyles.form} onSubmit={handleSubmit}>
           <h1 style={authFormStyles.title}>{t("authSignupTitle")}</h1>
+
+          <div style={authFormStyles.field}>
+            <label style={authFormStyles.label} htmlFor="signup-username">
+              {t("authUsernameLabel")}
+            </label>
+            <input
+              id="signup-username"
+              type="text"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              style={authFormStyles.input}
+              className="auth-input"
+              maxLength={20}
+              autoComplete="username"
+              required
+            />
+            {usernameError ? <p style={authFormStyles.error}>{usernameError}</p> : null}
+          </div>
 
           <div style={authFormStyles.field}>
             <label style={authFormStyles.label} htmlFor="signup-email">

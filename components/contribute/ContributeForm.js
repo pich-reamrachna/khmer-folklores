@@ -260,6 +260,18 @@ export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, o
         return;
       }
 
+      // The telling is credited to the user's username, never their email.
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", user.id)
+        .maybeSingle();
+      if (!profile?.username) {
+        setFormError(t("contributeNoUsername"));
+        setSubmitting(false);
+        return;
+      }
+
       const province = provinces.find((p) => p.en === place);
       if (!province) {
         setErrors({ place: t("contributeLocationInvalid") });
@@ -288,7 +300,7 @@ export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, o
       const { error: insertError } = await supabase.from("entries").insert({
         owner: user.id,
         story_id: storyId,
-        contributor: user.email,
+        contributor: profile.username,
         title: title.trim(),
         place: province.en,
         place_khmer: province.km,

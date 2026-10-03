@@ -79,6 +79,12 @@ const uiText = {
   authSignupTitle: { en: "Sign Up", km: "បង្កើតគណនី" },
   authSignupButton: { en: "Sign Up", km: "បង្កើតគណនី" },
   authSignupError: { en: "Something went wrong. Try again.", km: "មានបញ្ហាកើតឡើង។ សូមព្យាយាមម្តងទៀត។" },
+  authUsernameLabel: { en: "Username", km: "ឈ្មោះអ្នកប្រើ" },
+  usernameTaken: { en: "That username is taken. Try another.", km: "ឈ្មោះអ្នកប្រើនេះមានគេយករួចហើយ។ សូមជ្រើសមួយផ្សេងទៀត។" },
+  usernameLength: { en: "Username must be 3–20 characters.", km: "ឈ្មោះអ្នកប្រើត្រូវមានពី 3 ទៅ 20 តួអក្សរ។" },
+  usernameChars: { en: "Username can use only letters, numbers, Khmer, and underscores.", km: "ឈ្មោះអ្នកប្រើអនុញ្ញាតតែអក្សរ លេខ ខ្មែរ និងសញ្ញា _ ប៉ុណ្ណោះ។" },
+  usernameEdges: { en: "Username can't start or end with an underscore.", km: "ឈ្មោះអ្នកប្រើមិនអាចចាប់ផ្ដើម ឬបញ្ចប់ដោយសញ្ញា _ បានទេ។" },
+  usernameDouble: { en: "Username can't have two underscores in a row.", km: "ឈ្មោះអ្នកប្រើមិនអាចមានសញ្ញា _ ពីរជាប់គ្នាបានទេ។" },
 
   // ContributeForm.js / ContributeModal.js / LocationSelect.js. Khmer strings
   // below are AI-drafted — flag for the curator to review before relying on
@@ -103,6 +109,7 @@ const uiText = {
   contributePhotoTypeError: { en: "Photo must be a real JPG, PNG, or WEBP image.", km: "រូបថតត្រូវជា JPG, PNG, ឬ WEBP ពិតប្រាកដ។" },
   contributeSessionError: { en: "Your session has expired. Please log in again.", km: "វគ្គរបស់អ្នកបានផុតកំណត់។ សូមចូលគណនីម្តងទៀត។" },
   contributeSubmitError: { en: "Something went wrong saving your telling. Please try again.", km: "មានបញ្ហាក្នុងការរក្សាទុកការនិទានរបស់អ្នក។ សូមព្យាយាមម្តងទៀត។" },
+  contributeNoUsername: { en: "Set up a username before contributing.", km: "សូមកំណត់ឈ្មោះអ្នកប្រើជាមុនសិន មុននឹងចូលរួម។" },
   locationPlaceholder: { en: "Search a province (English or Khmer)…", km: "ស្វែងរកខេត្ត (អង់គ្លេស ឬខ្មែរ)…" },
   locationNoMatch: { en: "No matching province", km: "រកមិនឃើញខេត្តត្រូវគ្នា" },
 };
