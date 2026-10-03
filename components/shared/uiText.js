@@ -74,6 +74,7 @@ const uiText = {
   // them.
   authEmailLabel: { en: "Email", km: "អ៊ីមែល" },
   authPasswordLabel: { en: "Password", km: "ពាក្យសម្ងាត់" },
+  authConfirmPasswordLabel: { en: "Confirm password", km: "បញ្ជាក់ពាក្យសម្ងាត់" },
   authLoginTitle: { en: "Log In", km: "ចូលគណនី" },
   authLoginButton: { en: "Log In", km: "ចូលគណនី" },
   authLoginError: { en: "Invalid email or password", km: "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ" },
@@ -93,6 +94,8 @@ const uiText = {
   usernameFree: { en: "Username is available.", km: "ឈ្មោះអ្នកប្រើនេះអាចប្រើបាន។" },
   emailInvalid: { en: "Enter a valid email address.", km: "សូមបញ្ចូលអ៊ីមែលឲ្យបានត្រឹមត្រូវ។" },
   passwordShort: { en: "Password must be at least 6 characters.", km: "ពាក្យសម្ងាត់ត្រូវមានយ៉ាងតិច 6 តួអក្សរ។" },
+  passwordMismatch: { en: "Passwords don't match.", km: "ពាក្យសម្ងាត់មិនត្រូវគ្នាទេ។" },
+  fieldRequired: { en: "This field is required.", km: "ត្រូវតែបំពេញប្រអប់នេះ។" },
 
   // ContributeForm.js / ContributeModal.js / LocationSelect.js. Khmer strings
   // below are AI-drafted — flag for the curator to review before relying on

@@ -7,16 +7,33 @@ import { useTranslation } from "../../components/shared/uiText.js";
 import authFormStyles from "../../components/shared/authFormStyles.js";
 import { createClient } from "../../utils/supabase/client.js";
 
+// Border doubles as the validity indicator, same as the signup page.
+const BORDER_NEUTRAL = "1px solid #2A172F";
+const BORDER_INVALID = "1px solid #E58B8B";
+const INVALID_COLOR = "#E58B8B";
+
 export default function LoginPage() {
   const router = useRouter();
   const t = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [touched, setTouched] = useState({ email: false, password: false });
   const [error, setError] = useState("");
+
+  const markTouched = (field) => setTouched((prev) => ({ ...prev, [field]: true }));
+
+  // In-app required indicator (same pattern as the signup page). We don't
+  // validate the email format here — login accepts whatever's on file — only
+  // that both fields are filled before hitting Supabase.
+  const emailEmpty = touched.email && email.trim() === "";
+  const passwordEmpty = touched.password && password === "";
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
+    setTouched({ email: true, password: true });
+
+    if (email.trim() === "" || password === "") return;
 
     const supabase = createClient();
     const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -39,7 +56,7 @@ export default function LoginPage() {
     <>
       <NavBar />
       <section style={authFormStyles.section}>
-        <form style={authFormStyles.form} onSubmit={handleSubmit}>
+        <form style={authFormStyles.form} onSubmit={handleSubmit} noValidate>
           <h1 style={authFormStyles.title}>{t("authLoginTitle")}</h1>
 
           <div style={authFormStyles.field}>
@@ -51,10 +68,15 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              style={authFormStyles.input}
+              onBlur={() => markTouched("email")}
+              style={{ ...authFormStyles.input, border: emailEmpty ? BORDER_INVALID : BORDER_NEUTRAL }}
               className="auth-input"
+              autoComplete="email"
               required
             />
+            {emailEmpty ? (
+              <p style={{ ...authFormStyles.error, color: INVALID_COLOR }}>{t("fieldRequired")}</p>
+            ) : null}
           </div>
 
           <div style={authFormStyles.field}>
@@ -66,10 +88,15 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
-              style={authFormStyles.input}
+              onBlur={() => markTouched("password")}
+              style={{ ...authFormStyles.input, border: passwordEmpty ? BORDER_INVALID : BORDER_NEUTRAL }}
               className="auth-input"
+              autoComplete="current-password"
               required
             />
+            {passwordEmpty ? (
+              <p style={{ ...authFormStyles.error, color: INVALID_COLOR }}>{t("fieldRequired")}</p>
+            ) : null}
           </div>
 
           {error ? <p style={authFormStyles.error}>{error}</p> : null}
