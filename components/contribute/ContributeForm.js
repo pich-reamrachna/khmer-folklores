@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client.js";
+import { photoStoragePath } from "../../utils/storage.js";
 import provinces from "../../data/provinces.js";
 import LocationSelect from "./LocationSelect.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
@@ -280,8 +281,10 @@ export default function ContributeForm({ entry = null, storyId, storyTitle, stor
       }
 
       // Upload a new photo only if one was chosen; otherwise keep the existing
-      // one when editing, or leave it empty when creating.
-      let photoUrl = isEditing ? (entry.photoUrl ?? null) : null;
+      // one when editing, or leave it empty when creating. oldPhotoUrl is kept
+      // so a swapped-out file can be removed from storage after the update.
+      const oldPhotoUrl = isEditing ? (entry.photoUrl ?? null) : null;
+      let photoUrl = oldPhotoUrl;
       if (photoFile) {
         const ext = await detectImageExtension(photoFile);
         if (!ext) {
@@ -319,6 +322,16 @@ export default function ContributeForm({ entry = null, storyId, storyTitle, stor
           setFormError(t("contributeNotSaved"));
           setSubmitting(false);
           return;
+        }
+        // Photo was swapped — remove the old file so it isn't orphaned in the
+        // bucket. Best-effort: the update already saved, so a failed cleanup is
+        // only logged.
+        if (photoFile && oldPhotoUrl && oldPhotoUrl !== photoUrl) {
+          const oldPath = photoStoragePath(oldPhotoUrl);
+          if (oldPath) {
+            const { error: rmError } = await supabase.storage.from("photos").remove([oldPath]);
+            if (rmError) console.error("Old photo file not removed:", oldPath, rmError);
+          }
         }
       } else {
         // The telling is credited to the user's username, never their email.

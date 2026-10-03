@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client.js";
+import { photoStoragePath } from "../../utils/storage.js";
 import { useContributeModal } from "../contribute/contributeModalContext.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
@@ -419,6 +420,14 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
       console.error("Entry delete saved no rows:", version.id, error);
       showToast(t("contributeNotSaved"));
       return;
+    }
+    // The row is gone; now remove its photo file so it isn't orphaned in the
+    // bucket. Best-effort — the delete already succeeded, so a failed cleanup
+    // only gets logged, it doesn't fail the action for the user.
+    const path = photoStoragePath(data[0].photo_url);
+    if (path) {
+      const { error: rmError } = await supabase.storage.from("photos").remove([path]);
+      if (rmError) console.error("Photo file not removed:", path, rmError);
     }
     router.refresh();
   };
