@@ -29,6 +29,7 @@ export default async function StoryPage({ params }) {
     .slice()
     .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""))
     .map((e) => ({
+      title: e.title,
       contributor: e.contributor,
       date: e.date,
       place: e.place,
@@ -42,13 +43,15 @@ export default async function StoryPage({ params }) {
   // from its earliest telling).
   const entry = {
     id: story.id,
-    title: story.title,
     khmerTitle: story.khmer_title,
     category: story.category,
     categoryKhmer: story.category_khmer,
     summary: story.summary,
     summaryKhmer: story.summary_khmer,
     ...versions[0],
+    // Re-assert the story's title last: versions[0] now carries the telling's
+    // own title, which must not override the summary header's story title.
+    title: story.title,
   };
 
   return (

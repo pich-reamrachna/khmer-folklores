@@ -6,17 +6,16 @@ import { useContributeModal } from "../contribute/contributeModalContext.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 
-// "What people remember" — the testimonial section on a story's page, one
-// card per contributor's telling (story.versions). No icons/quote-mark
-// graphics, no profile pictures, and no "Contribute a Memory" CTA — those
-// aren't built yet.
+// "What people remember" — the tellings on a story's page, shown as a flat
+// Reddit-style comment thread (one entry per contributor's telling). Each
+// telling shows its title as a heading, a contributor · place · date byline,
+// the body text, and an optional photo, and can be collapsed. Newest first.
 
-// Manual month names, not toLocaleDateString("km-KH", ...) — Khmer
-// locale data isn't reliably bundled across browsers (confirmed
-// Intl.DateTimeFormat.supportedLocalesOf(["km"]) returns empty in some
-// Chrome builds), which silently falls back to English instead of
-// erroring. This also sidesteps Date's UTC-midnight parsing of "YYYY-MM-DD"
-// shifting the day in timezones behind UTC, since it never touches Date.
+// Manual month names, not toLocaleDateString("km-KH", ...) — Khmer locale
+// data isn't reliably bundled across browsers (Intl.DateTimeFormat
+// .supportedLocalesOf(["km"]) returns empty in some Chrome builds), which
+// silently falls back to English. This also sidesteps Date's UTC-midnight
+// parsing of "YYYY-MM-DD" shifting the day in timezones behind UTC.
 const MONTH_NAMES = {
   en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
   km: ["មករា", "កុម្ភៈ", "មីនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"],
@@ -64,12 +63,6 @@ const styles = {
     letterSpacing: "0.25em",
     textTransform: "uppercase",
   },
-  // title/subtitle: this section's own static heading copy is
-  // translated, so each needs var(--font-khmer) explicitly instead of
-  // inheriting `section`'s Latin-only stack.
-  // fontSize: fluid, capped at the same 2.75rem desktop already used —
-  // matches StoryDetails.js's h1 clamp formula instead of a fixed size
-  // that doesn't shrink on phone.
   title: {
     fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "clamp(2rem, 6vw, 2.75rem)",
@@ -87,7 +80,6 @@ const styles = {
     maxWidth: 640,
     margin: "0 0 2.5rem",
   },
-  // Matches ArchiveBrowser.js's listHeader/listCount pattern.
   listHeader: {
     display: "flex",
     alignItems: "center",
@@ -95,7 +87,7 @@ const styles = {
     gap: "1rem",
     borderBottom: "1px solid #2A172F",
     paddingBottom: "0.85rem",
-    marginBottom: "1.25rem",
+    marginBottom: "0.5rem",
   },
   // Translated ("Tellings" label) — needs var(--font-khmer).
   listCount: {
@@ -107,86 +99,71 @@ const styles = {
     textTransform: "uppercase",
     margin: 0,
   },
-  list: {
+  // The thread fills the container width (same as the header above it).
+  thread: {
+    width: "100%",
+  },
+  // The clickable summary (title + byline). Clicking/Enter/Space toggles the
+  // body open or closed.
+  summary: {
+    cursor: "pointer",
+  },
+  // The telling's own title (single field, English or Khmer) — needs the
+  // Khmer font stack explicitly.
+  tellingTitle: {
+    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
+    fontSize: "1.15rem",
+    fontWeight: 700,
+    color: "#F5EFE6",
+    lineHeight: 1.3,
+    margin: 0,
+    // minWidth 0 lets it shrink in the flex header; break long unbroken titles.
+    minWidth: 0,
+    overflowWrap: "anywhere",
+  },
+  // contributor · place · date. Khmer font stack since place/date can be Khmer.
+  byline: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.8rem",
+    color: "#8A7F91",
     display: "flex",
-    flexDirection: "column",
-    gap: "1.25rem",
+    flexWrap: "wrap",
+    alignItems: "center",
+    gap: "0.4rem",
+    margin: "0.3rem 0 0",
+    minWidth: 0,
+    overflowWrap: "anywhere",
   },
-  card: {
-    maxWidth: 800,
-    boxSizing: "border-box",
-    padding: "1.75rem 2rem",
-    borderRadius: 16,
-    border: "1px solid #2A172F",
-    backgroundColor: "#120916",
+  bylineName: {
+    color: "#F5EFE6",
+    fontWeight: 700,
   },
-  // Optional contributor photo. Full card width, capped height so a tall
-  // portrait doesn't dominate the card; object-fit keeps it from stretching.
+  // whiteSpace pre-wrap keeps the line breaks a contributor typed;
+  // overflowWrap anywhere breaks a long unbroken run (e.g. "wwww…" or
+  // space-less Khmer) instead of letting it overflow the wrapper.
+  body: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "1rem",
+    lineHeight: 1.7,
+    color: "#D8CFE0",
+    whiteSpace: "pre-wrap",
+    overflowWrap: "anywhere",
+    margin: "0.75rem 0 0",
+  },
   photo: {
     width: "100%",
+    maxWidth: 360,
     maxHeight: 360,
     objectFit: "cover",
     borderRadius: 12,
     display: "block",
-    margin: "0 0 1.25rem",
-  },
-  // Can now show descriptionKhmer — needs var(--font-khmer) explicitly,
-  // since Georgia has no Khmer glyphs (would fall back to a generic
-  // system Khmer font instead of the loaded Kantumruy Pro).
-  quote: {
-    fontFamily: "var(--font-khmer), Georgia, 'Times New Roman', serif",
-    fontStyle: "italic",
-    fontSize: "1.1rem",
-    lineHeight: 1.7,
-    color: "#F5EFE6",
-    margin: "0 0 1.25rem",
-  },
-  footer: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    gap: "1rem",
-    paddingTop: "1rem",
-    borderTop: "1px solid #2A172F",
-  },
-  contributorGroup: {
-    display: "flex",
-    flexDirection: "column",
-    gap: "0.2rem",
-  },
-  contributor: {
-    fontSize: "0.95rem",
-    fontWeight: 700,
-    color: "#F5EFE6",
-    margin: 0,
-  },
-  // Locale-formatted date can include a Khmer month name (km-KH), so
-  // needs var(--font-khmer) explicitly like the other swappable text.
-  date: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.8rem",
-    color: "#8A7F91",
-    margin: 0,
+    margin: "0.85rem 0 0",
   },
   // letterSpacing is a Latin tracking convention that pries apart Khmer's
   // stacked glyph clusters — spread this in when the text is Khmer.
   trackingNone: {
     letterSpacing: "normal",
   },
-  // Can now show placeKhmer — same reasoning as quote above.
-  place: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.75rem",
-    fontWeight: 600,
-    color: "#8A7F91",
-    letterSpacing: "0.12em",
-    textTransform: "uppercase",
-    margin: 0,
-    whiteSpace: "nowrap",
-  },
-  // The share button. Base is inline (only :hover lives in globals.css) so
-  // the Khmer tracking fix can be spread in without clashing with a
-  // stylesheet rule on the same property.
   shareBtn: {
     display: "inline-block",
     padding: "0.55rem 1.2rem",
@@ -204,9 +181,6 @@ const styles = {
     cursor: "pointer",
     transition: "opacity 0.2s ease",
   },
-  // Transient "log in to contribute" notice for logged-out visitors who tap
-  // the share button. Kept mounted and toggled via toastHidden/toastVisible
-  // so it animates both in and out; the back-ease on transform gives the pop.
   toast: {
     position: "fixed",
     bottom: "2rem",
@@ -243,6 +217,9 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
   // until mount) — same accepted one-frame flash NavBar documents.
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showToast, setShowToast] = useState(false);
+  // Which tellings are expanded, keyed by their index in the displayed order.
+  // Default is collapsed: a telling shows only its title + byline until clicked.
+  const [expanded, setExpanded] = useState({});
   const toastTimer = useRef(null);
 
   useEffect(() => {
@@ -265,7 +242,14 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
     toastTimer.current = setTimeout(() => setShowToast(false), 3000);
   };
 
+  const toggleExpanded = (i) => setExpanded((c) => ({ ...c, [i]: !c[i] }));
+
   if (!versions || versions.length === 0) return null;
+
+  // Newest first for the thread. versions arrive oldest-first (with undated
+  // ones ahead of all), so reversing puts newest on top and undated at the
+  // bottom — without touching StoryDetails, which still reads versions[0].
+  const thread = versions.slice().reverse();
 
   return (
     <section style={styles.section}>
@@ -292,33 +276,52 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
           </button>
         </div>
 
-        <div style={styles.list}>
-          {versions.map((version, index) => {
-            // contributor is never translated (it's a name); description
-            // and place swap by language, same rule as everywhere else.
+        <div style={styles.thread}>
+          {thread.map((version, index) => {
+            // contributor is never translated (it's a name); description,
+            // place, and the telling's title swap/display by language.
             const description = pickText(language, version.descriptionKhmer, version.description);
             const place = pickText(language, version.placeKhmer, version.place);
+            const isExpanded = !!expanded[index];
+            const bodyId = `telling-body-${index}`;
             return (
-              <div key={`${version.contributor}-${index}`} style={styles.card}>
-                {version.photoUrl ? (
-                  <img
-                    src={version.photoUrl}
-                    alt={place ? `Photo shared from ${place}` : "Photo shared with this telling"}
-                    style={styles.photo}
-                  />
-                ) : null}
-                <p style={styles.quote}>&ldquo;{description}&rdquo;</p>
-                <div style={styles.footer}>
-                  <div style={styles.contributorGroup}>
-                    <p style={styles.contributor}>{version.contributor}</p>
-                    {version.date ? <p style={styles.date}>{formatDate(version.date, language)}</p> : null}
-                  </div>
-                  {place ? (
-                    <p style={{ ...styles.place, ...(language === "km" ? styles.trackingNone : null) }}>
-                      {place}
-                    </p>
-                  ) : null}
+              <div key={`${version.contributor}-${index}`} className="thread-item">
+                {/* The summary is a keyboard-accessible toggle (role=button); it
+                    holds block content, so it can't be a real <button>. */}
+                <div
+                  style={styles.summary}
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isExpanded}
+                  aria-controls={bodyId}
+                  onClick={() => toggleExpanded(index)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      toggleExpanded(index);
+                    }
+                  }}
+                >
+                  {version.title ? <h3 style={styles.tellingTitle}>{version.title}</h3> : null}
+                  <p style={{ ...styles.byline, ...(language === "km" ? styles.trackingNone : null) }}>
+                    <span style={styles.bylineName}>{version.contributor}</span>
+                    {place ? <span>· {place}</span> : null}
+                    {version.date ? <span>· {formatDate(version.date, language)}</span> : null}
+                  </p>
                 </div>
+
+                {isExpanded ? (
+                  <div id={bodyId}>
+                    <p style={styles.body}>{description}</p>
+                    {version.photoUrl ? (
+                      <img
+                        src={version.photoUrl}
+                        alt={place ? `Photo shared from ${place}` : "Photo shared with this telling"}
+                        style={styles.photo}
+                      />
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
             );
           })}
@@ -333,6 +336,21 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
       >
         {t("memoriesLoginToast")}
       </div>
+
+      {/* Thread rail + hover live here, not inline — a stylesheet rule can't
+          override an inline border, and hover needs a rule. Native <div>, so
+          styled-jsx scoping applies. Stacked items with no gap make the rail
+          read as one continuous line. */}
+      <style jsx>{`
+        .thread-item {
+          border-left: 2px solid #2a172f;
+          padding: 1.1rem 0 1.1rem 1.25rem;
+          transition: border-color 0.15s ease;
+        }
+        .thread-item:hover {
+          border-color: #c5a059;
+        }
+      `}</style>
     </section>
   );
 }
