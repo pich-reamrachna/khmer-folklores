@@ -8,6 +8,10 @@
 // an authoritative source before relying on them (Khmer is first-class
 // content, never guessed at casually).
 const provinces = [
+  // Nationwide option for folktales not tied to one province. Kept first so it
+  // surfaces at the top of the dropdown; the DB's place_pair check allows this
+  // pair too, so the two never drift apart.
+  { en: "All over Cambodia", km: "ជុំវីញកម្ពុជា" },
   { en: "Banteay Meanchey", km: "បន្ទាយមានជ័យ" },
   { en: "Battambang", km: "បាត់ដំបង" },
   { en: "Kampong Cham", km: "កំពង់ចាម" },
