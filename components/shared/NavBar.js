@@ -362,13 +362,29 @@ const styles = {
     transform: "translateY(0)",
     pointerEvents: "auto",
   },
-  userEmail: {
-    fontSize: "0.8rem",
-    color: "#BBAEBF",
-    wordBreak: "break-all",
+  // Wraps the username + email; carries the divider above Log Out that the
+  // email line used to own.
+  userIdentity: {
     margin: "0 0 0.75rem",
     paddingBottom: "0.75rem",
     borderBottom: "1px solid #2A172F",
+  },
+  // Primary identity line. Khmer font stack — usernames may be Khmer.
+  userName: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.95rem",
+    fontWeight: 700,
+    color: "#F5EFE6",
+    wordBreak: "break-word",
+    margin: "0 0 0.15rem",
+  },
+  // Secondary line — the account's own email. Only ever shown here, in the
+  // owner's own menu; never on a telling/other public surface.
+  userEmail: {
+    fontSize: "0.78rem",
+    color: "#8A7F91",
+    wordBreak: "break-all",
+    margin: 0,
   },
   userLogoutBtn: {
     width: "100%",
@@ -418,9 +434,18 @@ const styles = {
     textTransform: "uppercase",
     cursor: "pointer",
   },
+  // Khmer font stack — usernames may be Khmer (same as userName above).
+  mobileUserName: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.9rem",
+    fontWeight: 700,
+    color: "#F5EFE6",
+    wordBreak: "break-word",
+    margin: "0 0 0.15rem",
+  },
   mobileUserEmail: {
-    fontSize: "0.8rem",
-    color: "#BBAEBF",
+    fontSize: "0.78rem",
+    color: "#8A7F91",
     wordBreak: "break-all",
     margin: 0,
   },
@@ -449,6 +474,7 @@ export default function NavBar() {
   const langSwitcherRef = useRef(null);
   const [supabase] = useState(() => createClient());
   const [user, setUser] = useState(null);
+  const [username, setUsername] = useState(null);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
 
@@ -487,6 +513,27 @@ export default function NavBar() {
     });
     return () => listener.subscription.unsubscribe();
   }, [supabase]);
+
+  // Load the account's username for the menu — shown as the primary identity,
+  // with the email kept as a secondary line. Cleared when logged out.
+  useEffect(() => {
+    if (!user?.id) {
+      setUsername(null);
+      return;
+    }
+    let active = true;
+    supabase
+      .from("profiles")
+      .select("username")
+      .eq("id", user.id)
+      .maybeSingle()
+      .then(({ data }) => {
+        if (active) setUsername(data?.username ?? null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [supabase, user?.id]);
 
   useEffect(() => {
     if (!userMenuOpen) return;
@@ -539,7 +586,10 @@ export default function NavBar() {
                 style={{ ...styles.userDropdown, ...(userMenuOpen ? styles.userDropdownOpen : null) }}
                 aria-hidden={!userMenuOpen}
               >
-                <p style={styles.userEmail}>{user.email}</p>
+                <div style={styles.userIdentity}>
+                  <p style={styles.userName}>{username ?? t("navAccount")}</p>
+                  <p style={styles.userEmail}>{user.email}</p>
+                </div>
                 <button type="button" style={styles.userLogoutBtn} onClick={handleLogout}>
                   Log Out
                 </button>
@@ -642,7 +692,10 @@ export default function NavBar() {
 
         {user ? (
           <div style={styles.mobileAuthRow}>
-            <p style={styles.mobileUserEmail}>{user.email}</p>
+            <div>
+              <p style={styles.mobileUserName}>{username ?? t("navAccount")}</p>
+              <p style={styles.mobileUserEmail}>{user.email}</p>
+            </div>
             <button
               type="button"
               style={styles.mobileLogoutBtn}

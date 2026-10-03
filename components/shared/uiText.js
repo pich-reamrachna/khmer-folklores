@@ -18,6 +18,7 @@ const uiText = {
   navOpenMenu: { en: "Open menu", km: "បើកម៉ឺនុយ" },
   navCloseMenu: { en: "Close menu", km: "បិទម៉ឺនុយ" },
   navChangeLanguage: { en: "Change language", km: "ប្ដូរភាសា" },
+  navAccount: { en: "Account", km: "គណនី" },
 
   // StoryHero.js — heroEyebrow ("Featured Stories of Khmer Folklores") is
   // deliberately not here: a decorative label, kept English always.
