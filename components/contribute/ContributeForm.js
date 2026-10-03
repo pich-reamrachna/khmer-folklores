@@ -189,6 +189,15 @@ const styles = {
     color: "#8A7F91",
     margin: 0,
   },
+  // Thumbnail of the existing photo while editing (until a new one is picked).
+  currentPhoto: {
+    maxWidth: 120,
+    maxHeight: 120,
+    objectFit: "cover",
+    borderRadius: 8,
+    display: "block",
+    margin: "0.5rem 0 0",
+  },
   // One row under a counted field: error on the left, counter on the right.
   metaRow: {
     display: "flex",
@@ -226,14 +235,17 @@ const styles = {
   trackingNone: { letterSpacing: "normal" },
 };
 
-export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, onSuccess, embedded = false }) {
+export default function ContributeForm({ entry = null, storyId, storyTitle, storyTitleKhmer, onSuccess, embedded = false }) {
   const router = useRouter();
   const { language } = useLanguage();
   const t = useTranslation();
   const km = language === "km";
-  const [title, setTitle] = useState("");
-  const [place, setPlace] = useState("");
-  const [description, setDescription] = useState("");
+  // Edit mode when an existing entry is passed; the form is pre-filled and
+  // submitting updates that row instead of inserting a new one.
+  const isEditing = !!entry;
+  const [title, setTitle] = useState(entry?.title ?? "");
+  const [place, setPlace] = useState(entry?.place ?? "");
+  const [description, setDescription] = useState(entry?.description ?? "");
   const [photoFile, setPhotoFile] = useState(null);
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
@@ -260,18 +272,6 @@ export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, o
         return;
       }
 
-      // The telling is credited to the user's username, never their email.
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("username")
-        .eq("id", user.id)
-        .maybeSingle();
-      if (!profile?.username) {
-        setFormError(t("contributeNoUsername"));
-        setSubmitting(false);
-        return;
-      }
-
       const province = provinces.find((p) => p.en === place);
       if (!province) {
         setErrors({ place: t("contributeLocationInvalid") });
@@ -279,7 +279,9 @@ export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, o
         return;
       }
 
-      let photoUrl = null;
+      // Upload a new photo only if one was chosen; otherwise keep the existing
+      // one when editing, or leave it empty when creating.
+      let photoUrl = isEditing ? (entry.photoUrl ?? null) : null;
       if (photoFile) {
         const ext = await detectImageExtension(photoFile);
         if (!ext) {
@@ -297,17 +299,51 @@ export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, o
         photoUrl = supabase.storage.from("photos").getPublicUrl(path).data.publicUrl;
       }
 
-      const { error: insertError } = await supabase.from("entries").insert({
-        owner: user.id,
-        story_id: storyId,
-        contributor: profile.username,
-        title: title.trim(),
-        place: province.en,
-        place_khmer: province.km,
-        description: description.trim(),
-        photo_url: photoUrl,
-      });
-      if (insertError) throw insertError;
+      if (isEditing) {
+        // RLS lets only the owner update, so a non-owner's update matches no
+        // rows — .select() coming back empty is our "it wasn't saved" signal.
+        const { data: updated, error: updateError } = await supabase
+          .from("entries")
+          .update({
+            title: title.trim(),
+            place: province.en,
+            place_khmer: province.km,
+            description: description.trim(),
+            photo_url: photoUrl,
+          })
+          .eq("id", entry.id)
+          .select();
+        if (updateError) throw updateError;
+        if (!updated || updated.length === 0) {
+          console.error("Entry update saved no rows:", entry.id);
+          setFormError(t("contributeNotSaved"));
+          setSubmitting(false);
+          return;
+        }
+      } else {
+        // The telling is credited to the user's username, never their email.
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("username")
+          .eq("id", user.id)
+          .maybeSingle();
+        if (!profile?.username) {
+          setFormError(t("contributeNoUsername"));
+          setSubmitting(false);
+          return;
+        }
+        const { error: insertError } = await supabase.from("entries").insert({
+          owner: user.id,
+          story_id: storyId,
+          contributor: profile.username,
+          title: title.trim(),
+          place: province.en,
+          place_khmer: province.km,
+          description: description.trim(),
+          photo_url: photoUrl,
+        });
+        if (insertError) throw insertError;
+      }
 
       // In the modal, onSuccess closes it and refreshes the tellings; on the
       // standalone page (no callback) fall back to navigating to the story.
@@ -324,7 +360,9 @@ export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, o
   return (
     <section style={embedded ? styles.sectionEmbedded : styles.section}>
       <div style={styles.card}>
-        <p style={{ ...styles.eyebrow, ...(km ? styles.trackingNone : null) }}>{t("contributeEyebrow")}</p>
+        <p style={{ ...styles.eyebrow, ...(km ? styles.trackingNone : null) }}>
+          {isEditing ? t("contributeEditEyebrow") : t("contributeEyebrow")}
+        </p>
         <h1 style={styles.title}>{pickText(language, storyTitleKhmer, storyTitle)}</h1>
 
         <form onSubmit={handleSubmit} noValidate>
@@ -392,6 +430,14 @@ export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, o
               onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
             />
             <p style={styles.hint}>{t("contributePhotoHint")}</p>
+            {isEditing ? (
+              <>
+                {entry.photoUrl && !photoFile ? (
+                  <img src={entry.photoUrl} alt={t("contributeCurrentPhoto")} style={styles.currentPhoto} />
+                ) : null}
+                <p style={styles.hint}>{t("contributePhotoKeep")}</p>
+              </>
+            ) : null}
             {errors.photo ? <p style={styles.fieldError}>{errors.photo}</p> : null}
           </div>
 
@@ -400,7 +446,11 @@ export default function ContributeForm({ storyId, storyTitle, storyTitleKhmer, o
             className={`contribute-submit${km ? " km" : ""}`}
             disabled={submitting}
           >
-            {submitting ? t("contributeSubmitting") : t("contributeSubmit")}
+            {submitting
+              ? t("contributeSubmitting")
+              : isEditing
+              ? t("contributeSaveChanges")
+              : t("contributeSubmit")}
           </button>
         </form>
       </div>

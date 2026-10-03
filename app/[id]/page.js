@@ -30,6 +30,8 @@ export default async function StoryPage({ params }) {
     .slice()
     .sort((a, b) => (a.created_at ?? "").localeCompare(b.created_at ?? ""))
     .map((e) => ({
+      id: e.id,
+      owner: e.owner,
       title: e.title,
       contributor: e.contributor,
       // Shown date comes from created_at (the submission time), sliced to the

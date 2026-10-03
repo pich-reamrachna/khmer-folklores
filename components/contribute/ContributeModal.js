@@ -31,7 +31,7 @@ const styles = {
   },
 };
 
-export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, onClose }) {
+export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, entry, onClose }) {
   const router = useRouter();
   const dialogRef = useRef(null);
   const restoreFocusRef = useRef(null);
@@ -96,6 +96,7 @@ export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, 
           ×
         </button>
         <ContributeForm
+          entry={entry}
           storyId={storyId}
           storyTitle={storyTitle}
           storyTitleKhmer={storyTitleKhmer}

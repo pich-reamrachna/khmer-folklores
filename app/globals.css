@@ -156,6 +156,12 @@ main {
   opacity: 0.8;
 }
 
+/* StoryMemories.js's owner-menu items (Edit is a next/link Link, so its hover
+   can't be scoped via <style jsx>). Base styles are inline; only hover here. */
+.telling-menu-item:hover {
+  background-color: #1d1024;
+}
+
 /* ContributeForm.js's file input — theme the native "Choose File" button,
    which is a pseudo-element and so can't be styled inline. */
 .contribute-file::file-selector-button {

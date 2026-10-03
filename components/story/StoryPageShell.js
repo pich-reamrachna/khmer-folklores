@@ -17,11 +17,11 @@ import { ContributeModalContext } from "../contribute/contributeModalContext.js"
 
 export default function StoryPageShell({ children }) {
   const mainRef = useRef(null);
-  // null when closed; { storyId, storyTitle } when open.
+  // null when closed; otherwise { storyId, storyTitle, storyTitleKhmer, entry? }.
+  // An `entry` means the modal opens in edit mode (pre-filled); absent = create.
   const [modal, setModal] = useState(null);
 
-  const open = (storyId, storyTitle, storyTitleKhmer) =>
-    setModal({ storyId, storyTitle, storyTitleKhmer });
+  const open = (options) => setModal(options);
   const close = () => setModal(null);
 
   // Freeze the scroll container (this <main>, not body) while the modal is open.
@@ -62,6 +62,7 @@ export default function StoryPageShell({ children }) {
           storyId={modal.storyId}
           storyTitle={modal.storyTitle}
           storyTitleKhmer={modal.storyTitleKhmer}
+          entry={modal.entry ?? null}
           onClose={close}
         />
       ) : null}
