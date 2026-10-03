@@ -22,16 +22,19 @@ export default async function StoryPage({ params }) {
   }
 
   // One telling per entry row, mapped to the camelCase shape StoryMemories
-  // reads, oldest first (so versions[0] is the earliest telling, as before).
+  // reads, oldest first by created_at (so versions[0] is the earliest, and the
+  // thread's newest-first reverse lines up with the shown dates).
   // No descriptionKhmer — entries store a single description; StoryMemories'
   // pickText falls back to it regardless of the language toggle.
   const versions = story.entries
     .slice()
-    .sort((a, b) => (a.date ?? "").localeCompare(b.date ?? ""))
+    .sort((a, b) => (a.created_at ?? "").localeCompare(b.created_at ?? ""))
     .map((e) => ({
       title: e.title,
       contributor: e.contributor,
-      date: e.date,
+      // Shown date comes from created_at (the submission time), sliced to the
+      // YYYY-MM-DD the byline's formatDate expects. UTC date as stored.
+      date: e.created_at ? e.created_at.slice(0, 10) : null,
       place: e.place,
       placeKhmer: e.place_khmer,
       description: e.description,
