@@ -16,11 +16,13 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState("");
   const [error, setError] = useState("");
+  const [notice, setNotice] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError("");
     setUsernameError("");
+    setNotice("");
 
     const trimmedUsername = username.trim();
     const formatKey = validateUsername(trimmedUsername);
@@ -46,7 +48,7 @@ export default function SignupPage() {
 
     // Username rides along in user metadata; a DB trigger creates the profile
     // row from it (atomically, so a race just rolls the signup back).
-    const { error: signUpError } = await supabase.auth.signUp({
+    const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
       options: { data: { username: trimmedUsername } },
@@ -60,8 +62,13 @@ export default function SignupPage() {
       return;
     }
 
-    // Email confirmation is currently disabled in this Supabase
-    // project, so signUp() always returns an active session here.
+    // With email confirmation on, signUp() returns no session — tell the user
+    // to confirm before logging in. If confirmation is off, a session comes
+    // back and we go straight home.
+    if (!data.session) {
+      setNotice(t("authConfirmEmail"));
+      return;
+    }
     router.push("/");
   };
 
@@ -121,6 +128,7 @@ export default function SignupPage() {
           </div>
 
           {error ? <p style={authFormStyles.error}>{error}</p> : null}
+          {notice ? <p style={{ ...authFormStyles.error, color: "#C5A059" }}>{notice}</p> : null}
 
           <button type="submit" style={authFormStyles.button} className="auth-button">
             {t("authSignupButton")}

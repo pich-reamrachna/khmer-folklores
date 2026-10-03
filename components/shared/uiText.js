@@ -79,6 +79,7 @@ const uiText = {
   authSignupTitle: { en: "Sign Up", km: "បង្កើតគណនី" },
   authSignupButton: { en: "Sign Up", km: "បង្កើតគណនី" },
   authSignupError: { en: "Something went wrong. Try again.", km: "មានបញ្ហាកើតឡើង។ សូមព្យាយាមម្តងទៀត។" },
+  authConfirmEmail: { en: "Account created. Check your email to confirm it, then log in.", km: "បានបង្កើតគណនី។ សូមពិនិត្យអ៊ីមែលរបស់អ្នកដើម្បីបញ្ជាក់ រួចចូលគណនី។" },
   authUsernameLabel: { en: "Username", km: "ឈ្មោះអ្នកប្រើ" },
   usernameTaken: { en: "That username is taken. Try another.", km: "ឈ្មោះអ្នកប្រើនេះមានគេយករួចហើយ។ សូមជ្រើសមួយផ្សេងទៀត។" },
   usernameLength: { en: "Username must be 3–20 characters.", km: "ឈ្មោះអ្នកប្រើត្រូវមានពី 3 ទៅ 20 តួអក្សរ។" },
