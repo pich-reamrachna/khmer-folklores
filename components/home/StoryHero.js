@@ -36,6 +36,47 @@ const styles = {
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
   },
+  // Decorative golden-waves backdrop. Lives in its own absolutely
+  // positioned layer (below `container`'s zIndex: 2) with its own
+  // overflow:hidden, so the image is clipped to the section without
+  // clipping the entry cards' hover lift/glow the way overflow:hidden on
+  // `section` itself would. pointerEvents:none keeps it from ever
+  // intercepting clicks on the content above it.
+  backdrop: {
+    position: "absolute",
+    inset: 0,
+    zIndex: 0,
+    overflow: "hidden",
+    pointerEvents: "none",
+  },
+  // The waves sit in the image's lower two-thirds, so anchoring it to the
+  // bottom keeps them behind the card row and away from the title/summary.
+  // Low opacity plus the mask fade (top and bottom edges dissolve into
+  // `section`'s background) keep it an ambient texture, not a picture
+  // competing with the text. The filename's space and parentheses are why
+  // the url is quoted and the space is %20-encoded.
+  backdropImage: {
+    position: "absolute",
+    inset: 0,
+    backgroundImage: 'url("/golden-waves-transparent-solid%20(1).png")',
+    backgroundSize: "cover",
+    backgroundPosition: "center bottom",
+    backgroundRepeat: "no-repeat",
+    opacity: 0.38,
+    WebkitMaskImage:
+      "linear-gradient(to bottom, transparent 0%, #000 35%, #000 80%, transparent 100%)",
+    maskImage:
+      "linear-gradient(to bottom, transparent 0%, #000 35%, #000 80%, transparent 100%)",
+  },
+  // Readability scrim: darkest behind the left-aligned text column and
+  // fading out toward the right, so the waves stay visible on the open
+  // side of the layout while the title/summary keep full contrast.
+  backdropScrim: {
+    position: "absolute",
+    inset: 0,
+    background:
+      "linear-gradient(90deg, rgba(8, 4, 10, 0.92) 0%, rgba(8, 4, 10, 0.7) 35%, rgba(8, 4, 10, 0.2) 70%, rgba(8, 4, 10, 0) 100%)",
+  },
   // gap: shrinks on short viewports.
   container: {
     maxWidth: 1560,
@@ -241,6 +282,11 @@ export default function StoryHero({ entry, children }) {
 
   return (
     <section ref={sectionRef} style={styles.section} className="hero-section">
+      <div style={styles.backdrop} aria-hidden="true">
+        <div style={styles.backdropImage} />
+        <div style={styles.backdropScrim} />
+      </div>
+
       <div style={styles.container} className="hero-container">
         <p style={styles.eyebrow} className="hero-eyebrow">
           <span style={styles.eyebrowLine} />
