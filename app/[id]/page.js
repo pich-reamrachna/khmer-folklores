@@ -46,6 +46,9 @@ export default async function StoryPage({ params }) {
       placeKhmer: e.place_khmer,
       description: e.description,
       photoUrl: e.photo_url,
+      // When the telling's content was last changed (set by a database
+      // trigger, null if never edited). Sliced to YYYY-MM-DD like date above.
+      editedAt: e.edited_at ? e.edited_at.slice(0, 10) : null,
     }));
 
   // Story-level fields in camelCase + the first telling, flattened into the

@@ -245,6 +245,11 @@ const styles = {
     fontSize: "0.78rem",
     lineHeight: 1.5,
   },
+  // "· Edited <date>" at the end of the byline — italic so it reads as a note
+  // about the telling, not part of its details.
+  edited: {
+    fontStyle: "italic",
+  },
   // "First telling" pill in the byline, next to the contributor's name.
   firstBadge: {
     color: "#E6C575",
@@ -602,6 +607,19 @@ export default function StoryMemories({ versions, storyId, originId, storyTitle,
                     {isFirst ? <span style={styles.firstBadge}>{t("memoriesFirstTelling")}</span> : null}
                     {place ? <span>· {place}</span> : null}
                     {version.date ? <span>· {formatDate(version.date, language)}</span> : null}
+                    {/* Shown on any telling changed after it was posted, so
+                        readers (and the curator) can tell it isn't the
+                        original wording. Just "Edited" — a second date
+                        beside the posted one read like a date range — with
+                        the edit date kept in the hover tooltip. */}
+                    {version.editedAt ? (
+                      <span
+                        style={styles.edited}
+                        title={`${t("memoriesEdited")} ${formatDate(version.editedAt, language)}`}
+                      >
+                        · {t("memoriesEdited")}
+                      </span>
+                    ) : null}
                   </p>
                 </div>
 

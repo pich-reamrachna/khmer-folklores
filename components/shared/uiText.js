@@ -213,6 +213,7 @@ const uiText = {
   // below are AI-drafted — flag for the curator to review.
   detailsFirstSharedBy: { en: "First shared by", km: "ចែករំលែកដំបូងដោយ" },
   memoriesFirstTelling: { en: "First telling", km: "ការនិទានដំបូង" },
+  memoriesEdited: { en: "Edited", km: "បានកែ" },
   menuDeleteLocked: {
     en: "The first telling of a published story can't be deleted — you can still edit it.",
     km: "ការនិទានដំបូងនៃរឿងដែលបានផ្សព្វផ្សាយ មិនអាចលុបបានទេ — អ្នកនៅតែអាចកែវាបាន។",
