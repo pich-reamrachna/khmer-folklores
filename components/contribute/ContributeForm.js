@@ -296,9 +296,14 @@ export default function ContributeForm({
     if (Object.keys(found).length > 0) return;
 
     setSubmitting(true);
+    const supabase = createClient();
+    // A photo is uploaded before the row is saved. If the save then doesn't
+    // happen — refused, returned early, or thrown — the finally block below
+    // deletes that new file, so a failed submit doesn't leave it unused in
+    // the bucket. `saved` flips only once the row is actually written.
+    let uploadedPath = null;
+    let saved = false;
     try {
-      const supabase = createClient();
-
       // owner always comes from the session, never the form.
       const { data: auth } = await supabase.auth.getUser();
       const user = auth?.user;
@@ -334,6 +339,7 @@ export default function ContributeForm({
           .from("photos")
           .upload(path, photoFile, { contentType: CONTENT_TYPES[ext] });
         if (uploadError) throw uploadError;
+        uploadedPath = path;
         photoUrl = supabase.storage.from("photos").getPublicUrl(path).data.publicUrl;
       }
 
@@ -358,6 +364,7 @@ export default function ContributeForm({
           setSubmitting(false);
           return;
         }
+        saved = true;
         // Photo was swapped — remove the old file so it isn't orphaned in the
         // bucket. Best-effort: the update already saved, so a failed cleanup is
         // only logged.
@@ -395,6 +402,7 @@ export default function ContributeForm({
           return;
         }
         if (rpcError) throw rpcError;
+        saved = true;
       } else {
         // The telling is credited to the user's username, never their email.
         const { data: profile } = await supabase
@@ -418,6 +426,7 @@ export default function ContributeForm({
           photo_url: photoUrl,
         });
         if (insertError) throw insertError;
+        saved = true;
       }
 
       // In the modal, onSuccess closes it and refreshes the tellings; on the
@@ -429,6 +438,13 @@ export default function ContributeForm({
       console.error("Contribute submit failed:", err);
       setFormError(t("contributeSubmitError"));
       setSubmitting(false);
+    } finally {
+      // Best-effort, like the swapped-photo cleanup above: the user already
+      // sees the real error, so a failed delete here is only logged.
+      if (uploadedPath && !saved) {
+        const { error: rmError } = await supabase.storage.from("photos").remove([uploadedPath]);
+        if (rmError) console.error("Unsaved photo file not removed:", uploadedPath, rmError);
+      }
     }
   }
 
