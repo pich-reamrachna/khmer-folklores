@@ -133,6 +133,18 @@ const uiText = {
   cancel: { en: "Cancel", km: "បោះបង់" },
   locationPlaceholder: { en: "Search a province (English or Khmer)…", km: "ស្វែងរកខេត្ត (អង់គ្លេស ឬខ្មែរ)…" },
   locationNoMatch: { en: "No matching province", km: "រកមិនឃើញខេត្តត្រូវគ្នា" },
+
+  // ShareSearch.js / StoryMatchCard.js (/share). Khmer strings below are
+  // AI-drafted — flag for the curator to review before relying on them.
+  shareTitle: { en: "Is your story already here?", km: "តើរឿងរបស់អ្នកមាននៅទីនេះហើយឬនៅ?" },
+  shareSubtitle: {
+    en: "Type the story's name in English or Khmer, or a few words about it. If it's already in the archive, add your version to it — every telling keeps the story richer.",
+    km: "វាយឈ្មោះរឿងជាភាសាអង់គ្លេស ឬខ្មែរ ឬពាក្យពីរបីអំពីវា។ ប្រសិនបើវាមាននៅក្នុងបណ្ណសាររួចហើយ សូមបន្ថែមការនិទានរបស់អ្នកទៅក្នុងវា — ការនិទាននីមួយៗធ្វើឲ្យរឿងកាន់តែសម្បូរបែប។",
+  },
+  sharePlaceholder: { en: "Story name or a few words about it", km: "ឈ្មោះរឿង ឬពាក្យពីរបីអំពីវា" },
+  shareMatchesHeading: { en: "Could it be one of these?", km: "តើវាជារឿងមួយក្នុងចំណោមរឿងទាំងនេះឬទេ?" },
+  shareNoMatches: { en: "No similar stories found.", km: "រកមិនឃើញរឿងស្រដៀងគ្នាទេ។" },
+  shareAddVersion: { en: "This is it — add my version", km: "គឺរឿងនេះហើយ — បន្ថែមការនិទានរបស់ខ្ញុំ" },
 };
 
 // Falls back to English if a key or its Khmer translation is missing —

@@ -440,7 +440,8 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
   const thread = versions.slice().reverse();
 
   return (
-    <section style={styles.section}>
+    // id="tellings": /share's "Add my version" links land here (/<id>#tellings).
+    <section id="tellings" style={styles.section}>
       <div style={styles.container}>
         <p style={styles.eyebrow}>
           <span style={styles.eyebrowLine} />

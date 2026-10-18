@@ -156,6 +156,12 @@ main {
   opacity: 0.8;
 }
 
+/* StoryMatchCard.js's "Add my version" link (/share) — a next/link Link, so
+   its :hover lives here, same reason as the rules above. */
+.share-match-link:hover {
+  color: #ffffff;
+}
+
 /* StoryMemories.js's owner-menu items (Edit is a next/link Link, so its hover
    can't be scoped via <style jsx>). Base styles are inline; only hover here. */
 .telling-menu-item:hover {

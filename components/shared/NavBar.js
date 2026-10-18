@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import collection from "../../collection.config.js";
 import { useLanguage } from "./LanguageContext.js";
 import { useTranslation } from "./uiText.js";
@@ -9,7 +10,8 @@ import { createClient } from "../../utils/supabase/client.js";
 
 // Text-only nav bar: site lockup on the left, page links on the right.
 // No logo/icon — the archive's identity comes from collection.config.js.
-// "Share a Memory" has no page yet, so it renders inert (a span, not a link).
+// The gold underline (linkActive) marks the current section: "Share a Memory"
+// on /share, "Browse the Archive" everywhere else.
 // Fixed to the viewport (matches the mockup's .navbar) so it stays visible
 // over both page sections. Once the page is scrolled past the top of the
 // hero, it picks up a translucent blurred background (mockup's
@@ -65,7 +67,7 @@ const styles = {
     letterSpacing: "0.02em",
     lineHeight: 1.1,
   },
-  // kicker/linkActive/linkInert: deliberately not translated — the whole
+  // kicker/linkActive/linkIdle: deliberately not translated — the whole
   // top bar reads as fixed site branding, like the site name itself.
   // Only the language switcher (below) actually needs both languages.
   kicker: {
@@ -90,14 +92,14 @@ const styles = {
     padding: "0.5rem 0",
     borderBottom: "2px solid #C5A059",
   },
-  linkInert: {
+  linkIdle: {
+    textDecoration: "none",
     color: "#BBAEBF",
     fontSize: "0.78rem",
     fontWeight: 700,
     letterSpacing: "0.18em",
     textTransform: "uppercase",
     padding: "0.5rem 0",
-    cursor: "default",
   },
   // Mobile menu toggle — hamburger/close icons recolored gold via
   // mask-image, same technique as every other icon in this project.
@@ -471,6 +473,7 @@ export default function NavBar() {
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const { language, setLanguage } = useLanguage();
   const t = useTranslation();
+  const onShare = usePathname() === "/share";
   const langSwitcherRef = useRef(null);
   const [supabase] = useState(() => createClient());
   const [user, setUser] = useState(null);
@@ -562,12 +565,20 @@ export default function NavBar() {
         </Link>
 
         <div className="nav-links">
-          <Link href="/" style={styles.linkActive} aria-current="page">
+          <Link
+            href="/"
+            style={onShare ? styles.linkIdle : styles.linkActive}
+            aria-current={onShare ? undefined : "page"}
+          >
             Browse the Archive
           </Link>
-          <span style={styles.linkInert} aria-disabled="true">
+          <Link
+            href="/share"
+            style={onShare ? styles.linkActive : styles.linkIdle}
+            aria-current={onShare ? "page" : undefined}
+          >
             Share a Memory
-          </span>
+          </Link>
 
           {user ? (
             <div style={styles.userMenu} ref={userMenuRef}>
@@ -680,15 +691,20 @@ export default function NavBar() {
       >
         <Link
           href="/"
-          style={styles.linkActive}
-          aria-current="page"
+          style={onShare ? styles.linkIdle : styles.linkActive}
+          aria-current={onShare ? undefined : "page"}
           onClick={() => setMenuOpen(false)}
         >
           Browse the Archive
         </Link>
-        <span style={styles.linkInert} aria-disabled="true">
+        <Link
+          href="/share"
+          style={onShare ? styles.linkActive : styles.linkIdle}
+          aria-current={onShare ? "page" : undefined}
+          onClick={() => setMenuOpen(false)}
+        >
           Share a Memory
-        </span>
+        </Link>
 
         {user ? (
           <div style={styles.mobileAuthRow}>

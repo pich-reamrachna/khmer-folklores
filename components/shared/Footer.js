@@ -90,7 +90,7 @@ const styles = {
   trackingNone: {
     letterSpacing: "normal",
   },
-  // fontFamily on navHeading/navLink/navLinkInert/backToTopBtn: same
+  // fontFamily on navHeading/navLink/backToTopBtn: same
   // reasoning as kicker/description/creditLine above.
   navHeading: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
@@ -106,12 +106,6 @@ const styles = {
     fontSize: "0.95rem",
     color: "#F5EFE6",
     textDecoration: "none",
-  },
-  navLinkInert: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.95rem",
-    color: "#8A7F91",
-    cursor: "default",
   },
   backToTopBtn: {
     display: "inline-flex",
@@ -181,9 +175,9 @@ export default function Footer({ onBackToTop }) {
               <Link href="/" style={styles.navLink}>
                 {t("navBrowseArchive")}
               </Link>
-              <span style={styles.navLinkInert} aria-disabled="true">
+              <Link href="/share" style={styles.navLink}>
                 {t("navShareMemory")}
-              </span>
+              </Link>
             </div>
 
             <div style={styles.navGroup}>

@@ -81,7 +81,9 @@ const styles = {
   },
 };
 
-export default function ArchiveSearch({ value, onChange }) {
+// placeholder is optional — /share's search (ShareSearch.js) reuses this pill
+// with its own wording; the archive keeps the default.
+export default function ArchiveSearch({ value, onChange, placeholder }) {
   const t = useTranslation();
   return (
     <div style={styles.bar} className="archive-search-bar">
@@ -90,7 +92,7 @@ export default function ArchiveSearch({ value, onChange }) {
         type="text"
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder={t("searchPlaceholder")}
+        placeholder={placeholder ?? t("searchPlaceholder")}
         aria-label={t("searchAriaLabel")}
         style={styles.input}
         className="archive-search-input"
