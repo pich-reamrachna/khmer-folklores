@@ -144,7 +144,7 @@ const uiText = {
   sharePlaceholder: { en: "Story name or a few words about it", km: "ឈ្មោះរឿង ឬពាក្យពីរបីអំពីវា" },
   shareMatchesHeading: { en: "Could it be one of these?", km: "តើវាជារឿងមួយក្នុងចំណោមរឿងទាំងនេះឬទេ?" },
   shareNoMatches: { en: "No similar stories found.", km: "រកមិនឃើញរឿងស្រដៀងគ្នាទេ។" },
-  shareDidYouMean: { en: "Did you mean", km: "តើអ្នកចង់និយាយអំពី" },
+  shareDidYouMean: { en: "Did you mean", km: "តើអ្នកសំដៅលើ" },
   shareAddVersion: { en: "This is it — add my version", km: "គឺរឿងនេះហើយ — បន្ថែមការនិទានរបស់ខ្ញុំ" },
   shareStartNew: { en: "My story isn't here — start a new one", km: "រឿងរបស់ខ្ញុំមិនមាននៅទីនេះទេ — ចាប់ផ្ដើមរឿងថ្មី" },
   shareLoginToStart: { en: "Log in to start a new story.", km: "សូមចូលគណនីដើម្បីចាប់ផ្ដើមរឿងថ្មី។" },
@@ -157,7 +157,7 @@ const uiText = {
   newStoryHeading: { en: "A story the archive doesn't have yet", km: "រឿងដែលបណ្ណសារមិនទាន់មាន" },
   newStoryReviewNote: {
     en: "The curator reads every new story and writes its summary before it appears in the archive.",
-    km: "អ្នកថែរក្សាអានរឿងថ្មីនីមួយៗ ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា មុនពេលវាបង្ហាញក្នុងបណ្ណសារ។",
+    km: "អ្នកចងក្រងអានរឿងថ្មីនីមួយៗ ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា មុនពេលវាបង្ហាញក្នុងបណ្ណសារ។",
   },
   newStoryTitleLabel: { en: "Story name (English)", km: "ឈ្មោះរឿង (អង់គ្លេស)" },
   newStoryKhmerTitleLabel: { en: "Story name in Khmer (optional)", km: "ឈ្មោះរឿងជាភាសាខ្មែរ (ស្រេចចិត្ត)" },
@@ -173,7 +173,7 @@ const uiText = {
   newStoryDoneTitle: { en: "Thank you — your story is waiting for review.", km: "សូមអរគុណ — រឿងរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ។" },
   newStoryDoneBody: {
     en: "The curator will read it and write its summary. Once it's published, it will appear in the archive with you credited as the first to share it.",
-    km: "អ្នកថែរក្សានឹងអានវា ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា។ នៅពេលវាត្រូវបានផ្សព្វផ្សាយ វានឹងបង្ហាញក្នុងបណ្ណសារ ដោយបញ្ជាក់ថាអ្នកជាអ្នកចែករំលែកដំបូង។",
+    km: "អ្នកចងក្រងនឹងអានវា ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា។ នៅពេលវាត្រូវបានផ្សព្វផ្សាយ វានឹងបង្ហាញក្នុងបណ្ណសារ ដោយបញ្ជាក់ថាអ្នកជាអ្នកចែករំលែកដំបូង។",
   },
   newStoryDoneLink: { en: "Back to the archive", km: "ត្រឡប់ទៅបណ្ណសារ" },
 };
