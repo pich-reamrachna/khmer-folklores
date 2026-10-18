@@ -78,9 +78,17 @@ export default function Home() {
   useEffect(() => {
     let active = true;
     const supabase = createClient();
+    // Published stories only. The database also lets a submitter see their
+    // own pending story (and the curator see all of them), but those have no
+    // summary yet and belong on My Submissions / the review page, not here.
+    // !inner makes the status filter drop the telling rows themselves, not
+    // just blank out their embedded story. !entries_story_id_fkey names which
+    // link to follow — stories.origin_entry_id is a second link between the
+    // two tables, and without the name Supabase refuses the ambiguous embed.
     supabase
       .from("entries")
-      .select("*, stories(*)")
+      .select("*, stories!entries_story_id_fkey!inner(*)")
+      .eq("stories.status", "published")
       .order("created_at", { ascending: false })
       .then(({ data, error }) => {
         if (!active) return;

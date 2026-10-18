@@ -11,12 +11,17 @@ export default async function StoryPage({ params }) {
   const supabase = await createClient();
   const { data: story, error } = await supabase
     .from("stories")
-    .select("*, entries(*)")
+    // !entries_story_id_fkey: a story's tellings, not its origin_entry_id
+    // link — two links exist between these tables, so the embed must name one.
+    .select("*, entries!entries_story_id_fkey(*)")
     .eq("id", id)
+    // Pending/rejected stories have no public page — same reasoning as the
+    // home page's filter. They 404 like a missing id.
+    .eq("status", "published")
     .single();
 
-  // Missing id, an error, or a story with no tellings all 404 — same as
-  // when this page read the data file and found nothing.
+  // Missing id, an error, an unpublished story, or a story with no tellings
+  // all 404 — same as when this page read the data file and found nothing.
   if (error || !story || !story.entries?.length) {
     notFound();
   }
