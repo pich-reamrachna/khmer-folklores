@@ -234,6 +234,27 @@ const styles = {
   menuItemDanger: {
     color: "#E0736A",
   },
+  // Stands in for Delete on the story's first telling — plain text, not a
+  // menu item, since there's nothing to click.
+  menuNote: {
+    margin: 0,
+    padding: "0.5rem 0.7rem",
+    maxWidth: 200,
+    color: "#8A7F91",
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.78rem",
+    lineHeight: 1.5,
+  },
+  // "First telling" pill in the byline, next to the contributor's name.
+  firstBadge: {
+    color: "#E6C575",
+    border: "1px solid rgba(197, 160, 89, 0.6)",
+    borderRadius: 999,
+    padding: "0.05rem 0.55rem",
+    fontSize: "0.7rem",
+    fontWeight: 700,
+    whiteSpace: "nowrap",
+  },
   // letterSpacing is a Latin tracking convention that pries apart Khmer's
   // stacked glyph clusters — spread this in when the text is Khmer.
   trackingNone: {
@@ -341,7 +362,10 @@ const styles = {
   },
 };
 
-export default function StoryMemories({ versions, storyId, storyTitle, storyTitleKhmer }) {
+// originId: the story's first telling (stories.origin_entry_id) — it gets a
+// "First telling" badge, and its owner's menu shows a note instead of Delete,
+// since the database refuses to delete a published story's first telling.
+export default function StoryMemories({ versions, storyId, originId, storyTitle, storyTitleKhmer }) {
   const router = useRouter();
   const { language } = useLanguage();
   const t = useTranslation();
@@ -442,7 +466,14 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
   // Newest first for the thread. versions arrive oldest-first (with undated
   // ones ahead of all), so reversing puts newest on top and undated at the
   // bottom — without touching StoryDetails, which still reads versions[0].
-  const thread = versions.slice().reverse();
+  // The story's first telling is the exception: it's pinned on top, like a
+  // forum's original post, so it stays under the "First shared by" credit
+  // instead of sinking as new tellings arrive.
+  const newestFirst = versions.slice().reverse();
+  const firstTelling = newestFirst.find((v) => originId && v.id === originId);
+  const thread = firstTelling
+    ? [firstTelling, ...newestFirst.filter((v) => v !== firstTelling)]
+    : newestFirst;
 
   return (
     // id="tellings": /share's "Add my version" links land here (/<id>#tellings).
@@ -483,6 +514,7 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
             const isExpanded = !!expanded[index];
             const bodyId = `telling-body-${index}`;
             const isOwner = !!userId && version.owner === userId;
+            const isFirst = !!originId && version.id === originId;
             return (
               <div key={version.id ?? index} className="thread-item">
                 {isOwner ? (
@@ -530,15 +562,19 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
                         >
                           {t("menuEdit")}
                         </button>
-                        <button
-                          type="button"
-                          className="telling-menu-item"
-                          style={{ ...styles.menuItem, ...styles.menuItemDanger }}
-                          role="menuitem"
-                          onClick={() => requestDelete(version)}
-                        >
-                          {t("menuDelete")}
-                        </button>
+                        {isFirst ? (
+                          <p style={styles.menuNote}>{t("menuDeleteLocked")}</p>
+                        ) : (
+                          <button
+                            type="button"
+                            className="telling-menu-item"
+                            style={{ ...styles.menuItem, ...styles.menuItemDanger }}
+                            role="menuitem"
+                            onClick={() => requestDelete(version)}
+                          >
+                            {t("menuDelete")}
+                          </button>
+                        )}
                       </div>
                     ) : null}
                   </div>
@@ -563,6 +599,7 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
                   {version.title ? <h3 style={styles.tellingTitle}>{version.title}</h3> : null}
                   <p style={{ ...styles.byline, ...(language === "km" ? styles.trackingNone : null) }}>
                     <span style={styles.bylineName}>{version.contributor}</span>
+                    {isFirst ? <span style={styles.firstBadge}>{t("memoriesFirstTelling")}</span> : null}
                     {place ? <span>· {place}</span> : null}
                     {version.date ? <span>· {formatDate(version.date, language)}</span> : null}
                   </p>

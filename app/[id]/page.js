@@ -51,6 +51,13 @@ export default async function StoryPage({ params }) {
   // Story-level fields in camelCase + the first telling, flattened into the
   // single object StoryDetails reads (title/summary from the story, place
   // from its earliest telling).
+  // The story's first telling (set when it was submitted, or backfilled to
+  // the oldest one for stories that predate /share). Its contributor is
+  // credited as "First shared by", and StoryMemories badges it and hides its
+  // Delete — the database refuses that delete on a published story anyway.
+  const originId = story.origin_entry_id;
+  const firstSharedBy = versions.find((v) => v.id === originId)?.contributor ?? null;
+
   const entry = {
     id: story.id,
     khmerTitle: story.khmer_title,
@@ -62,6 +69,7 @@ export default async function StoryPage({ params }) {
     // Re-assert the story's title last: versions[0] now carries the telling's
     // own title, which must not override the summary header's story title.
     title: story.title,
+    firstSharedBy,
   };
 
   return (
@@ -71,6 +79,7 @@ export default async function StoryPage({ params }) {
       <StoryMemories
         versions={versions}
         storyId={story.id}
+        originId={originId}
         storyTitle={story.title}
         storyTitleKhmer={story.khmer_title}
       />

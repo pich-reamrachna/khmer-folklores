@@ -208,6 +208,15 @@ const uiText = {
   submissionsPendingHint: { en: "The curator will read it and write its summary before it's published.", km: "អ្នកចងក្រងនឹងអានវា ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា មុនពេលផ្សព្វផ្សាយ។" },
   submissionsNoteLabel: { en: "Note from the curator", km: "កំណត់ចំណាំពីអ្នកចងក្រង" },
   submissionsViewStory: { en: "View story", km: "មើលរឿង" },
+
+  // StoryDetails.js / StoryMemories.js — first-sharer credit. Khmer strings
+  // below are AI-drafted — flag for the curator to review.
+  detailsFirstSharedBy: { en: "First shared by", km: "ចែករំលែកដំបូងដោយ" },
+  memoriesFirstTelling: { en: "First telling", km: "ការនិទានដំបូង" },
+  menuDeleteLocked: {
+    en: "The first telling of a published story can't be deleted — you can still edit it.",
+    km: "ការនិទានដំបូងនៃរឿងដែលបានផ្សព្វផ្សាយ មិនអាចលុបបានទេ — អ្នកនៅតែអាចកែវាបាន។",
+  },
 };
 
 // Falls back to English if a key or its Khmer translation is missing —

@@ -2,6 +2,7 @@
 
 import BackButton from "../shared/BackButton.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
+import { useTranslation } from "../shared/uiText.js";
 
 // First section of a story's dedicated page: eyebrow (category • place),
 // optional Khmer title, English title, and the story-level summary (not
@@ -82,10 +83,23 @@ const styles = {
     maxWidth: 680,
     margin: 0,
   },
+  // "First shared by <username>" under the summary — credits who brought the
+  // story into the archive, not who "originated" a folk tale.
+  credit: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.85rem",
+    color: "#8A7F91",
+    margin: "1.25rem 0 0",
+  },
+  creditName: {
+    color: "#E6C575",
+    fontWeight: 700,
+  },
 };
 
 export default function StoryDetails({ entry }) {
   const { language } = useLanguage();
+  const t = useTranslation();
   // khmerTitle/title stack (both shown together) regardless of language,
   // and the eyebrow (category • place) always stays English too — same
   // eyebrow-style-stays-fixed rule as everywhere else. summary (story-
@@ -117,6 +131,14 @@ export default function StoryDetails({ entry }) {
         <h1 style={styles.title}>{entry.title}</h1>
 
         <p style={styles.summary}>{summary}</p>
+
+        {/* The username is a name — never translated, like a telling's
+            contributor. */}
+        {entry.firstSharedBy ? (
+          <p style={styles.credit}>
+            {t("detailsFirstSharedBy")} <span style={styles.creditName}>{entry.firstSharedBy}</span>
+          </p>
+        ) : null}
       </div>
 
       {/* Plain <style>, not <style jsx> — its CSS text renders straight into
