@@ -40,7 +40,8 @@ export default function StartNewStoryButton({ onStart }) {
       {needsLogin ? (
         <p style={styles.loginNote}>
           {t("shareLoginToStart")}{" "}
-          <Link href="/login" style={styles.loginLink} className="share-login-link">
+          {/* ?next= brings them back here after logging in (see app/login/page.js). */}
+          <Link href="/login?next=/share" style={styles.loginLink} className="share-login-link">
             {t("shareLoginLink")}
           </Link>
         </p>

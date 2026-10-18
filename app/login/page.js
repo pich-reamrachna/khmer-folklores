@@ -12,6 +12,21 @@ const BORDER_NEUTRAL = "1px solid #2A172F";
 const BORDER_INVALID = "1px solid #E58B8B";
 const INVALID_COLOR = "#E58B8B";
 
+// Where to go after logging in: the ?next= path when the link that sent the
+// user here asked to come back (e.g. /share's "Log in"), otherwise home.
+// Only same-site paths are accepted — "/share" yes, but "https://..." or
+// "//other.site" (which browsers treat as another site) fall back to home, so
+// a crafted login link can't send someone off-site right after they log in.
+// Read from window.location at submit time rather than useSearchParams,
+// which would need a Suspense boundary around this whole page.
+function safeNextPath() {
+  const next = new URLSearchParams(window.location.search).get("next");
+  if (!next || !next.startsWith("/") || next.startsWith("//") || next.startsWith("/\\")) {
+    return "/";
+  }
+  return next;
+}
+
 export default function LoginPage() {
   const router = useRouter();
   const t = useTranslation();
@@ -49,7 +64,7 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/");
+    router.push(safeNextPath());
   };
 
   return (
