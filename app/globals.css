@@ -156,9 +156,11 @@ main {
   opacity: 0.8;
 }
 
-/* StoryMatchCard.js's "Add my version" link (/share) — a next/link Link, so
-   its :hover lives here, same reason as the rules above. */
-.share-match-link:hover {
+/* /share's links: StoryMatchCard.js's "Add my version", NewStoryPanel.js's
+   "Back to the archive", StartNewStoryButton.js's "Log in" — next/link
+   Links, so their :hover lives here, same reason as the rules above. */
+.share-match-link:hover,
+.share-login-link:hover {
   color: #ffffff;
 }
 

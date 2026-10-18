@@ -145,6 +145,36 @@ const uiText = {
   shareMatchesHeading: { en: "Could it be one of these?", km: "តើវាជារឿងមួយក្នុងចំណោមរឿងទាំងនេះឬទេ?" },
   shareNoMatches: { en: "No similar stories found.", km: "រកមិនឃើញរឿងស្រដៀងគ្នាទេ។" },
   shareAddVersion: { en: "This is it — add my version", km: "គឺរឿងនេះហើយ — បន្ថែមការនិទានរបស់ខ្ញុំ" },
+  shareStartNew: { en: "My story isn't here — start a new one", km: "រឿងរបស់ខ្ញុំមិនមាននៅទីនេះទេ — ចាប់ផ្ដើមរឿងថ្មី" },
+  shareLoginToStart: { en: "Log in to start a new story.", km: "សូមចូលគណនីដើម្បីចាប់ផ្ដើមរឿងថ្មី។" },
+  shareLoginLink: { en: "Log in", km: "ចូលគណនី" },
+  shareBackToSearch: { en: "Back to search", km: "ត្រឡប់ទៅការស្វែងរក" },
+
+  // NewStoryPanel.js / NewStoryFields.js / ContributeForm.js's newStory mode.
+  // Khmer strings below are AI-drafted — flag for the curator to review.
+  newStoryEyebrow: { en: "Start a new story", km: "ចាប់ផ្ដើមរឿងថ្មី" },
+  newStoryHeading: { en: "A story the archive doesn't have yet", km: "រឿងដែលបណ្ណសារមិនទាន់មាន" },
+  newStoryReviewNote: {
+    en: "The curator reads every new story and writes its summary before it appears in the archive.",
+    km: "អ្នកថែរក្សាអានរឿងថ្មីនីមួយៗ ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា មុនពេលវាបង្ហាញក្នុងបណ្ណសារ។",
+  },
+  newStoryTitleLabel: { en: "Story name (English)", km: "ឈ្មោះរឿង (អង់គ្លេស)" },
+  newStoryKhmerTitleLabel: { en: "Story name in Khmer (optional)", km: "ឈ្មោះរឿងជាភាសាខ្មែរ (ស្រេចចិត្ត)" },
+  newStoryKhmerTitleLenError: { en: "Khmer name must be {max} characters or fewer.", km: "ឈ្មោះខ្មែរត្រូវមានមិនលើសពី {max} តួអក្សរ។" },
+  newStoryCategoryLabel: { en: "Category", km: "ប្រភេទ" },
+  newStoryCategoryPlaceholder: { en: "Choose a category", km: "ជ្រើសរើសប្រភេទ" },
+  newStoryCategoryError: { en: "Please choose a category.", km: "សូមជ្រើសរើសប្រភេទ។" },
+  newStoryExists: {
+    en: "A story with this name is already in the archive. Go back to search to add your version to it.",
+    km: "រឿងដែលមានឈ្មោះនេះមាននៅក្នុងបណ្ណសាររួចហើយ។ សូមត្រឡប់ទៅការស្វែងរក ដើម្បីបន្ថែមការនិទានរបស់អ្នកទៅក្នុងវា។",
+  },
+  newStorySubmit: { en: "Submit for review", km: "ដាក់ស្នើដើម្បីពិនិត្យ" },
+  newStoryDoneTitle: { en: "Thank you — your story is waiting for review.", km: "សូមអរគុណ — រឿងរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ។" },
+  newStoryDoneBody: {
+    en: "The curator will read it and write its summary. Once it's published, it will appear in the archive with you credited as the first to share it.",
+    km: "អ្នកថែរក្សានឹងអានវា ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា។ នៅពេលវាត្រូវបានផ្សព្វផ្សាយ វានឹងបង្ហាញក្នុងបណ្ណសារ ដោយបញ្ជាក់ថាអ្នកជាអ្នកចែករំលែកដំបូង។",
+  },
+  newStoryDoneLink: { en: "Back to the archive", km: "ត្រឡប់ទៅបណ្ណសារ" },
 };
 
 // Falls back to English if a key or its Khmer translation is missing —

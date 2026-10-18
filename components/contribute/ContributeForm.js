@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client.js";
 import { photoStoragePath } from "../../utils/storage.js";
 import provinces from "../../data/provinces.js";
+import categories from "../../data/categories.js";
 import LocationSelect from "./LocationSelect.js";
+import NewStoryFields from "./NewStoryFields.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 
@@ -83,13 +85,22 @@ async function detectImageExtension(file) {
 
 // Synchronous checks (the photo's real type is checked async in handleSubmit).
 // `t` is the translation function, so messages follow the language toggle.
-function validate({ title, place, description, photoFile, t }) {
+function validate({ title, place, description, photoFile, t, newStory, khmerTitle, category }) {
   const errors = {};
 
   const titleVal = title.trim();
   if (len(titleVal) < TITLE_MIN || len(titleVal) > TITLE_MAX)
     errors.title = fill(t("contributeTitleLenError"), { min: TITLE_MIN, max: TITLE_MAX });
   else if (hasForbiddenChars(titleVal, false)) errors.title = t("contributeTitleCharError");
+
+  // newStory only: the Khmer name is optional, the category is required.
+  if (newStory) {
+    const khmerVal = khmerTitle.trim();
+    if (len(khmerVal) > TITLE_MAX)
+      errors.khmerTitle = fill(t("newStoryKhmerTitleLenError"), { max: TITLE_MAX });
+    else if (hasForbiddenChars(khmerVal, false)) errors.khmerTitle = t("contributeTitleCharError");
+    if (!categories.some((c) => c.en === category)) errors.category = t("newStoryCategoryError");
+  }
 
   if (!place) errors.place = t("contributeLocationError");
 
@@ -147,6 +158,15 @@ const styles = {
     color: "#F5EFE6",
     margin: "0 0 2rem",
     lineHeight: 1.2,
+  },
+  // newStory only — sits between the heading and the form, so the heading's
+  // own bottom margin already spaces it from above.
+  reviewNote: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.95rem",
+    lineHeight: 1.6,
+    color: "#BBAEBF",
+    margin: "-1rem 0 2rem",
   },
   field: {
     display: "flex",
@@ -236,7 +256,17 @@ const styles = {
   trackingNone: { letterSpacing: "normal" },
 };
 
-export default function ContributeForm({ entry = null, storyId, storyTitle, storyTitleKhmer, onSuccess, embedded = false }) {
+export default function ContributeForm({
+  entry = null,
+  storyId,
+  storyTitle,
+  storyTitleKhmer,
+  onSuccess,
+  embedded = false,
+  newStory = false,
+  initialTitle = "",
+  initialKhmerTitle = "",
+}) {
   const router = useRouter();
   const { language } = useLanguage();
   const t = useTranslation();
@@ -244,7 +274,12 @@ export default function ContributeForm({ entry = null, storyId, storyTitle, stor
   // Edit mode when an existing entry is passed; the form is pre-filled and
   // submitting updates that row instead of inserting a new one.
   const isEditing = !!entry;
-  const [title, setTitle] = useState(entry?.title ?? "");
+  // newStory mode (/share): there's no story yet — `title` is the new story's
+  // name (also used as this first telling's title), plus a Khmer name and a
+  // category, and submitting creates both through submit_story.
+  const [title, setTitle] = useState(entry?.title ?? initialTitle);
+  const [khmerTitle, setKhmerTitle] = useState(initialKhmerTitle);
+  const [category, setCategory] = useState("");
   const [place, setPlace] = useState(entry?.place ?? "");
   const [description, setDescription] = useState(entry?.description ?? "");
   const [photoFile, setPhotoFile] = useState(null);
@@ -256,7 +291,7 @@ export default function ContributeForm({ entry = null, storyId, storyTitle, stor
     e.preventDefault();
     setFormError("");
 
-    const found = validate({ title, place, description, photoFile, t });
+    const found = validate({ title, place, description, photoFile, t, newStory, khmerTitle, category });
     setErrors(found);
     if (Object.keys(found).length > 0) return;
 
@@ -333,6 +368,33 @@ export default function ContributeForm({ entry = null, storyId, storyTitle, stor
             if (rmError) console.error("Old photo file not removed:", oldPath, rmError);
           }
         }
+      } else if (newStory) {
+        // One call creates the pending story and this first telling together,
+        // so a failure can't leave a story with no telling. The username
+        // credit, Khmer category, and URL slug are all filled in by the
+        // database, not trusted from here.
+        const { error: rpcError } = await supabase.rpc("submit_story", {
+          p_title: title.trim(),
+          p_khmer_title: khmerTitle.trim(),
+          p_category: category,
+          p_entry_title: title.trim(),
+          p_place: province.en,
+          p_place_khmer: province.km,
+          p_description: description.trim(),
+          p_photo_url: photoUrl,
+        });
+        // submit_story's known refusals get a specific message.
+        if (rpcError?.message === "story_exists") {
+          setErrors({ title: t("newStoryExists") });
+          setSubmitting(false);
+          return;
+        }
+        if (rpcError?.message === "no_username") {
+          setFormError(t("contributeNoUsername"));
+          setSubmitting(false);
+          return;
+        }
+        if (rpcError) throw rpcError;
       } else {
         // The telling is credited to the user's username, never their email.
         const { data: profile } = await supabase
@@ -374,16 +436,19 @@ export default function ContributeForm({ entry = null, storyId, storyTitle, stor
     <section style={embedded ? styles.sectionEmbedded : styles.section}>
       <div style={styles.card}>
         <p style={{ ...styles.eyebrow, ...(km ? styles.trackingNone : null) }}>
-          {isEditing ? t("contributeEditEyebrow") : t("contributeEyebrow")}
+          {isEditing ? t("contributeEditEyebrow") : newStory ? t("newStoryEyebrow") : t("contributeEyebrow")}
         </p>
-        <h1 style={styles.title}>{pickText(language, storyTitleKhmer, storyTitle)}</h1>
+        <h1 style={styles.title}>
+          {newStory ? t("newStoryHeading") : pickText(language, storyTitleKhmer, storyTitle)}
+        </h1>
+        {newStory ? <p style={styles.reviewNote}>{t("newStoryReviewNote")}</p> : null}
 
         <form onSubmit={handleSubmit} noValidate>
           {formError ? <p style={styles.formError}>{formError}</p> : null}
 
           <div style={styles.field}>
             <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="title">
-              {t("contributeTitleLabel")}
+              {newStory ? t("newStoryTitleLabel") : t("contributeTitleLabel")}
             </label>
             <input
               id="title"
@@ -400,6 +465,17 @@ export default function ContributeForm({ entry = null, storyId, storyTitle, stor
               </p>
             </div>
           </div>
+
+          {newStory ? (
+            <NewStoryFields
+              khmerTitle={khmerTitle}
+              onKhmerTitleChange={setKhmerTitle}
+              category={category}
+              onCategoryChange={setCategory}
+              errors={errors}
+              styles={styles}
+            />
+          ) : null}
 
           <div style={styles.field}>
             <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="location">
@@ -463,6 +539,8 @@ export default function ContributeForm({ entry = null, storyId, storyTitle, stor
               ? t("contributeSubmitting")
               : isEditing
               ? t("contributeSaveChanges")
+              : newStory
+              ? t("newStorySubmit")
               : t("contributeSubmit")}
           </button>
         </form>

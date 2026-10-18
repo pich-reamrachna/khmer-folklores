@@ -3,12 +3,16 @@
 import { useState } from "react";
 import ArchiveSearch from "../home/ArchiveSearch.js";
 import StoryMatchCard from "./StoryMatchCard.js";
+import StartNewStoryButton from "./StartNewStoryButton.js";
+import NewStoryPanel from "./NewStoryPanel.js";
 import { findSimilarStories } from "../../utils/storyMatch.js";
 import { useTranslation } from "../shared/uiText.js";
 
-// Step 1 of "Share a Memory": "Is your story already here?" Matches appear as
+// "Share a Memory": first "Is your story already here?" — matches appear as
 // the user types; each one leads to that story's tellings, where the existing
-// "Share Your Version" button adds theirs.
+// "Share Your Version" button adds theirs. Only once they've searched can
+// they choose "start a new one", which swaps this view for NewStoryPanel
+// (the query is kept, so "Back to search" returns to the same results).
 
 const styles = {
   // Same top/side padding as the other sections — clears the fixed 90px
@@ -61,7 +65,18 @@ const styles = {
 export default function ShareSearch({ stories }) {
   const t = useTranslation();
   const [query, setQuery] = useState("");
+  const [composing, setComposing] = useState(false);
   const matches = findSimilarStories(query, stories);
+
+  if (composing) {
+    return (
+      <section style={styles.section}>
+        <div style={styles.container}>
+          <NewStoryPanel query={query.trim()} onBack={() => setComposing(false)} />
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section style={styles.section}>
@@ -86,6 +101,7 @@ export default function ShareSearch({ stories }) {
                   </li>
                 ))}
               </ul>
+              <StartNewStoryButton onStart={() => setComposing(true)} />
             </>
           ) : null}
         </div>
