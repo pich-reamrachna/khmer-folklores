@@ -6,6 +6,29 @@ import NavBar from "../../components/shared/NavBar.js";
 import { useTranslation } from "../../components/shared/uiText.js";
 import authFormStyles from "../../components/shared/authFormStyles.js";
 import { createClient } from "../../utils/supabase/client.js";
+import CandleGlow from "../../components/shared/CandleGlow.js";
+import InputIcon from "../../components/shared/InputIcon.js";
+
+// Lays the candle and the form side by side; the form keeps its own
+// maxWidth from authFormStyles.
+const pageStyles = {
+  row: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "4rem",
+    width: "100%",
+    maxWidth: 820,
+  },
+  // Anchors each field's InputIcon to the left end of its input.
+  inputWrap: {
+    position: "relative",
+  },
+  // Room on the left for the icon, so typed text starts after it.
+  inputWithIcon: {
+    paddingLeft: "2.75rem",
+  },
+};
 
 // Border doubles as the validity indicator, same as the signup page.
 const BORDER_NEUTRAL = "1px solid #2A172F";
@@ -71,55 +94,66 @@ export default function LoginPage() {
     <>
       <NavBar />
       <section style={authFormStyles.section}>
-        <form style={authFormStyles.form} onSubmit={handleSubmit} noValidate>
-          <h1 style={authFormStyles.title}>{t("authLoginTitle")}</h1>
+        {/* Candle on the left, form on the right; CandleGlow hides itself
+            on phone, leaving the form alone and centred. */}
+        <div style={pageStyles.row}>
+          <CandleGlow />
+          <form style={authFormStyles.form} onSubmit={handleSubmit} noValidate>
+            <h1 style={authFormStyles.title}>{t("authLoginTitle")}</h1>
 
-          <div style={authFormStyles.field}>
-            <label style={authFormStyles.label} htmlFor="login-email">
-              {t("authEmailLabel")}
-            </label>
-            <input
-              id="login-email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              onBlur={() => markTouched("email")}
-              style={{ ...authFormStyles.input, border: emailEmpty ? BORDER_INVALID : BORDER_NEUTRAL }}
-              className="auth-input"
-              autoComplete="email"
-              required
-            />
-            {emailEmpty ? (
-              <p style={{ ...authFormStyles.error, color: INVALID_COLOR }}>{t("fieldRequired")}</p>
-            ) : null}
-          </div>
+            <div style={authFormStyles.field}>
+              <label style={authFormStyles.label} htmlFor="login-email">
+                {t("authEmailLabel")}
+              </label>
+              <div style={pageStyles.inputWrap}>
+                <input
+                  id="login-email"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  onBlur={() => markTouched("email")}
+                  style={{ ...authFormStyles.input, ...pageStyles.inputWithIcon, border: emailEmpty ? BORDER_INVALID : BORDER_NEUTRAL }}
+                  className="auth-input"
+                  autoComplete="email"
+                  required
+                />
+                <InputIcon src="/icons/mail.png" />
+              </div>
+              {emailEmpty ? (
+                <p style={{ ...authFormStyles.error, color: INVALID_COLOR }}>{t("fieldRequired")}</p>
+              ) : null}
+            </div>
 
-          <div style={authFormStyles.field}>
-            <label style={authFormStyles.label} htmlFor="login-password">
-              {t("authPasswordLabel")}
-            </label>
-            <input
-              id="login-password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              onBlur={() => markTouched("password")}
-              style={{ ...authFormStyles.input, border: passwordEmpty ? BORDER_INVALID : BORDER_NEUTRAL }}
-              className="auth-input"
-              autoComplete="current-password"
-              required
-            />
-            {passwordEmpty ? (
-              <p style={{ ...authFormStyles.error, color: INVALID_COLOR }}>{t("fieldRequired")}</p>
-            ) : null}
-          </div>
+            <div style={authFormStyles.field}>
+              <label style={authFormStyles.label} htmlFor="login-password">
+                {t("authPasswordLabel")}
+              </label>
+              <div style={pageStyles.inputWrap}>
+                <input
+                  id="login-password"
+                  type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  onBlur={() => markTouched("password")}
+                  style={{ ...authFormStyles.input, ...pageStyles.inputWithIcon, border: passwordEmpty ? BORDER_INVALID : BORDER_NEUTRAL }}
+                  className="auth-input"
+                  autoComplete="current-password"
+                  required
+                />
+                <InputIcon src="/icons/padlock.png" />
+              </div>
+              {passwordEmpty ? (
+                <p style={{ ...authFormStyles.error, color: INVALID_COLOR }}>{t("fieldRequired")}</p>
+              ) : null}
+            </div>
 
-          {error ? <p style={authFormStyles.error}>{error}</p> : null}
+            {error ? <p style={authFormStyles.error}>{error}</p> : null}
 
-          <button type="submit" style={authFormStyles.button} className="auth-button">
-            {t("authLoginButton")}
-          </button>
-        </form>
+            <button type="submit" style={authFormStyles.button} className="auth-button">
+              {t("authLoginButton")}
+            </button>
+          </form>
+        </div>
       </section>
 
       {/* :focus/:hover can't be expressed as inline styles — see
