@@ -97,18 +97,29 @@ function scoreStory(story, qWords, qKhmer) {
 // almost anything, and skipping them keeps a half-typed last word
 // ("neang ne") from knocking out a real match while the user is typing.
 export function searchStories(query, stories, limit = 5) {
-  const q = normalize(query);
-  const qWords = latinWords(q).filter((w) => w.length >= 3 && !STOPWORDS.has(w));
-  const qKhmer = khmerRuns(q);
-  if (qWords.length === 0 && qKhmer.length === 0) return { matches: [], suggestion: null };
-
-  // Stable sort, so a tie keeps the stories' original order.
-  const ranked = stories
-    .map((story) => scoreStory(story, qWords, qKhmer))
-    .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score);
-
+  const ranked = rankStories(query, stories);
   const matches = ranked.filter(({ exact }) => exact).slice(0, limit).map(({ story }) => story);
   const suggestion = matches.length === 0 && ranked.length > 0 ? ranked[0].story : null;
   return { matches, suggestion };
+}
+
+// The single closest story to the query, exact or not (null if nothing is
+// close). For a search with its own, stricter matching — the home page's
+// ArchiveBrowser — that found nothing and wants a "Did you mean …?".
+export function closestStory(query, stories) {
+  return rankStories(query, stories)[0]?.story ?? null;
+}
+
+// Every story with any score, best first. Stable sort, so a tie keeps the
+// stories' original order.
+function rankStories(query, stories) {
+  const q = normalize(query);
+  const qWords = latinWords(q).filter((w) => w.length >= 3 && !STOPWORDS.has(w));
+  const qKhmer = khmerRuns(q);
+  if (qWords.length === 0 && qKhmer.length === 0) return [];
+
+  return stories
+    .map((story) => scoreStory(story, qWords, qKhmer))
+    .filter(({ score }) => score > 0)
+    .sort((a, b) => b.score - a.score);
 }

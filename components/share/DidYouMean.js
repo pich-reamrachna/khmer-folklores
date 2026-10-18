@@ -2,10 +2,10 @@
 
 import { useTranslation } from "../shared/uiText.js";
 
-// /share's "Did you mean …?" line — shown instead of results when no story
-// matches every typed word, offering the single closest story
-// (searchStories' suggestion). Clicking it puts that title in the search box,
-// which turns it into a real match with its own "add my version" card.
+// "Did you mean …?" line offering the single closest story when a search
+// finds nothing — on /share (searchStories' suggestion) and under the home
+// page archive's no-results message (closestStory). Clicking it puts that
+// title in the search box via onPick, which turns it into a real match.
 
 const styles = {
   line: {

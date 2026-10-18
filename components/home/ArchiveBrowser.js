@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import ArchiveSearch from "./ArchiveSearch.js";
+import DidYouMean from "../share/DidYouMean.js";
+import { closestStory } from "../../utils/storyMatch.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 
@@ -257,6 +259,10 @@ const styles = {
     overflow: "hidden",
     textOverflow: "ellipsis",
   },
+  // Spacing above the "Did you mean …?" line under the no-results message.
+  suggestion: {
+    marginTop: "0.75rem",
+  },
   placeGroup: {
     display: "flex",
     alignItems: "center",
@@ -323,6 +329,8 @@ export default function ArchiveBrowser({ stories }) {
         return matchesAllTerms(haystack, searchTerms);
       })
     : stories;
+  // Only worked out when the search came up empty.
+  const suggestion = filteredStories.length === 0 ? closestStory(query, stories) : null;
 
   return (
     <section style={styles.section} className="archive-section">
@@ -392,9 +400,19 @@ export default function ArchiveBrowser({ stories }) {
                 })}
               </ul>
             ) : (
-              <p style={styles.snippet}>
-                &quot;{formatQueryForDisplay(query)}&quot; {t("archiveNoResultsSuffix")}
-              </p>
+              <>
+                <p style={styles.snippet}>
+                  &quot;{formatQueryForDisplay(query)}&quot; {t("archiveNoResultsSuffix")}
+                </p>
+                {/* Nothing matched exactly — offer the closest story by
+                    name/summary (typo-tolerant, see utils/storyMatch.js).
+                    Picking it searches for its title, which matches. */}
+                {suggestion ? (
+                  <div style={styles.suggestion}>
+                    <DidYouMean story={suggestion} onPick={setQuery} />
+                  </div>
+                ) : null}
+              </>
             )}
           </div>
         </div>
