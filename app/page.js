@@ -8,6 +8,7 @@ import EntryCardRow from "../components/home/EntryCardRow.js";
 import ArchiveBrowser from "../components/home/ArchiveBrowser.js";
 import Footer from "../components/shared/Footer.js";
 import { preloadImages } from "../utils/preloadImages.js";
+import { getCachedStories, setCachedStories } from "../utils/archiveCache.js";
 
 // How many stories the hero carousel features (the archive list below shows
 // them all). Shared by the image preload and the carousel itself.
@@ -83,8 +84,11 @@ export default function Home() {
   // Selected index drives the hero. Default to the first entry.
   const [selectedIndex, setSelectedIndex] = useState(0);
   // null = still loading; [] = loaded but empty. Distinguishing the two lets
-  // each show its own sensible state instead of a broken page.
-  const [flattenedStories, setFlattenedStories] = useState(null);
+  // each show its own sensible state instead of a broken page. Starts from
+  // the in-memory copy (utils/archiveCache.js) when this tab has already
+  // loaded the archive, so coming back to the home page shows it instantly
+  // instead of the loading message again.
+  const [flattenedStories, setFlattenedStories] = useState(getCachedStories);
 
   useEffect(() => {
     let active = true;
@@ -103,7 +107,24 @@ export default function Home() {
       .order("created_at", { ascending: false })
       .then(async ({ data, error }) => {
         if (!active) return;
-        // A slow/asleep/errored database resolves to empty, not a crash.
+        const cached = getCachedStories();
+        // Already showing the remembered copy: this was a quiet background
+        // refresh. A failed refresh keeps what's on screen; an identical one
+        // changes nothing (no re-render, the hero keeps its place).
+        if (cached) {
+          if (error || !data) return;
+          const fresh = groupEntries(data);
+          if (JSON.stringify(fresh) === JSON.stringify(cached)) return;
+          // Something changed (e.g. a newly published story): fetch any new
+          // pictures first so the swap doesn't show them half-loaded.
+          await preloadImages(fresh.slice(0, FEATURED_COUNT).map((s) => s.photoUrl));
+          setCachedStories(fresh);
+          if (active) setFlattenedStories(fresh);
+          return;
+        }
+        // First load in this tab. A slow/asleep/errored database resolves to
+        // empty, not a crash — and an error isn't remembered, so the next
+        // visit tries again instead of showing "No stories" from memory.
         const stories = error || !data ? [] : groupEntries(data);
         // Keep "Loading the archive…" up until the hero's pictures (every
         // featured story, so switching between them is instant too) and its
@@ -114,6 +135,7 @@ export default function Home() {
           HERO_BACKDROP,
           ...stories.slice(0, FEATURED_COUNT).map((s) => s.photoUrl),
         ]);
+        if (!error && data) setCachedStories(stories);
         if (active) setFlattenedStories(stories);
       });
     return () => {
