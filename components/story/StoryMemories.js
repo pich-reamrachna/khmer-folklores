@@ -34,6 +34,11 @@ const styles = {
     width: "100%",
     boxSizing: "border-box",
     padding: "4rem 2rem 6rem",
+    // /share's "add my version" links jump here (#tellings). A jump puts the
+    // section's top at the very top of the screen, under the fixed 90px
+    // NavBar, which would hide the eyebrow — this stops it just below the
+    // bar instead. Keep in sync with NavBar's height.
+    scrollMarginTop: 90,
     display: "flex",
     flexDirection: "column",
     backgroundColor: "#08040A",
