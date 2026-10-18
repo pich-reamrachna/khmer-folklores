@@ -388,6 +388,17 @@ const styles = {
     wordBreak: "break-all",
     margin: 0,
   },
+  // My Submissions / Review Submissions in the account dropdown — same
+  // typography as Log Out below so the menu reads as one list.
+  userMenuLink: {
+    display: "block",
+    padding: "0.4rem 0",
+    color: "#F5EFE6",
+    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.85rem",
+    fontWeight: 600,
+    textDecoration: "none",
+  },
   userLogoutBtn: {
     width: "100%",
     textAlign: "left",
@@ -478,6 +489,7 @@ export default function NavBar() {
   const [supabase] = useState(() => createClient());
   const [user, setUser] = useState(null);
   const [username, setUsername] = useState(null);
+  const [isCurator, setIsCurator] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef(null);
 
@@ -522,6 +534,7 @@ export default function NavBar() {
   useEffect(() => {
     if (!user?.id) {
       setUsername(null);
+      setIsCurator(false);
       return;
     }
     let active = true;
@@ -533,6 +546,11 @@ export default function NavBar() {
       .then(({ data }) => {
         if (active) setUsername(data?.username ?? null);
       });
+    // Only decides whether the menu shows "Review Submissions" — /review does
+    // its own check, and the database enforces it regardless.
+    supabase.rpc("is_curator").then(({ data }) => {
+      if (active) setIsCurator(data === true);
+    });
     return () => {
       active = false;
     };
@@ -601,6 +619,14 @@ export default function NavBar() {
                   <p style={styles.userName}>{username ?? t("navAccount")}</p>
                   <p style={styles.userEmail}>{user.email}</p>
                 </div>
+                <Link href="/my-submissions" style={styles.userMenuLink} onClick={() => setUserMenuOpen(false)}>
+                  My Submissions
+                </Link>
+                {isCurator ? (
+                  <Link href="/review" style={styles.userMenuLink} onClick={() => setUserMenuOpen(false)}>
+                    Review Submissions
+                  </Link>
+                ) : null}
                 <button type="button" style={styles.userLogoutBtn} onClick={handleLogout}>
                   Log Out
                 </button>
@@ -712,6 +738,14 @@ export default function NavBar() {
               <p style={styles.mobileUserName}>{username ?? t("navAccount")}</p>
               <p style={styles.mobileUserEmail}>{user.email}</p>
             </div>
+            <Link href="/my-submissions" style={styles.linkIdle} onClick={() => setMenuOpen(false)}>
+              My Submissions
+            </Link>
+            {isCurator ? (
+              <Link href="/review" style={styles.linkIdle} onClick={() => setMenuOpen(false)}>
+                Review Submissions
+              </Link>
+            ) : null}
             <button
               type="button"
               style={styles.mobileLogoutBtn}

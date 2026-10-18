@@ -196,6 +196,18 @@ const uiText = {
   reviewSummaryError: { en: "Write a summary before approving.", km: "សូមសរសេរសេចក្ដីសង្ខេបមុននឹងអនុម័ត។" },
   reviewNoteError: { en: "Write a note explaining why before rejecting.", km: "សូមសរសេរកំណត់ចំណាំពន្យល់ពីមូលហេតុ មុននឹងបដិសេធ។" },
   reviewSaveError: { en: "That wasn't saved. Please try again.", km: "មិនបានរក្សាទុកទេ។ សូមព្យាយាមម្តងទៀត។" },
+
+  // app/my-submissions/page.js + components/submissions/*. Khmer strings
+  // below are AI-drafted — flag for the curator to review.
+  submissionsTitle: { en: "Stories you've shared", km: "រឿងដែលអ្នកបានចែករំលែក" },
+  submissionsEmpty: { en: "You haven't started a new story yet.", km: "អ្នកមិនទាន់បានចាប់ផ្ដើមរឿងថ្មីនៅឡើយទេ។" },
+  submissionsLoadError: { en: "Your submissions couldn't be loaded. Refresh to try again.", km: "មិនអាចផ្ទុករឿងដែលអ្នកបានដាក់ស្នើបានទេ។ សូមផ្ទុកទំព័រឡើងវិញ។" },
+  submissionsStatusPending: { en: "Waiting for review", km: "កំពុងរង់ចាំការពិនិត្យ" },
+  submissionsStatusPublished: { en: "Published", km: "បានផ្សព្វផ្សាយ" },
+  submissionsStatusRejected: { en: "Not accepted", km: "មិនត្រូវបានទទួលយក" },
+  submissionsPendingHint: { en: "The curator will read it and write its summary before it's published.", km: "អ្នកចងក្រងនឹងអានវា ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា មុនពេលផ្សព្វផ្សាយ។" },
+  submissionsNoteLabel: { en: "Note from the curator", km: "កំណត់ចំណាំពីអ្នកចងក្រង" },
+  submissionsViewStory: { en: "View story", km: "មើលរឿង" },
 };
 
 // Falls back to English if a key or its Khmer translation is missing —
