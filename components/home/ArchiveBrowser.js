@@ -50,14 +50,15 @@ function stripInvisible(text) {
 
 // Splits a query into search terms: "quoted phrases" become one literal
 // term each (spaces inside stay part of that term); everything outside
-// quotes is split on whitespace into individual word terms.
+// quotes is split on whitespace into individual word terms. `quoted` is
+// kept so a quoted term can stay exact (see matchesAllTerms).
 function parseSearchTerms(query) {
   const terms = [];
   const pattern = /"([^"]*)"|(\S+)/g;
   let match;
   while ((match = pattern.exec(query)) !== null) {
-    const term = stripInvisible((match[1] ?? match[2]).trim());
-    if (term) terms.push(term);
+    const text = stripInvisible((match[1] ?? match[2]).trim());
+    if (text) terms.push({ text, quoted: match[1] !== undefined });
   }
   return terms;
 }
@@ -70,17 +71,21 @@ function parseSearchTerms(query) {
 const KHMER_SCRIPT = /[ក-៿]/;
 
 // Every term must match somewhere in the haystack, ANDed together —
-// whole-word for Latin terms (\p{L}/\p{N} lookaround, not \b, which is
-// ASCII-only and never matches around Khmer text), substring for Khmer.
+// substring for Khmer; for Latin terms, the start of a word
+// (\p{L}/\p{N} lookaround, not \b, which is ASCII-only and never matches
+// around Khmer text). A bare word of 3+ letters may match the start of a
+// longer word ("bram" → "Bramat"), so results show up while the user is
+// still typing — leaving "Did you mean …?" for real spelling mistakes.
+// Quoted phrases and 1–2 letter words must match whole words, as before.
+const PREFIX_MIN = 3;
 function matchesAllTerms(haystack, terms) {
-  return terms.every((term) => {
-    if (KHMER_SCRIPT.test(term)) {
-      return haystack.toLowerCase().includes(term.toLowerCase());
+  return terms.every(({ text, quoted }) => {
+    if (KHMER_SCRIPT.test(text)) {
+      return haystack.toLowerCase().includes(text.toLowerCase());
     }
-    const pattern = new RegExp(
-      `(?<![\\p{L}\\p{N}])${escapeRegExp(term)}(?![\\p{L}\\p{N}])`,
-      "iu"
-    );
+    const allowPrefix = !quoted && [...text].length >= PREFIX_MIN;
+    const wordEnd = allowPrefix ? "" : "(?![\\p{L}\\p{N}])";
+    const pattern = new RegExp(`(?<![\\p{L}\\p{N}])${escapeRegExp(text)}${wordEnd}`, "iu");
     return pattern.test(haystack);
   });
 }
