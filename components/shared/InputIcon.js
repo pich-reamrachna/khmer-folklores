@@ -1,9 +1,10 @@
-// A gold icon inside the left end of a text field (login page: mail on
-// Email, padlock on Password). Recoloured via mask-image like every other
-// icon in this app — background-color shows through the PNG's opaque parts.
-// The parent must be position: relative, and the input needs extra
-// left padding so typed text never runs under the icon. Decorative only:
-// aria-hidden, and pointer-events: none so clicks reach the input.
+// A gold icon inside the left end of a text field on the login and signup
+// pages (user on Username, mail on Email, padlock on the password fields).
+// Recoloured via mask-image like every other icon in this app —
+// background-color shows through the PNG's opaque parts. Wrap the input in
+// authFormStyles.inputWrap and spread authFormStyles.inputWithIcon over its
+// style, so typed text starts after the icon. Decorative only: aria-hidden,
+// and pointer-events: none so clicks reach the input.
 
 const styles = {
   icon: {

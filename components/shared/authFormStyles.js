@@ -57,6 +57,16 @@ const authFormStyles = {
     fontSize: "0.95rem",
     outline: "none",
   },
+  // Anchors an InputIcon (components/shared/InputIcon.js) to the left end
+  // of its input.
+  inputWrap: {
+    position: "relative",
+  },
+  // Spread over `input` when the field has an InputIcon: room on the left
+  // so typed text starts after the icon.
+  inputWithIcon: {
+    paddingLeft: "2.75rem",
+  },
   button: {
     marginTop: "0.5rem",
     width: "100%",

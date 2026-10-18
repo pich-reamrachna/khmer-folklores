@@ -20,14 +20,6 @@ const pageStyles = {
     width: "100%",
     maxWidth: 820,
   },
-  // Anchors each field's InputIcon to the left end of its input.
-  inputWrap: {
-    position: "relative",
-  },
-  // Room on the left for the icon, so typed text starts after it.
-  inputWithIcon: {
-    paddingLeft: "2.75rem",
-  },
 };
 
 // Border doubles as the validity indicator, same as the signup page.
@@ -105,14 +97,14 @@ export default function LoginPage() {
               <label style={authFormStyles.label} htmlFor="login-email">
                 {t("authEmailLabel")}
               </label>
-              <div style={pageStyles.inputWrap}>
+              <div style={authFormStyles.inputWrap}>
                 <input
                   id="login-email"
                   type="email"
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   onBlur={() => markTouched("email")}
-                  style={{ ...authFormStyles.input, ...pageStyles.inputWithIcon, border: emailEmpty ? BORDER_INVALID : BORDER_NEUTRAL }}
+                  style={{ ...authFormStyles.input, ...authFormStyles.inputWithIcon, border: emailEmpty ? BORDER_INVALID : BORDER_NEUTRAL }}
                   className="auth-input"
                   autoComplete="email"
                   required
@@ -128,14 +120,14 @@ export default function LoginPage() {
               <label style={authFormStyles.label} htmlFor="login-password">
                 {t("authPasswordLabel")}
               </label>
-              <div style={pageStyles.inputWrap}>
+              <div style={authFormStyles.inputWrap}>
                 <input
                   id="login-password"
                   type="password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
                   onBlur={() => markTouched("password")}
-                  style={{ ...authFormStyles.input, ...pageStyles.inputWithIcon, border: passwordEmpty ? BORDER_INVALID : BORDER_NEUTRAL }}
+                  style={{ ...authFormStyles.input, ...authFormStyles.inputWithIcon, border: passwordEmpty ? BORDER_INVALID : BORDER_NEUTRAL }}
                   className="auth-input"
                   autoComplete="current-password"
                   required

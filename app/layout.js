@@ -1,4 +1,4 @@
-import { Cinzel, Kantumruy_Pro, Plus_Jakarta_Sans } from "next/font/google";
+import { Cinzel, IM_Fell_English, Kantumruy_Pro, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import collection from "../collection.config.js";
 import { LanguageProvider } from "../components/shared/LanguageContext.js";
@@ -23,6 +23,16 @@ const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-jakarta",
 });
 
+// An old-print serif with real lowercase letters (Cinzel is capitals
+// only), for the worn, aged signup heading (SignupHeading.js).
+const imFell = IM_Fell_English({
+  weight: "400",
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-fell",
+});
+
 // khmerTitle styles (StoryHero.js, StoryDetails.js, ArchiveBrowser.js)
 // referenced 'Kantumruy Pro' as a bare CSS fallback before this — relying
 // on it being installed system-wide, which most visitors won't have.
@@ -44,7 +54,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${cinzel.variable} ${plusJakartaSans.variable} ${kantumruyPro.variable}`}
+      className={`${cinzel.variable} ${plusJakartaSans.variable} ${kantumruyPro.variable} ${imFell.variable}`}
     >
       <body
         style={{

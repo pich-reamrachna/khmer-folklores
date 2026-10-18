@@ -79,6 +79,7 @@ const uiText = {
   authLoginButton: { en: "Sign In", km: "ចូលគណនី" },
   authLoginError: { en: "Invalid email or password", km: "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ" },
   authSignupTitle: { en: "Sign Up", km: "បង្កើតគណនី" },
+  signupHeading: { en: "Share What You Remember", km: "ចែករំលែកអ្វីដែលអ្នកនៅចាំ" },
   authSignupButton: { en: "Sign Up", km: "បង្កើតគណនី" },
   authSignupError: { en: "Something went wrong. Try again.", km: "មានបញ្ហាកើតឡើង។ សូមព្យាយាមម្តងទៀត។" },
   authConfirmEmail: { en: "A confirmation email has been sent to your account. Please confirm to log in.", km: "បានផ្ញើអ៊ីមែលបញ្ជាក់ទៅគណនីរបស់អ្នក។ សូមបញ្ជាក់ដើម្បីចូលគណនី។" },

@@ -6,6 +6,8 @@ import NavBar from "../../components/shared/NavBar.js";
 import { useTranslation } from "../../components/shared/uiText.js";
 import authFormStyles from "../../components/shared/authFormStyles.js";
 import { createClient } from "../../utils/supabase/client.js";
+import InputIcon from "../../components/shared/InputIcon.js";
+import SignupHeading from "../../components/shared/SignupHeading.js";
 import { normalizeUsername, validateUsername } from "../../utils/username.js";
 
 // Should match the minimum configured in Supabase Auth (default 6).
@@ -18,6 +20,17 @@ const BORDER = {
   invalid: "1px solid #E58B8B",
   valid: "1px solid #C5A059",
 };
+// Lays the form and the "Share what you remember" heading side by side;
+// the form keeps its own maxWidth from authFormStyles.
+const ROW_STYLE = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  gap: "5rem",
+  width: "100%",
+  maxWidth: 900,
+};
+
 const INVALID_COLOR = "#E58B8B";
 const CHECKING_COLOR = "#8A7F91";
 const VALID_COLOR = "#C5A059";
@@ -159,116 +172,133 @@ export default function SignupPage() {
     <>
       <NavBar />
       <section style={authFormStyles.section}>
-        {signedUp ? (
-          <div style={authFormStyles.form}>
-            <h1 style={authFormStyles.title}>{t("authCheckEmailTitle")}</h1>
-            <p style={{ ...authFormStyles.error, color: VALID_COLOR, fontSize: "1rem", lineHeight: 1.6 }}>
-              {t("authConfirmEmail")}
-            </p>
-            <button
-              type="button"
-              onClick={() => router.push("/login")}
-              style={authFormStyles.button}
-              className="auth-button"
-            >
-              {t("authGoToLogin")}
+        {/* Form on the left, heading on the right; SignupHeading hides
+            itself on phone, leaving the form alone and centred. */}
+        <div style={ROW_STYLE}>
+          {signedUp ? (
+            <div style={authFormStyles.form}>
+              <h1 style={authFormStyles.title}>{t("authCheckEmailTitle")}</h1>
+              <p style={{ ...authFormStyles.error, color: VALID_COLOR, fontSize: "1rem", lineHeight: 1.6 }}>
+                {t("authConfirmEmail")}
+              </p>
+              <button
+                type="button"
+                onClick={() => router.push("/login")}
+                style={authFormStyles.button}
+                className="auth-button"
+              >
+                {t("authGoToLogin")}
+              </button>
+            </div>
+          ) : (
+            <form style={authFormStyles.form} onSubmit={handleSubmit} noValidate>
+            <h1 style={authFormStyles.title}>{t("authSignupTitle")}</h1>
+
+            <div style={authFormStyles.field}>
+              <label style={authFormStyles.label} htmlFor="signup-username">
+                {t("authUsernameLabel")}
+              </label>
+              <div style={authFormStyles.inputWrap}>
+                <input
+                  id="signup-username"
+                  type="text"
+                  value={username}
+                  onChange={(event) => {
+                    setUsername(event.target.value);
+                    setUsernameAvailable(null);
+                  }}
+                  onBlur={checkUsernameAvailability}
+                  style={{ ...authFormStyles.input, ...authFormStyles.inputWithIcon, border: uStatus.border }}
+                  className="auth-input"
+                  maxLength={20}
+                  autoComplete="username"
+                  required
+                />
+                <InputIcon src="/icons/user.png" />
+              </div>
+              {uStatus.message ? (
+                <p style={{ ...authFormStyles.error, color: uStatus.color }}>{uStatus.message}</p>
+              ) : null}
+            </div>
+
+            <div style={authFormStyles.field}>
+              <label style={authFormStyles.label} htmlFor="signup-email">
+                {t("authEmailLabel")}
+              </label>
+              <div style={authFormStyles.inputWrap}>
+                <input
+                  id="signup-email"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  onBlur={() => markTouched("email")}
+                  style={{ ...authFormStyles.input, ...authFormStyles.inputWithIcon, border: eStatus.border }}
+                  className="auth-input"
+                  autoComplete="email"
+                  required
+                />
+                <InputIcon src="/icons/mail.png" />
+              </div>
+              {eStatus.message ? (
+                <p style={{ ...authFormStyles.error, color: eStatus.color }}>{eStatus.message}</p>
+              ) : null}
+            </div>
+
+            <div style={authFormStyles.field}>
+              <label style={authFormStyles.label} htmlFor="signup-password">
+                {t("authPasswordLabel")}
+              </label>
+              <div style={authFormStyles.inputWrap}>
+                <input
+                  id="signup-password"
+                  type="password"
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  onBlur={() => markTouched("password")}
+                  style={{ ...authFormStyles.input, ...authFormStyles.inputWithIcon, border: pStatus.border }}
+                  className="auth-input"
+                  autoComplete="new-password"
+                  required
+                />
+                <InputIcon src="/icons/padlock.png" />
+              </div>
+              {pStatus.message ? (
+                <p style={{ ...authFormStyles.error, color: pStatus.color }}>{pStatus.message}</p>
+              ) : null}
+            </div>
+
+            <div style={authFormStyles.field}>
+              <label style={authFormStyles.label} htmlFor="signup-confirm-password">
+                {t("authConfirmPasswordLabel")}
+              </label>
+              <div style={authFormStyles.inputWrap}>
+                <input
+                  id="signup-confirm-password"
+                  type="password"
+                  value={confirmPassword}
+                  onChange={(event) => setConfirmPassword(event.target.value)}
+                  onBlur={() => markTouched("confirmPassword")}
+                  style={{ ...authFormStyles.input, ...authFormStyles.inputWithIcon, border: cStatus.border }}
+                  className="auth-input"
+                  autoComplete="new-password"
+                  required
+                />
+                <InputIcon src="/icons/padlock.png" />
+              </div>
+              {cStatus.message ? (
+                <p style={{ ...authFormStyles.error, color: cStatus.color }}>{cStatus.message}</p>
+              ) : null}
+            </div>
+
+            {error ? <p style={authFormStyles.error}>{error}</p> : null}
+
+            <button type="submit" style={authFormStyles.button} className="auth-button" disabled={submitting}>
+              {t("authSignupButton")}
             </button>
-          </div>
-        ) : (
-          <form style={authFormStyles.form} onSubmit={handleSubmit} noValidate>
-          <h1 style={authFormStyles.title}>{t("authSignupTitle")}</h1>
-
-          <div style={authFormStyles.field}>
-            <label style={authFormStyles.label} htmlFor="signup-username">
-              {t("authUsernameLabel")}
-            </label>
-            <input
-              id="signup-username"
-              type="text"
-              value={username}
-              onChange={(event) => {
-                setUsername(event.target.value);
-                setUsernameAvailable(null);
-              }}
-              onBlur={checkUsernameAvailability}
-              style={{ ...authFormStyles.input, border: uStatus.border }}
-              className="auth-input"
-              maxLength={20}
-              autoComplete="username"
-              required
-            />
-            {uStatus.message ? (
-              <p style={{ ...authFormStyles.error, color: uStatus.color }}>{uStatus.message}</p>
-            ) : null}
-          </div>
-
-          <div style={authFormStyles.field}>
-            <label style={authFormStyles.label} htmlFor="signup-email">
-              {t("authEmailLabel")}
-            </label>
-            <input
-              id="signup-email"
-              type="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-              onBlur={() => markTouched("email")}
-              style={{ ...authFormStyles.input, border: eStatus.border }}
-              className="auth-input"
-              autoComplete="email"
-              required
-            />
-            {eStatus.message ? (
-              <p style={{ ...authFormStyles.error, color: eStatus.color }}>{eStatus.message}</p>
-            ) : null}
-          </div>
-
-          <div style={authFormStyles.field}>
-            <label style={authFormStyles.label} htmlFor="signup-password">
-              {t("authPasswordLabel")}
-            </label>
-            <input
-              id="signup-password"
-              type="password"
-              value={password}
-              onChange={(event) => setPassword(event.target.value)}
-              onBlur={() => markTouched("password")}
-              style={{ ...authFormStyles.input, border: pStatus.border }}
-              className="auth-input"
-              autoComplete="new-password"
-              required
-            />
-            {pStatus.message ? (
-              <p style={{ ...authFormStyles.error, color: pStatus.color }}>{pStatus.message}</p>
-            ) : null}
-          </div>
-
-          <div style={authFormStyles.field}>
-            <label style={authFormStyles.label} htmlFor="signup-confirm-password">
-              {t("authConfirmPasswordLabel")}
-            </label>
-            <input
-              id="signup-confirm-password"
-              type="password"
-              value={confirmPassword}
-              onChange={(event) => setConfirmPassword(event.target.value)}
-              onBlur={() => markTouched("confirmPassword")}
-              style={{ ...authFormStyles.input, border: cStatus.border }}
-              className="auth-input"
-              autoComplete="new-password"
-              required
-            />
-            {cStatus.message ? (
-              <p style={{ ...authFormStyles.error, color: cStatus.color }}>{cStatus.message}</p>
-            ) : null}
-          </div>
-
-          {error ? <p style={authFormStyles.error}>{error}</p> : null}
-
-          <button type="submit" style={authFormStyles.button} className="auth-button" disabled={submitting}>
-            {t("authSignupButton")}
-          </button>
-          </form>
-        )}
+            </form>
+          )}
+          <SignupHeading />
+        </div>
       </section>
 
       {/* :focus/:hover can't be expressed as inline styles — see
