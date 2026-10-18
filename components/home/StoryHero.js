@@ -88,12 +88,11 @@ const styles = {
   // overflow:hidden clips it. Each picture is prepared to sit well in this
   // frame (transparent space added around it where needed), rather than
   // tuning the frame per story.
+  // top/right/bottom/width live in this file's <style> tag below (class
+  // .hero-picture-layer): tall screens re-anchor the frame to the middle
+  // of the hero, and a media query can't override inline styles.
   pictureLayer: {
     position: "absolute",
-    top: "-4%",
-    right: 0,
-    bottom: "-34%",
-    width: "60%",
     // Fades the top and bottom edges into the section: the bottom so the
     // picture doesn't end in a hard line behind the card row, the top so an
     // illustration that touches its own top edge (like Ahpt's hair) doesn't
@@ -101,15 +100,15 @@ const styles = {
     WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 10%, #000 70%, transparent 100%)",
     maskImage: "linear-gradient(to bottom, transparent 0%, #000 10%, #000 70%, transparent 100%)",
   },
-  // contain (not cover) so a portrait illustration is never cropped; pinned
-  // to the top centre of the frame. The left fade melts its left edge into
-  // the dark side where the text sits, and the drop-shadow traces its
-  // transparent outline.
+  // contain (not cover) so a portrait illustration is never cropped.
+  // objectPosition lives in this file's <style> tag below (class
+  // .hero-picture-img) — top centre on landscape screens, lower on tall
+  // ones. The left fade melts its left edge into the dark side where the
+  // text sits, and the drop-shadow traces its transparent outline.
   picture: {
     width: "100%",
     height: "100%",
     objectFit: "contain",
-    objectPosition: "center top",
     WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 25%)",
     maskImage: "linear-gradient(to right, transparent 0%, #000 25%)",
     // Cast shadow behind the figure: a deep, soft one thrown down-left onto
@@ -157,9 +156,6 @@ const styles = {
     display: "grid",
     alignItems: "center",
     gap: "3rem",
-  },
-  textContent: {
-    maxWidth: 760,
   },
   khmerTitle: {
     fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
@@ -338,7 +334,7 @@ export default function StoryHero({ entry, children }) {
               src={entry.photoUrl}
               alt=""
               style={styles.picture}
-              className="hero-fade"
+              className="hero-fade hero-picture-img"
             />
           </div>
         ) : null}
@@ -354,7 +350,9 @@ export default function StoryHero({ entry, children }) {
         </p>
 
         <div style={styles.main} className="hero-main-grid">
-          <div style={styles.textContent} key={entry.id} className="hero-fade">
+          {/* max-width lives in the <style> tag below (.hero-text) — it
+              narrows on small screens to keep clear of the picture. */}
+          <div key={entry.id} className="hero-fade hero-text">
             {entry.khmerTitle ? (
               <div style={styles.khmerTitle}>{entry.khmerTitle}</div>
             ) : null}
@@ -422,8 +420,60 @@ export default function StoryHero({ entry, children }) {
         .hero-meta-tag {
           white-space: nowrap;
         }
+        /* Landscape screens: the frame is the right 60% of the hero, from
+           just above its top to well past its bottom — each picture file is
+           prepared (empty space around the figure) to sit right here. */
         .hero-picture-layer {
           display: block;
+          top: -4%;
+          right: 0;
+          bottom: -34%;
+          width: 60%;
+        }
+        .hero-picture-img {
+          object-position: center top;
+        }
+        .hero-text {
+          max-width: 760px;
+        }
+        /* Tall screens (portrait tablets, narrow windows): the hero is taller
+           than it is wide, so its text sits around the middle while a
+           top-anchored frame would put the picture up behind the NavBar.
+           Here the frame keeps the same 60% width and its proportions, but
+           is centred on the hero (nudged up to sit beside the title) — the
+           picture moves with the text instead of with the top edge. */
+        @media (max-aspect-ratio: 5/4) {
+          .hero-picture-layer {
+            top: 50%;
+            bottom: auto;
+            aspect-ratio: 5 / 7;
+            transform: translateY(-58%);
+          }
+          /* In this tall frame a wide picture (the crocodile) fills only
+             the frame's width, and pinned to the top it sat high above the
+             title. 35% places it lower; pictures that already fill the
+             frame's height (Bramat) barely move. */
+          .hero-picture-img {
+            object-position: center 35%;
+          }
+        }
+        /* Too narrow for the title column and the category/place tag side by
+           side (the tag never wraps, and was running off-screen): the tag
+           drops onto its own line under the text, as on phone, shortened
+           with an ellipsis only if it still doesn't fit. */
+        @media (max-width: 860px) {
+          .hero-main-grid {
+            grid-template-columns: minmax(0, 1fr);
+          }
+          .hero-meta-tag {
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          /* With the tag on its own line the text column would otherwise
+             stretch across the full width, over the picture on the right. */
+          .hero-text {
+            max-width: 56%;
+          }
         }
         .hero-eyebrow {
           justify-content: flex-start;
@@ -457,6 +507,10 @@ export default function StoryHero({ entry, children }) {
           .hero-picture-layer {
             display: none;
           }
+          /* No picture on phone, so the text uses the full width again. */
+          .hero-text {
+            max-width: none;
+          }
           .hero-eyebrow {
             justify-content: center;
           }
@@ -486,6 +540,15 @@ export default function StoryHero({ entry, children }) {
           }
           .hero-scroll-cue {
             padding-top: 0.25rem;
+          }
+        }
+        /* Smaller title on phone: a long single word in Cinzel capitals
+           ("Reincarnation") was wider than the screen and got cut off. Last
+           in this block so it also wins over the short-screen rule above
+           (a short phone matches both). */
+        @media (max-width: 640px) {
+          .hero-title {
+            font-size: clamp(1.8rem, 7.4vw, 2.8rem);
           }
         }
       `}</style>
