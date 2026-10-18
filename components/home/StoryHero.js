@@ -62,7 +62,7 @@ const styles = {
     backgroundSize: "cover",
     backgroundPosition: "center bottom",
     backgroundRepeat: "no-repeat",
-    opacity: 0.38,
+    opacity: 0.25,
     WebkitMaskImage:
       "linear-gradient(to bottom, transparent 0%, #000 35%, #000 80%, transparent 100%)",
     maskImage:
@@ -76,6 +76,46 @@ const styles = {
     inset: 0,
     background:
       "linear-gradient(90deg, rgba(8, 4, 10, 0.92) 0%, rgba(8, 4, 10, 0.7) 35%, rgba(8, 4, 10, 0.2) 70%, rgba(8, 4, 10, 0) 100%)",
+  },
+  // The selected story's own picture (stories.photo_url), as a large
+  // cinematic layer filling the right of the hero — above the waves/scrim,
+  // below the text and cards (container's zIndex: 2). display lives in this
+  // file's <style> tag below (hidden on phone, where the text fills the
+  // width), since an inline display would beat that media query.
+  // One fixed frame for every story's picture: the right 60% of the hero,
+  // from just above the top to well past the bottom (the figure's lower body
+  // runs off behind the card row and fades out). The backdrop's
+  // overflow:hidden clips it. Each picture is prepared to sit well in this
+  // frame (transparent space added around it where needed), rather than
+  // tuning the frame per story.
+  pictureLayer: {
+    position: "absolute",
+    top: "-4%",
+    right: 0,
+    bottom: "-34%",
+    width: "60%",
+    // Fades the top and bottom edges into the section: the bottom so the
+    // picture doesn't end in a hard line behind the card row, the top so an
+    // illustration that touches its own top edge (like Ahpt's hair) doesn't
+    // show its gold glow cut off flat.
+    WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 10%, #000 70%, transparent 100%)",
+    maskImage: "linear-gradient(to bottom, transparent 0%, #000 10%, #000 70%, transparent 100%)",
+  },
+  // contain (not cover) so a portrait illustration is never cropped; pinned
+  // to the top centre of the frame. The left fade melts its left edge into
+  // the dark side where the text sits, and the drop-shadow traces its
+  // transparent outline.
+  picture: {
+    width: "100%",
+    height: "100%",
+    objectFit: "contain",
+    objectPosition: "center top",
+    WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 25%)",
+    maskImage: "linear-gradient(to right, transparent 0%, #000 25%)",
+    // Cast shadow behind the figure: a deep, soft one thrown down-left onto
+    // the gold waves, plus a tight one hugging the outline — so the figure
+    // reads as standing in front of the landscape, not printed on it.
+    filter: "drop-shadow(-22px 28px 30px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 8px rgba(0, 0, 0, 0.6))",
   },
   // gap: shrinks on short viewports.
   container: {
@@ -216,6 +256,9 @@ const styles = {
     color: "#E6C575",
     letterSpacing: "0.22em",
     textTransform: "uppercase",
+    // Sits over the story's picture, which can be light there (Bramat
+    // Promong's scarf) — a soft dark halo keeps the gold text readable.
+    textShadow: "0 0 10px rgba(8, 4, 10, 0.9), 0 0 3px rgba(8, 4, 10, 0.9)",
   },
   // paddingTop: shrinks on short viewports.
   scrollCue: {
@@ -285,6 +328,20 @@ export default function StoryHero({ entry, children }) {
       <div style={styles.backdrop} aria-hidden="true">
         <div style={styles.backdropImage} />
         <div style={styles.backdropScrim} />
+        {entry.photoUrl ? (
+          <div style={styles.pictureLayer} className="hero-picture-layer">
+            {/* key + hero-fade: fades in with the text when the selected
+                story changes. Decorative here (the title says what it is),
+                and this whole backdrop is aria-hidden. */}
+            <img
+              key={entry.id}
+              src={entry.photoUrl}
+              alt=""
+              style={styles.picture}
+              className="hero-fade"
+            />
+          </div>
+        ) : null}
       </div>
 
       <div style={styles.container} className="hero-container">
@@ -365,6 +422,9 @@ export default function StoryHero({ entry, children }) {
         .hero-meta-tag {
           white-space: nowrap;
         }
+        .hero-picture-layer {
+          display: block;
+        }
         .hero-eyebrow {
           justify-content: flex-start;
         }
@@ -391,6 +451,11 @@ export default function StoryHero({ entry, children }) {
           .hero-meta-tag {
             overflow: hidden;
             text-overflow: ellipsis;
+          }
+          /* Phone: the text spans the full width, so a picture behind it
+             would fight the title and summary — hidden here. */
+          .hero-picture-layer {
+            display: none;
           }
           .hero-eyebrow {
             justify-content: center;

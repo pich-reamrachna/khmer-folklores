@@ -22,6 +22,9 @@ function flattenStory(story, tellings) {
     categoryKhmer: story.category_khmer,
     summary: story.summary,
     summaryKhmer: story.summary_khmer,
+    // The story's own picture (a /public path or full URL), shown in the
+    // hero's right-hand space; null when the story doesn't have one yet.
+    photoUrl: story.photo_url,
     place: display.place,
     placeKhmer: display.place_khmer,
     // Covers every telling's place/description (not just the displayed one)
