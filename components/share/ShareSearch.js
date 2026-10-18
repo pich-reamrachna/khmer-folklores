@@ -9,6 +9,7 @@ import NewStoryPanel from "./NewStoryPanel.js";
 import { searchStories } from "../../utils/storyMatch.js";
 import { useTranslation } from "../shared/uiText.js";
 import styles from "./shareSearchStyles.js";
+import { usePublishedStories } from "./usePublishedStories.js";
 
 // "Share a Memory": first "Is your story already here?" — matches appear as
 // the user types; each one leads to that story's tellings, where the existing
@@ -16,11 +17,12 @@ import styles from "./shareSearchStyles.js";
 // they choose "start a new one", which swaps this view for NewStoryPanel
 // (the query is kept, so "Back to search" returns to the same results).
 
-export default function ShareSearch({ stories }) {
+export default function ShareSearch() {
   const t = useTranslation();
+  const stories = usePublishedStories(); // null until loaded
   const [query, setQuery] = useState("");
   const [composing, setComposing] = useState(false);
-  const { matches, suggestion } = searchStories(query, stories);
+  const { matches, suggestion } = searchStories(query, stories ?? []);
 
   if (composing) {
     return (
@@ -45,7 +47,12 @@ export default function ShareSearch({ stories }) {
 
         {/* aria-live so screen-reader users hear matches appear as they type. */}
         <div style={styles.results} aria-live="polite">
-          {query.trim() ? (
+          {/* Typed before the stories arrived: say so, rather than a false
+              "no similar stories" plus a "start a new one" that would skip
+              the duplicate check. */}
+          {query.trim() && stories === null ? (
+            <p style={styles.resultsHeading}>{t("shareLoadingStories")}</p>
+          ) : query.trim() ? (
             <>
               {matches.length > 0 ? (
                 <>
