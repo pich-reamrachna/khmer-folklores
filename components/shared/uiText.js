@@ -176,6 +176,26 @@ const uiText = {
     km: "អ្នកចងក្រងនឹងអានវា ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា។ នៅពេលវាត្រូវបានផ្សព្វផ្សាយ វានឹងបង្ហាញក្នុងបណ្ណសារ ដោយបញ្ជាក់ថាអ្នកជាអ្នកចែករំលែកដំបូង។",
   },
   newStoryDoneLink: { en: "Back to the archive", km: "ត្រឡប់ទៅបណ្ណសារ" },
+
+  // app/review/page.js + components/review/* (curator only). Khmer strings
+  // below are AI-drafted — flag for the curator to review. The form's story
+  // name/Khmer name/category labels reuse the newStory* keys above.
+  reviewTitle: { en: "Stories waiting for review", km: "រឿងដែលកំពុងរង់ចាំការពិនិត្យ" },
+  reviewPendingCount: { en: "waiting", km: "កំពុងរង់ចាំ" },
+  reviewEmpty: { en: "Nothing to review — every submission has been handled.", km: "គ្មានអ្វីត្រូវពិនិត្យទេ — រឿងដែលបានដាក់ស្នើទាំងអស់ត្រូវបានពិនិត្យរួចហើយ។" },
+  reviewLoadError: { en: "The review queue couldn't be loaded. Refresh to try again.", km: "មិនអាចផ្ទុកបញ្ជីរង់ចាំការពិនិត្យបានទេ។ សូមផ្ទុកទំព័រឡើងវិញ។" },
+  reviewSubmittedBy: { en: "shared by", km: "ចែករំលែកដោយ" },
+  reviewTellingTitle: { en: "Their telling", km: "ការនិទានរបស់គេ" },
+  reviewNoTelling: { en: "This story has no telling attached.", km: "រឿងនេះគ្មានការនិទានភ្ជាប់មកជាមួយទេ។" },
+  reviewSummaryLabel: { en: "Summary (needed to approve)", km: "សេចក្ដីសង្ខេប (ត្រូវការដើម្បីអនុម័ត)" },
+  reviewSummaryKhmerLabel: { en: "Summary in Khmer (optional)", km: "សេចក្ដីសង្ខេបជាភាសាខ្មែរ (ស្រេចចិត្ត)" },
+  reviewNoteLabel: { en: "Note to the submitter (needed to reject)", km: "កំណត់ចំណាំទៅអ្នកដាក់ស្នើ (ត្រូវការដើម្បីបដិសេធ)" },
+  reviewApprove: { en: "Approve & publish", km: "អនុម័ត និងផ្សព្វផ្សាយ" },
+  reviewReject: { en: "Reject", km: "បដិសេធ" },
+  reviewTitleError: { en: "Story name must be at least 3 characters.", km: "ឈ្មោះរឿងត្រូវមានយ៉ាងតិច 3 តួអក្សរ។" },
+  reviewSummaryError: { en: "Write a summary before approving.", km: "សូមសរសេរសេចក្ដីសង្ខេបមុននឹងអនុម័ត។" },
+  reviewNoteError: { en: "Write a note explaining why before rejecting.", km: "សូមសរសេរកំណត់ចំណាំពន្យល់ពីមូលហេតុ មុននឹងបដិសេធ។" },
+  reviewSaveError: { en: "That wasn't saved. Please try again.", km: "មិនបានរក្សាទុកទេ។ សូមព្យាយាមម្តងទៀត។" },
 };
 
 // Falls back to English if a key or its Khmer translation is missing —
