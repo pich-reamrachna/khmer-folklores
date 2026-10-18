@@ -292,15 +292,21 @@ const styles = {
     textTransform: "uppercase",
     padding: "0.5rem 0",
   },
+  // Spread over authLink on /login: the same gold "current page" underline
+  // as linkActive.
+  authLinkActive: {
+    borderBottom: "2px solid #C5A059",
+  },
   // Get Started: filled gold pill, same shape/weight as Footer.js's
-  // backToTopBtn.
+  // backToTopBtn. backgroundColor lives in app/globals.css's
+  // .auth-primary-btn rule: it turns white on hover and on /signup, and an
+  // inline background would beat both.
   authPrimaryBtn: {
     display: "inline-flex",
     alignItems: "center",
     padding: "0.55rem 1.2rem",
     borderRadius: 999,
     border: "none",
-    backgroundColor: "#C5A059",
     color: "#08040A",
     textDecoration: "none",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
@@ -432,12 +438,19 @@ const styles = {
     letterSpacing: "0.1em",
     textTransform: "uppercase",
   },
+  // Spread over mobileAuthLink on /login: a gold outline marks the current
+  // page (an underline doesn't suit the boxed mobile buttons).
+  mobileAuthLinkActive: {
+    borderColor: "#C5A059",
+    color: "#E6C575",
+  },
+  // backgroundColor lives in app/globals.css (.auth-primary-btn), same as
+  // authPrimaryBtn above.
   mobileAuthPrimaryBtn: {
     textAlign: "center",
     padding: "0.6rem",
     borderRadius: 10,
     border: "none",
-    backgroundColor: "#C5A059",
     color: "#08040A",
     textDecoration: "none",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
@@ -484,7 +497,14 @@ export default function NavBar() {
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const { language, setLanguage } = useLanguage();
   const t = useTranslation();
-  const onShare = usePathname() === "/share";
+  // Which nav item is the current page. "Browse the Archive" covers the
+  // archive itself (home and story pages), not the share, account or
+  // curator pages.
+  const pathname = usePathname();
+  const onShare = pathname === "/share";
+  const onLogin = pathname === "/login";
+  const onSignup = pathname === "/signup";
+  const onBrowse = !["/share", "/login", "/signup", "/my-submissions", "/review"].includes(pathname);
   const langSwitcherRef = useRef(null);
   const [supabase] = useState(() => createClient());
   const [user, setUser] = useState(null);
@@ -585,8 +605,8 @@ export default function NavBar() {
         <div className="nav-links">
           <Link
             href="/"
-            style={onShare ? styles.linkIdle : styles.linkActive}
-            aria-current={onShare ? undefined : "page"}
+            style={onBrowse ? styles.linkActive : styles.linkIdle}
+            aria-current={onBrowse ? "page" : undefined}
           >
             Browse the Archive
           </Link>
@@ -634,10 +654,20 @@ export default function NavBar() {
             </div>
           ) : (
             <>
-              <Link href="/login" style={styles.authLink} className="auth-link">
+              <Link
+                href="/login"
+                style={onLogin ? { ...styles.authLink, ...styles.authLinkActive } : styles.authLink}
+                className="auth-link"
+                aria-current={onLogin ? "page" : undefined}
+              >
                 Sign In
               </Link>
-              <Link href="/signup" style={styles.authPrimaryBtn} className="auth-primary-btn">
+              <Link
+                href="/signup"
+                style={styles.authPrimaryBtn}
+                className={onSignup ? "auth-primary-btn is-current" : "auth-primary-btn"}
+                aria-current={onSignup ? "page" : undefined}
+              >
                 Get Started
               </Link>
             </>
@@ -717,8 +747,8 @@ export default function NavBar() {
       >
         <Link
           href="/"
-          style={onShare ? styles.linkIdle : styles.linkActive}
-          aria-current={onShare ? undefined : "page"}
+          style={onBrowse ? styles.linkActive : styles.linkIdle}
+          aria-current={onBrowse ? "page" : undefined}
           onClick={() => setMenuOpen(false)}
         >
           Browse the Archive
@@ -761,7 +791,8 @@ export default function NavBar() {
           <div style={styles.mobileAuthRow}>
             <Link
               href="/login"
-              style={styles.mobileAuthLink}
+              style={onLogin ? { ...styles.mobileAuthLink, ...styles.mobileAuthLinkActive } : styles.mobileAuthLink}
+              aria-current={onLogin ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
             >
               Sign In
@@ -769,6 +800,8 @@ export default function NavBar() {
             <Link
               href="/signup"
               style={styles.mobileAuthPrimaryBtn}
+              className={onSignup ? "auth-primary-btn is-current" : "auth-primary-btn"}
+              aria-current={onSignup ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
             >
               Get Started

@@ -151,9 +151,19 @@ main {
    only auto-scopes native lowercase elements, not a custom component
    like next/link's Link, so a scoped :hover rule here would never
    match the rendered <a>. */
-.auth-link:hover,
-.auth-primary-btn:hover {
+.auth-link:hover {
   opacity: 0.8;
+}
+/* Get Started (desktop pill and mobile button): gold, turning white on
+   hover and while you're on the Sign Up page (.is-current). The colour lives
+   only here, not inline in NavBar.js, so these rules can change it. */
+.auth-primary-btn {
+  background-color: #c5a059;
+  transition: background-color 0.2s ease;
+}
+.auth-primary-btn:hover,
+.auth-primary-btn.is-current {
+  background-color: #f5efe6;
 }
 
 /* StoryMemories.js's "Share Your Version" button. Base styles are inline on
