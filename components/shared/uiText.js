@@ -61,7 +61,7 @@ const uiText = {
   footerNavHeading: { en: "Archive Navigation", km: "ការរុករកបណ្ណសារ" },
   footerAscendHeading: { en: "Ascend", km: "ឡើងលើ" },
   footerBackToTop: { en: "Back to top ↑", km: "ត្រឡប់ទៅលើ ↑" },
-  footerCreditLine: { en: "Curated by", km: "ថែរក្សាដោយ" },
+  footerCreditLine: { en: "Curated by", km: "ចងក្រងដោយ" },
   footerSourceLine: { en: "Source:", km: "ប្រភព៖" },
   footerBuiltIn: {
     en: "Built in ICT 340 — Vibe Coding, American University of Phnom Penh, Fall 2026. This archive is under construction all semester. Come back in December.",
