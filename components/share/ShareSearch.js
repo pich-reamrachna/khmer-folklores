@@ -3,9 +3,10 @@
 import { useState } from "react";
 import ArchiveSearch from "../home/ArchiveSearch.js";
 import StoryMatchCard from "./StoryMatchCard.js";
+import DidYouMean from "./DidYouMean.js";
 import StartNewStoryButton from "./StartNewStoryButton.js";
 import NewStoryPanel from "./NewStoryPanel.js";
-import { findSimilarStories } from "../../utils/storyMatch.js";
+import { searchStories } from "../../utils/storyMatch.js";
 import { useTranslation } from "../shared/uiText.js";
 
 // "Share a Memory": first "Is your story already here?" — matches appear as
@@ -66,7 +67,7 @@ export default function ShareSearch({ stories }) {
   const t = useTranslation();
   const [query, setQuery] = useState("");
   const [composing, setComposing] = useState(false);
-  const matches = findSimilarStories(query, stories);
+  const { matches, suggestion } = searchStories(query, stories);
 
   if (composing) {
     return (
@@ -91,16 +92,22 @@ export default function ShareSearch({ stories }) {
         <div style={styles.results} aria-live="polite">
           {query.trim() ? (
             <>
-              <p style={styles.resultsHeading}>
-                {matches.length > 0 ? t("shareMatchesHeading") : t("shareNoMatches")}
-              </p>
-              <ul style={styles.list}>
-                {matches.map((story) => (
-                  <li key={story.id}>
-                    <StoryMatchCard story={story} />
-                  </li>
-                ))}
-              </ul>
+              {matches.length > 0 ? (
+                <>
+                  <p style={styles.resultsHeading}>{t("shareMatchesHeading")}</p>
+                  <ul style={styles.list}>
+                    {matches.map((story) => (
+                      <li key={story.id}>
+                        <StoryMatchCard story={story} />
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              ) : suggestion ? (
+                <DidYouMean story={suggestion} onPick={setQuery} />
+              ) : (
+                <p style={styles.resultsHeading}>{t("shareNoMatches")}</p>
+              )}
               <StartNewStoryButton onStart={() => setComposing(true)} />
             </>
           ) : null}

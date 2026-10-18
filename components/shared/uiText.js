@@ -144,6 +144,7 @@ const uiText = {
   sharePlaceholder: { en: "Story name or a few words about it", km: "ឈ្មោះរឿង ឬពាក្យពីរបីអំពីវា" },
   shareMatchesHeading: { en: "Could it be one of these?", km: "តើវាជារឿងមួយក្នុងចំណោមរឿងទាំងនេះឬទេ?" },
   shareNoMatches: { en: "No similar stories found.", km: "រកមិនឃើញរឿងស្រដៀងគ្នាទេ។" },
+  shareDidYouMean: { en: "Did you mean", km: "តើអ្នកចង់និយាយអំពី" },
   shareAddVersion: { en: "This is it — add my version", km: "គឺរឿងនេះហើយ — បន្ថែមការនិទានរបស់ខ្ញុំ" },
   shareStartNew: { en: "My story isn't here — start a new one", km: "រឿងរបស់ខ្ញុំមិនមាននៅទីនេះទេ — ចាប់ផ្ដើមរឿងថ្មី" },
   shareLoginToStart: { en: "Log in to start a new story.", km: "សូមចូលគណនីដើម្បីចាប់ផ្ដើមរឿងថ្មី។" },

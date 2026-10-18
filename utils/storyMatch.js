@@ -1,9 +1,9 @@
 // Finds published stories that look like the one a contributor is about to
 // share, so /share can point them at an existing story instead of letting
-// them create a duplicate. Deliberately more forgiving than ArchiveBrowser's
-// search (any word may match, small spelling differences are allowed): a
-// wrong suggestion costs the user a glance, a missed one costs the archive a
-// duplicate story.
+// them create a duplicate. Two tiers: stories matching every typed word are
+// shown as results; failing that, the closest partial or near-miss spelling
+// is offered as "Did you mean …?" — a guess is labelled as a guess, but a
+// misspelled name still leads to the existing story.
 
 const KHMER_RUN = /[ក-៿]+/g;
 // Filler words that would match nearly every story.
@@ -41,45 +41,74 @@ function editDistance(a, b) {
   return prev[b.length];
 }
 
-// Exact, a typed-so-far prefix ("nea" → "neang"), or a near-miss spelling.
+// How well query word q matches word w: 2 for exact or a typed-so-far prefix
+// ("nea" → "neang"), 1 for a near-miss spelling, 0 for no match. Near-misses
+// score lower so a real word match outranks a lookalike — for "neang neak",
+// Neang Neath (exact "neang") is the suggestion, not Boeung Yeak Lorm
+// ("neak" ≈ "yeak").
 // Tolerance grows with word length: short words must match exactly (or "cat"
 // would match "bat"), while longer ones may differ by the letter or two that
 // separates romanizations like "neak"/"nak".
-function wordsMatch(q, w) {
-  if (q === w) return true;
-  if (q.length >= 3 && w.startsWith(q)) return true;
+function matchStrength(q, w) {
+  if (q === w) return 2;
+  if (q.length >= 3 && w.startsWith(q)) return 2;
   const longer = Math.max(q.length, w.length);
   const allowed = longer >= 7 ? 2 : longer >= 4 ? 1 : 0;
-  return allowed > 0 && Math.abs(q.length - w.length) <= allowed && editDistance(q, w) <= allowed;
+  const near = allowed > 0 && Math.abs(q.length - w.length) <= allowed && editDistance(q, w) <= allowed;
+  return near ? 1 : 0;
 }
 
-// Returns up to `limit` stories, best match first. A hit in the title counts
-// three times as much as a hit in the summary.
-export function findSimilarStories(query, stories, limit = 5) {
-  const q = normalize(query);
-  const qWords = latinWords(q).filter((w) => !STOPWORDS.has(w));
-  const qKhmer = khmerRuns(q);
-  if (qWords.length === 0 && qKhmer.length === 0) return [];
+// The strongest match q has against any of `words`.
+const bestStrength = (q, words) => words.reduce((best, w) => Math.max(best, matchStrength(q, w)), 0);
 
-  return stories
-    .map((story) => {
-      const title = normalize(`${story.title} ${story.khmerTitle ?? ""}`);
-      const summary = normalize(`${story.summary ?? ""} ${story.summaryKhmer ?? ""}`);
-      const titleWords = latinWords(title);
-      const summaryWords = latinWords(summary);
-      let score = 0;
-      for (const qw of qWords) {
-        if (titleWords.some((w) => wordsMatch(qw, w))) score += 3;
-        else if (summaryWords.some((w) => wordsMatch(qw, w))) score += 1;
-      }
-      for (const run of qKhmer) {
-        if (title.includes(run)) score += 3;
-        else if (summary.includes(run)) score += 1;
-      }
-      return { story, score };
-    })
+// Scores one story against the query. `exact` is true only when every query
+// word matches exactly (or as a prefix) and every Khmer run appears — that
+// story is a real match. `score` ranks stories, including partial and
+// near-miss ones: each query word scores once, from where it matches best —
+// title hits count three times as much as summary hits, a near-miss spelling
+// half as much as an exact match (title 6 / 3, summary 2 / 1). Khmer runs
+// only match exactly (title 6, summary 2).
+function scoreStory(story, qWords, qKhmer) {
+  const title = normalize(`${story.title} ${story.khmerTitle ?? ""}`);
+  const summary = normalize(`${story.summary ?? ""} ${story.summaryKhmer ?? ""}`);
+  const titleWords = latinWords(title);
+  const summaryWords = latinWords(summary);
+  let score = 0;
+  let exact = true;
+  for (const qw of qWords) {
+    const inTitle = bestStrength(qw, titleWords);
+    const inSummary = bestStrength(qw, summaryWords);
+    score += Math.max(3 * inTitle, inSummary);
+    if (inTitle < 2 && inSummary < 2) exact = false;
+  }
+  for (const run of qKhmer) {
+    if (title.includes(run)) score += 6;
+    else if (summary.includes(run)) score += 2;
+    else exact = false;
+  }
+  return { story, score, exact };
+}
+
+// Searches for the story a contributor is about to share. Returns:
+// - matches: up to `limit` stories where every typed word matches, best first.
+// - suggestion: only when there are no matches — the single best partial or
+//   near-miss story, for a "Did you mean …?" prompt (null if nothing is close).
+// Words under 3 letters are skipped, like the filler words: they'd match
+// almost anything, and skipping them keeps a half-typed last word
+// ("neang ne") from knocking out a real match while the user is typing.
+export function searchStories(query, stories, limit = 5) {
+  const q = normalize(query);
+  const qWords = latinWords(q).filter((w) => w.length >= 3 && !STOPWORDS.has(w));
+  const qKhmer = khmerRuns(q);
+  if (qWords.length === 0 && qKhmer.length === 0) return { matches: [], suggestion: null };
+
+  // Stable sort, so a tie keeps the stories' original order.
+  const ranked = stories
+    .map((story) => scoreStory(story, qWords, qKhmer))
     .filter(({ score }) => score > 0)
-    .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map(({ story }) => story);
+    .sort((a, b) => b.score - a.score);
+
+  const matches = ranked.filter(({ exact }) => exact).slice(0, limit).map(({ story }) => story);
+  const suggestion = matches.length === 0 && ranked.length > 0 ? ranked[0].story : null;
+  return { matches, suggestion };
 }
