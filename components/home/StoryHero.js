@@ -53,12 +53,13 @@ const styles = {
   // bottom keeps them behind the card row and away from the title/summary.
   // Low opacity plus the mask fade (top and bottom edges dissolve into
   // `section`'s background) keep it an ambient texture, not a picture
-  // competing with the text. The filename's space and parentheses are why
-  // the url is quoted and the space is %20-encoded.
+  // competing with the text.
   backdropImage: {
     position: "absolute",
     inset: 0,
-    backgroundImage: 'url("/golden-waves-transparent-solid%20(1).png")',
+    // A 2000px WebP of the original PNG (602 KB instead of 2.7 MB) — at this
+    // low opacity the smaller size isn't visible. app/page.js preloads it.
+    backgroundImage: "url(/golden-waves.webp)",
     backgroundSize: "cover",
     backgroundPosition: "center bottom",
     backgroundRepeat: "no-repeat",

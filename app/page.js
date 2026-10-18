@@ -7,6 +7,14 @@ import NavBar from "../components/shared/NavBar.js";
 import EntryCardRow from "../components/home/EntryCardRow.js";
 import ArchiveBrowser from "../components/home/ArchiveBrowser.js";
 import Footer from "../components/shared/Footer.js";
+import { preloadImages } from "../utils/preloadImages.js";
+
+// How many stories the hero carousel features (the archive list below shows
+// them all). Shared by the image preload and the carousel itself.
+const FEATURED_COUNT = 5;
+// The hero's gold-waves backdrop (StoryHero.js) — preloaded with the
+// featured pictures so the whole hero appears at once.
+const HERO_BACKDROP = "/golden-waves.webp";
 
 // Shapes one story + its tellings into the flat object the home components
 // read (entry.title, entry.place, entry.khmerTitle, ...), mapping the DB's
@@ -93,10 +101,20 @@ export default function Home() {
       .select("*, stories!entries_story_id_fkey!inner(*)")
       .eq("stories.status", "published")
       .order("created_at", { ascending: false })
-      .then(({ data, error }) => {
+      .then(async ({ data, error }) => {
         if (!active) return;
         // A slow/asleep/errored database resolves to empty, not a crash.
-        setFlattenedStories(error || !data ? [] : groupEntries(data));
+        const stories = error || !data ? [] : groupEntries(data);
+        // Keep "Loading the archive…" up until the hero's pictures (every
+        // featured story, so switching between them is instant too) and its
+        // backdrop are downloaded and decoded — otherwise the page appeared
+        // with the pictures still popping in. preloadImages gives up after
+        // a few seconds so a slow connection still gets the page.
+        await preloadImages([
+          HERO_BACKDROP,
+          ...stories.slice(0, FEATURED_COUNT).map((s) => s.photoUrl),
+        ]);
+        if (active) setFlattenedStories(stories);
       });
     return () => {
       active = false;
@@ -131,7 +149,7 @@ export default function Home() {
   // Carousel only features the first 5 stories — ArchiveBrowser below still
   // searches/lists all of them, so the rest stay fully reachable, just not
   // in the featured row.
-  const featuredStories = flattenedStories.slice(0, 5);
+  const featuredStories = flattenedStories.slice(0, FEATURED_COUNT);
 
   return (
     <main
