@@ -59,7 +59,9 @@ export default function RootLayout({ children }) {
       <body
         style={{
           margin: 0,
-          backgroundColor: "#14181F",
+          // Same near-black as the pages, so nothing of a different colour
+          // flashes between one page leaving and the next fading in.
+          backgroundColor: "#08040A",
           color: "#E8EDF2",
           fontFamily:
             "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",

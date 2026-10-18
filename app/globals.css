@@ -33,10 +33,17 @@ main {
   animation: hero-fade-in 350ms ease;
 }
 
-/* Whole-page fade-in on route navigation — app/page.js and
-   StoryPageShell.js's <main>. Same keyframe/timing as .hero-fade above. */
-.page-fade-in {
-  animation: hero-fade-in 350ms ease;
+/* Whole-page fade-in on every navigation — app/template.js wraps each page
+   in this. A little longer and softer (ease-out) than .hero-fade, so moving
+   between pages feels gradual rather than a cut. */
+.page-transition {
+  animation: hero-fade-in 450ms ease-out;
+}
+/* Respect the "reduce motion" setting: pages just appear. */
+@media (prefers-reduced-motion: reduce) {
+  .page-transition {
+    animation: none;
+  }
 }
 
 /* Rules below are kept here instead of in each component's own <style
