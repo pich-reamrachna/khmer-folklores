@@ -176,6 +176,15 @@ const styles = {
     textTransform: "uppercase",
     cursor: "pointer",
   },
+  // The flags are full-color, so they're plain <img>s rather than the
+  // mask-image recoloring used for the monochrome icons below.
+  langFlag: {
+    width: 18,
+    height: 18,
+    objectFit: "contain",
+    flexShrink: 0,
+    marginRight: 8,
+  },
   // Recolored via mask-image, same technique as every other icon in this
   // project (BackButton.js, StoryHero.js's scroll cue). Rotates 180deg
   // open, same base+open merge pattern as langDropdown below.
@@ -676,14 +685,19 @@ export default function NavBar() {
           <div style={styles.langSwitcher} ref={langSwitcherRef}>
             <button
               type="button"
-              style={{ ...styles.langPill, ...(language === "km" ? styles.trackingNone : null) }}
+              style={styles.langPill}
               onClick={() => setLangMenuOpen((open) => !open)}
               aria-expanded={langMenuOpen}
               aria-haspopup="listbox"
               aria-label={t("navChangeLanguage")}
             >
-              {language === "km" ? "ខ្មែរ" : "EN"}
-              <span
+              <img
+                src={language === "km" ? "/icons/cambodia.png" : "/icons/united-states.png"}
+                alt=""
+                aria-hidden="true"
+                style={{ ...styles.langFlag, marginRight: 0 }}
+              />
+  <span
                 aria-hidden="true"
                 style={{ ...styles.langPillIcon, ...(langMenuOpen ? styles.langPillIconOpen : null) }}
               />
@@ -704,6 +718,7 @@ export default function NavBar() {
                   setLangMenuOpen(false);
                 }}
               >
+                <img src="/icons/united-states.png" alt="" aria-hidden="true" style={styles.langFlag} />
                 English
               </button>
               <button
@@ -716,6 +731,7 @@ export default function NavBar() {
                   setLangMenuOpen(false);
                 }}
               >
+                <img src="/icons/cambodia.png" alt="" aria-hidden="true" style={styles.langFlag} />
                 ខ្មែរ
               </button>
             </div>
