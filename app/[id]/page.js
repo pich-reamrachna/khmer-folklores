@@ -18,9 +18,14 @@ export default async function StoryPage({ params }) {
     // Pending/rejected stories have no public page — same reasoning as the
     // home page's filter. They 404 like a missing id.
     .eq("status", "published")
+    // Only its published tellings, same as the home page: an owner's own
+    // pending/returned telling shows on /my-entries, not here as if it were
+    // published. This filters the embedded list, not the story row.
+    .eq("entries.status", "published")
     .single();
 
-  // Missing id, an error, an unpublished story, or a story with no tellings
+  // Missing id, an error, an unpublished story, or a story with no published
+  // tellings (e.g. its only telling is waiting for re-review after an edit)
   // all 404 — same as when this page read the data file and found nothing.
   if (error || !story || !story.entries?.length) {
     notFound();

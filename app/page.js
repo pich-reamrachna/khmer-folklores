@@ -104,6 +104,11 @@ export default function Home() {
       .from("entries")
       .select("*, stories!entries_story_id_fkey!inner(*)")
       .eq("stories.status", "published")
+      // Published tellings only. The database also shows a visitor their own
+      // pending/returned tellings (they belong on /my-entries, not in the
+      // archive) and shows a reviewer everything — this keeps the archive
+      // the same for everyone. The archive search runs on this same data.
+      .eq("status", "published")
       .order("created_at", { ascending: false })
       .then(async ({ data, error }) => {
         if (!active) return;
