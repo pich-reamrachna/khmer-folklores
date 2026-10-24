@@ -226,10 +226,15 @@ const uiText = {
   tellingStatusReturned: { en: "Returned — needs changes", km: "បានបញ្ជូនត្រឡប់ — ត្រូវកែប្រែ" },
   tellingPendingHint: { en: "The curator will read it before it appears on the story.", km: "អ្នកចងក្រងនឹងអានវា មុនពេលវាបង្ហាញលើរឿង។" },
 
-  // StoryDetails.js / StoryMemories.js — first-sharer credit. Khmer strings
-  // below are AI-drafted — flag for the curator to review.
+  // FirstTelling.js / StoryMemories.js — the story's first telling and the
+  // tellings under it. Khmer strings below are AI-drafted — flag for the
+  // curator to review.
+  firstTellingHeading: { en: "The First Telling", km: "ការនិទានដំបូង" },
+  memoriesNoneYet: {
+    en: "No one else has shared their version yet — be the first.",
+    km: "មិនទាន់មាននរណាម្នាក់ទៀតចែករំលែកកំណែរបស់ខ្លួននៅឡើយទេ — សូមក្លាយជាអ្នកដំបូង។",
+  },
   detailsFirstSharedBy: { en: "First shared by", km: "ចែករំលែកដំបូងដោយ" },
-  memoriesFirstTelling: { en: "First telling", km: "ការនិទានដំបូង" },
   memoriesEdited: { en: "Edited", km: "បានកែ" },
   menuDeleteLocked: {
     en: "The first telling of a published story can't be deleted — you can still edit it.",

@@ -7,27 +7,14 @@ import { photoStoragePath } from "../../utils/storage.js";
 import { useContributeModal } from "../contribute/contributeModalContext.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import { formatDate } from "../../utils/formatDate.js";
 
-// "What people remember" — the tellings on a story's page, shown as a flat
+// "What people remember" — other people's tellings on a story's page, shown as a flat
 // Reddit-style comment thread (one entry per contributor's telling). Each
 // telling shows its title + byline collapsed, expands on click to reveal the
 // body/photo, and — for the owner — has a three-dots menu to edit or delete.
-
-// Manual month names, not toLocaleDateString("km-KH", ...) — Khmer locale
-// data isn't reliably bundled across browsers (Intl.DateTimeFormat
-// .supportedLocalesOf(["km"]) returns empty in some Chrome builds), which
-// silently falls back to English. This also sidesteps Date's UTC-midnight
-// parsing of "YYYY-MM-DD" shifting the day in timezones behind UTC.
-const MONTH_NAMES = {
-  en: ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-  km: ["មករា", "កុម្ភៈ", "មីនា", "មេសា", "ឧសភា", "មិថុនា", "កក្កដា", "សីហា", "កញ្ញា", "តុលា", "វិច្ឆិកា", "ធ្នូ"],
-};
-
-function formatDate(dateString, language) {
-  const [year, month, day] = dateString.split("-").map(Number);
-  const monthName = MONTH_NAMES[language][month - 1];
-  return language === "km" ? `${day} ${monthName} ${year}` : `${monthName} ${day}, ${year}`;
-}
+// The story's first telling isn't here: it's the story itself, shown in full
+// under the title (FirstTelling.js). These are the replies to it.
 
 const styles = {
   section: {
@@ -105,6 +92,13 @@ const styles = {
     letterSpacing: "0.15em",
     textTransform: "uppercase",
     margin: 0,
+  },
+  // Shown when nobody but the first sharer has told this story yet.
+  empty: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.95rem",
+    color: "#8A7F91",
+    margin: "1.5rem 0 0",
   },
   // The thread fills the container width (same as the header above it).
   thread: {
@@ -234,31 +228,10 @@ const styles = {
   menuItemDanger: {
     color: "#E0736A",
   },
-  // Stands in for Delete on the story's first telling — plain text, not a
-  // menu item, since there's nothing to click.
-  menuNote: {
-    margin: 0,
-    padding: "0.5rem 0.7rem",
-    maxWidth: 200,
-    color: "#8A7F91",
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.78rem",
-    lineHeight: 1.5,
-  },
   // "· Edited <date>" at the end of the byline — italic so it reads as a note
   // about the telling, not part of its details.
   edited: {
     fontStyle: "italic",
-  },
-  // "First telling" pill in the byline, next to the contributor's name.
-  firstBadge: {
-    color: "#E6C575",
-    border: "1px solid rgba(197, 160, 89, 0.6)",
-    borderRadius: 999,
-    padding: "0.05rem 0.55rem",
-    fontSize: "0.7rem",
-    fontWeight: 700,
-    whiteSpace: "nowrap",
   },
   // letterSpacing is a Latin tracking convention that pries apart Khmer's
   // stacked glyph clusters — spread this in when the text is Khmer.
@@ -367,10 +340,7 @@ const styles = {
   },
 };
 
-// originId: the story's first telling (stories.origin_entry_id) — it gets a
-// "First telling" badge, and its owner's menu shows a note instead of Delete,
-// since the database refuses to delete a published story's first telling.
-export default function StoryMemories({ versions, storyId, originId, storyTitle, storyTitleKhmer }) {
+export default function StoryMemories({ versions, storyId, storyTitle, storyTitleKhmer }) {
   const router = useRouter();
   const { language } = useLanguage();
   const t = useTranslation();
@@ -466,19 +436,9 @@ export default function StoryMemories({ versions, storyId, originId, storyTitle,
     router.refresh();
   };
 
-  if (!versions || versions.length === 0) return null;
-
-  // Newest first for the thread. versions arrive oldest-first (with undated
-  // ones ahead of all), so reversing puts newest on top and undated at the
-  // bottom — without touching StoryDetails, which still reads versions[0].
-  // The story's first telling is the exception: it's pinned on top, like a
-  // forum's original post, so it stays under the "First shared by" credit
-  // instead of sinking as new tellings arrive.
-  const newestFirst = versions.slice().reverse();
-  const firstTelling = newestFirst.find((v) => originId && v.id === originId);
-  const thread = firstTelling
-    ? [firstTelling, ...newestFirst.filter((v) => v !== firstTelling)]
-    : newestFirst;
+  // Newest first. versions arrive oldest-first (with undated ones ahead of
+  // all), so reversing puts newest on top and undated at the bottom.
+  const thread = (versions ?? []).slice().reverse();
 
   return (
     // id="tellings": /share's "Add my version" links land here (/<id>#tellings).
@@ -494,7 +454,7 @@ export default function StoryMemories({ versions, storyId, originId, storyTitle,
 
         <div style={styles.listHeader}>
           <p style={{ ...styles.listCount, ...(language === "km" ? styles.trackingNone : null) }}>
-            {versions.length} {t("memoriesTellingsCount")}
+            {thread.length} {t("memoriesTellingsCount")}
           </p>
           <button
             type="button"
@@ -510,6 +470,8 @@ export default function StoryMemories({ versions, storyId, originId, storyTitle,
           </button>
         </div>
 
+        {thread.length === 0 ? <p style={styles.empty}>{t("memoriesNoneYet")}</p> : null}
+
         <div style={styles.thread}>
           {thread.map((version, index) => {
             // contributor is never translated (it's a name); description,
@@ -519,7 +481,6 @@ export default function StoryMemories({ versions, storyId, originId, storyTitle,
             const isExpanded = !!expanded[index];
             const bodyId = `telling-body-${index}`;
             const isOwner = !!userId && version.owner === userId;
-            const isFirst = !!originId && version.id === originId;
             return (
               <div key={version.id ?? index} className="thread-item">
                 {isOwner ? (
@@ -567,19 +528,15 @@ export default function StoryMemories({ versions, storyId, originId, storyTitle,
                         >
                           {t("menuEdit")}
                         </button>
-                        {isFirst ? (
-                          <p style={styles.menuNote}>{t("menuDeleteLocked")}</p>
-                        ) : (
-                          <button
-                            type="button"
-                            className="telling-menu-item"
-                            style={{ ...styles.menuItem, ...styles.menuItemDanger }}
-                            role="menuitem"
-                            onClick={() => requestDelete(version)}
-                          >
-                            {t("menuDelete")}
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          className="telling-menu-item"
+                          style={{ ...styles.menuItem, ...styles.menuItemDanger }}
+                          role="menuitem"
+                          onClick={() => requestDelete(version)}
+                        >
+                          {t("menuDelete")}
+                        </button>
                       </div>
                     ) : null}
                   </div>
@@ -604,7 +561,6 @@ export default function StoryMemories({ versions, storyId, originId, storyTitle,
                   {version.title ? <h3 style={styles.tellingTitle}>{version.title}</h3> : null}
                   <p style={{ ...styles.byline, ...(language === "km" ? styles.trackingNone : null) }}>
                     <span style={styles.bylineName}>{version.contributor}</span>
-                    {isFirst ? <span style={styles.firstBadge}>{t("memoriesFirstTelling")}</span> : null}
                     {place ? <span>· {place}</span> : null}
                     {version.date ? <span>· {formatDate(version.date, language)}</span> : null}
                     {/* Shown on any telling changed after it was posted, so
