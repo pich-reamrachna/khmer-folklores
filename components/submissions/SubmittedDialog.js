@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { useTranslation } from "../shared/uiText.js";
 
-// The thank-you box that pops up on My Submissions right after a submission
+// The thank-you box that pops up on My Entries right after a submission
 // (?submitted=story or ?submitted=telling). Says it's waiting for review,
 // offers "Share a new story", and closes on its button, Escape, or a click
 // outside. The link's :hover lives in app/globals.css (.submitted-share-link)

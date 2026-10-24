@@ -7,7 +7,7 @@ import { useTranslation } from "../shared/uiText.js";
 
 // /share's second step: the new-story form. Replaces the search view
 // (ShareSearch swaps it in) so the form has the page to itself. Once it's
-// submitted, the visitor goes to My Submissions, where a thank-you box says
+// submitted, the visitor goes to My Entries, where a thank-you box says
 // the story is waiting for review.
 
 const KHMER_SCRIPT = /[ក-៿]/;
@@ -52,7 +52,7 @@ export default function NewStoryPanel({ query, onBack }) {
         embedded
         initialTitle={isKhmer ? "" : query}
         initialKhmerTitle={isKhmer ? query : ""}
-        onSuccess={() => router.push("/my-submissions?submitted=story")}
+        onSuccess={() => router.push("/my-entries?submitted=story")}
       />
     </div>
   );

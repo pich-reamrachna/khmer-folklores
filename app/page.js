@@ -95,7 +95,7 @@ export default function Home() {
     const supabase = createClient();
     // Published stories only. The database also lets a submitter see their
     // own pending story (and the curator see all of them), but those have no
-    // summary yet and belong on My Submissions / the review page, not here.
+    // summary yet and belong on My Entries / the review page, not here.
     // !inner makes the status filter drop the telling rows themselves, not
     // just blank out their embedded story. !entries_story_id_fkey names which
     // link to follow — stories.origin_entry_id is a second link between the

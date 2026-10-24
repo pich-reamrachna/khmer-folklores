@@ -70,13 +70,13 @@ export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, 
   }, [onClose]);
 
   // A new telling waits for the curator's review, so it won't appear on the
-  // story page yet: go to My Submissions, where a thank-you box says so.
+  // story page yet: go to My Entries, where a thank-you box says so.
   // An edit (entry given) still closes and re-fetches the server-rendered
   // tellings, as before (router.push to the same route wouldn't refresh them).
   const handleSuccess = () => {
     onClose();
     if (!entry) {
-      router.push("/my-submissions?submitted=telling");
+      router.push("/my-entries?submitted=telling");
       return;
     }
     router.refresh();

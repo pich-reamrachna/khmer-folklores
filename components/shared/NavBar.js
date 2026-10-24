@@ -403,7 +403,7 @@ const styles = {
     wordBreak: "break-all",
     margin: 0,
   },
-  // My Submissions / Review Submissions in the account dropdown — same
+  // My Entries / Review Submissions in the account dropdown — same
   // typography as Log Out below so the menu reads as one list.
   userMenuLink: {
     display: "block",
@@ -513,7 +513,7 @@ export default function NavBar() {
   const onShare = pathname === "/share";
   const onLogin = pathname === "/login";
   const onSignup = pathname === "/signup";
-  const onBrowse = !["/share", "/login", "/signup", "/my-submissions", "/review"].includes(pathname);
+  const onBrowse = !["/share", "/login", "/signup", "/my-entries", "/my-submissions", "/review"].includes(pathname);
   const langSwitcherRef = useRef(null);
   const [supabase] = useState(() => createClient());
   const [user, setUser] = useState(null);
@@ -648,8 +648,8 @@ export default function NavBar() {
                   <p style={styles.userName}>{username ?? t("navAccount")}</p>
                   <p style={styles.userEmail}>{user.email}</p>
                 </div>
-                <Link href="/my-submissions" style={styles.userMenuLink} onClick={() => setUserMenuOpen(false)}>
-                  My Submissions
+                <Link href="/my-entries" style={styles.userMenuLink} onClick={() => setUserMenuOpen(false)}>
+                  My Entries
                 </Link>
                 {isCurator ? (
                   <Link href="/review" style={styles.userMenuLink} onClick={() => setUserMenuOpen(false)}>
@@ -784,8 +784,8 @@ export default function NavBar() {
               <p style={styles.mobileUserName}>{username ?? t("navAccount")}</p>
               <p style={styles.mobileUserEmail}>{user.email}</p>
             </div>
-            <Link href="/my-submissions" style={styles.linkIdle} onClick={() => setMenuOpen(false)}>
-              My Submissions
+            <Link href="/my-entries" style={styles.linkIdle} onClick={() => setMenuOpen(false)}>
+              My Entries
             </Link>
             {isCurator ? (
               <Link href="/review" style={styles.linkIdle} onClick={() => setMenuOpen(false)}>

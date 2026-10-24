@@ -134,7 +134,7 @@ const uiText = {
     en: "Your telling is waiting for review and will appear once the curator approves it.",
     km: "ការនិទានរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ ហើយនឹងបង្ហាញនៅពេលអ្នកចងក្រងអនុម័ត។",
   },
-  // SubmittedDialog.js (My Submissions, after either kind of submission).
+  // SubmittedDialog.js (My Entries, after either kind of submission).
   submittedShareNew: { en: "Share a new story", km: "ចែករំលែករឿងថ្មី" },
   menuMore: { en: "More options", km: "ជម្រើសបន្ថែម" },
   menuEdit: { en: "Edit", km: "កែ" },
@@ -207,9 +207,8 @@ const uiText = {
   reviewNoteError: { en: "Write a note explaining why before rejecting.", km: "សូមសរសេរកំណត់ចំណាំពន្យល់ពីមូលហេតុ មុននឹងបដិសេធ។" },
   reviewSaveError: { en: "That wasn't saved. Please try again.", km: "មិនបានរក្សាទុកទេ។ សូមព្យាយាមម្តងទៀត។" },
 
-  // app/my-submissions/page.js + components/submissions/*. Khmer strings
+  // app/my-entries/page.js + components/submissions/*. Khmer strings
   // below are AI-drafted — flag for the curator to review.
-  submissionsTitle: { en: "Stories you've shared", km: "រឿងដែលអ្នកបានចែករំលែក" },
   submissionsEmpty: { en: "You haven't started a new story yet.", km: "អ្នកមិនទាន់បានចាប់ផ្ដើមរឿងថ្មីនៅឡើយទេ។" },
   submissionsLoadError: { en: "Your submissions couldn't be loaded. Refresh to try again.", km: "មិនអាចផ្ទុករឿងដែលអ្នកបានដាក់ស្នើបានទេ។ សូមផ្ទុកទំព័រឡើងវិញ។" },
   submissionsStatusPending: { en: "Waiting for review", km: "កំពុងរង់ចាំការពិនិត្យ" },
@@ -218,6 +217,14 @@ const uiText = {
   submissionsPendingHint: { en: "The curator will read it and write its summary before it's published.", km: "អ្នកចងក្រងនឹងអានវា ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា មុនពេលផ្សព្វផ្សាយ។" },
   submissionsNoteLabel: { en: "Note from the curator", km: "កំណត់ចំណាំពីអ្នកចងក្រង" },
   submissionsViewStory: { en: "View story", km: "មើលរឿង" },
+  myEntriesTitle: { en: "Your stories and tellings", km: "រឿង និងការនិទានរបស់អ្នក" },
+  myEntriesStoriesHeading: { en: "Stories you started", km: "រឿងដែលអ្នកបានចាប់ផ្ដើម" },
+  myEntriesTellingsHeading: { en: "Your tellings", km: "ការនិទានរបស់អ្នក" },
+  tellingsEmpty: { en: "You haven't shared a telling on a published story yet.", km: "អ្នកមិនទាន់បានចែករំលែកការនិទានលើរឿងដែលបានផ្សព្វផ្សាយនៅឡើយទេ។" },
+  tellingStatusPending: { en: "Waiting for review", km: "កំពុងរង់ចាំការពិនិត្យ" },
+  tellingStatusPublished: { en: "Published", km: "បានផ្សព្វផ្សាយ" },
+  tellingStatusReturned: { en: "Returned — needs changes", km: "បានបញ្ជូនត្រឡប់ — ត្រូវកែប្រែ" },
+  tellingPendingHint: { en: "The curator will read it before it appears on the story.", km: "អ្នកចងក្រងនឹងអានវា មុនពេលវាបង្ហាញលើរឿង។" },
 
   // StoryDetails.js / StoryMemories.js — first-sharer credit. Khmer strings
   // below are AI-drafted — flag for the curator to review.
