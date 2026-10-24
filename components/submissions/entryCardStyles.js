@@ -15,6 +15,8 @@ const entryCardStyles = {
   note: { fontFamily: khmerSans, fontSize: "0.9rem", lineHeight: 1.6, color: "#BBAEBF", margin: "1rem 0 0", padding: "0.8rem 1rem", borderLeft: "2px solid #E0736A", whiteSpace: "pre-wrap", overflowWrap: "anywhere" },
   noteLabel: { display: "block", fontWeight: 700, color: "#E0736A", marginBottom: "0.25rem" },
   hint: { fontFamily: khmerSans, fontSize: "0.85rem", color: "#8A7F91", margin: "0.8rem 0 0" },
+  // The card's "View story" link and Edit button, side by side.
+  actions: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "1.25rem" },
   link: { display: "inline-block", marginTop: "0.8rem", fontFamily: khmerSans, fontSize: "0.85rem", fontWeight: 700, color: "#C5A059", textDecoration: "none" },
 };
 

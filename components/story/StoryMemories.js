@@ -8,6 +8,7 @@ import { useContributeModal } from "../contribute/contributeModalContext.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import { formatDate } from "../../utils/formatDate.js";
+import { formEntry } from "../../utils/editableEntry.js";
 
 // "What people remember" — other people's tellings on a story's page, shown as a flat
 // Reddit-style comment thread (one entry per contributor's telling). Each
@@ -515,14 +516,7 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
                               storyId,
                               storyTitle,
                               storyTitleKhmer,
-                              entry: {
-                                id: version.id,
-                                title: version.title,
-                                place: version.place,
-                                placeKhmer: version.placeKhmer,
-                                description: version.description,
-                                photoUrl: version.photoUrl,
-                              },
+                              entry: formEntry(version),
                             });
                           }}
                         >
@@ -574,6 +568,13 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
                         title={`${t("memoriesEdited")} ${formatDate(version.editedAt, language)}`}
                       >
                         · {t("memoriesEdited")}
+                      </span>
+                    ) : null}
+                    {/* Only the owner sees it: their changes wait on the side
+                        (the story keeps showing this published version). */}
+                    {isOwner && version.edit ? (
+                      <span style={styles.edited}>
+                        · {t(version.edit.status === "returned" ? "editReturnedShort" : "editPendingShort")}
                       </span>
                     ) : null}
                   </p>

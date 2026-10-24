@@ -4,6 +4,8 @@ import Link from "next/link";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import styles from "./entryCardStyles.js";
+import EditEntryButton from "./EditEntryButton.js";
+import EditStatus from "./EditStatus.js";
 
 // One of the user's own new stories on /my-entries, with where it stands:
 // waiting for review, rejected (showing the curator's note), or published
@@ -23,6 +25,10 @@ export default function SubmissionCard({ submission }) {
   const status = STATUS[submission.status] ?? STATUS.pending;
   const category = pickText(language, submission.categoryKhmer, submission.category);
   const date = submission.submittedAt ? submission.submittedAt.slice(0, 10) : "";
+  const isPublished = submission.status === "published";
+  // The story's first telling — its waiting edit, if any, is shown once the
+  // story is published (before that, the story's own review covers it).
+  const first = submission.firstTelling;
 
   return (
     <div style={styles.card}>
@@ -42,10 +48,24 @@ export default function SubmissionCard({ submission }) {
           {submission.rejectionNote}
         </p>
       ) : null}
-      {submission.status === "published" ? (
-        <Link href={`/${submission.id}`} style={styles.link} className="share-match-link">
-          {t("submissionsViewStory")} →
-        </Link>
+      {/* A published story whose first telling has changes waiting for
+          review (or returned): the story page still shows the published
+          version, so "View story" stays, with an Edit button beside it. */}
+      {isPublished ? <EditStatus telling={first} /> : null}
+      {isPublished ? (
+        <div style={styles.actions}>
+          <Link href={`/${submission.id}`} style={styles.link} className="share-match-link">
+            {t("submissionsViewStory")} →
+          </Link>
+          {first?.edit ? (
+            <EditEntryButton
+              storyId={submission.id}
+              storyTitle={submission.title}
+              storyTitleKhmer={submission.khmerTitle}
+              telling={first}
+            />
+          ) : null}
+        </div>
       ) : null}
     </div>
   );

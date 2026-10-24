@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslation } from "../shared/uiText.js";
 
 // The thank-you box that pops up on My Entries right after a submission
-// (?submitted=story or ?submitted=telling). Says it's waiting for review,
+// (?submitted=story, telling, or edit). Says it's waiting for review,
 // offers "Share a new story", and closes on its button, Escape, or a click
 // outside. The link's :hover lives in app/globals.css (.submitted-share-link)
 // — styled-jsx can't scope through next/link's Link.
@@ -21,6 +21,13 @@ const styles = {
   close: { padding: "0.75rem 1.4rem", borderRadius: 999, border: "1px solid #2a172f", background: "transparent", color: "#F5EFE6", fontFamily: khmerSans, fontSize: "0.95rem", fontWeight: 700, cursor: "pointer" },
 };
 
+// Title + message (uiText keys) for each kind of submission.
+const TEXT = {
+  story: { title: "newStoryDoneTitle", body: "newStoryDoneBody" },
+  telling: { title: "tellingSubmittedTitle", body: "tellingSubmittedBody" },
+  edit: { title: "editSubmittedTitle", body: "editSubmittedBody" },
+};
+
 export default function SubmittedDialog({ kind, onClose }) {
   const t = useTranslation();
   const shareRef = useRef(null);
@@ -33,14 +40,14 @@ export default function SubmittedDialog({ kind, onClose }) {
     return () => document.removeEventListener("keydown", onKey);
   }, [onClose]);
 
-  const isStory = kind === "story";
+  const text = TEXT[kind] ?? TEXT.telling;
   return (
     <div style={styles.overlay} onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
       <div role="dialog" aria-modal="true" aria-labelledby="submitted-title" style={styles.box}>
         <h2 id="submitted-title" style={styles.title}>
-          {t(isStory ? "newStoryDoneTitle" : "tellingSubmittedTitle")}
+          {t(text.title)}
         </h2>
-        <p style={styles.body}>{t(isStory ? "newStoryDoneBody" : "tellingSubmittedBody")}</p>
+        <p style={styles.body}>{t(text.body)}</p>
         <div style={styles.actions}>
           <Link ref={shareRef} href="/share" style={styles.share} className="submitted-share-link">
             {t("submittedShareNew")}

@@ -125,6 +125,11 @@ const uiText = {
   contributeEditEyebrow: { en: "Edit your telling", km: "កែការនិទានរបស់អ្នក" },
   contributeSaveChanges: { en: "Save changes", km: "រក្សាទុកការកែ" },
   contributeNotSaved: { en: "That change wasn't saved.", km: "ការផ្លាស់ប្ដូរនោះមិនបានរក្សាទុកទេ។" },
+  // AI-drafted Khmer — flag for the curator to review.
+  contributeNoChanges: {
+    en: "Nothing has changed, so there's nothing to send for review.",
+    km: "គ្មានអ្វីផ្លាស់ប្ដូរទេ ដូច្នេះគ្មានអ្វីត្រូវផ្ញើទៅពិនិត្យទេ។",
+  },
   contributePhotoKeep: { en: "Leave empty to keep the current photo.", km: "ទុកឲ្យនៅទទេ ដើម្បីរក្សារូបថតបច្ចុប្បន្ន។" },
   contributeCurrentPhoto: { en: "Current photo", km: "រូបថតបច្ចុប្បន្ន" },
   // Shown after "Share Your Version" (SubmittedDialog.js). AI-drafted Khmer,
@@ -225,6 +230,27 @@ const uiText = {
   tellingStatusPublished: { en: "Published", km: "បានផ្សព្វផ្សាយ" },
   tellingStatusReturned: { en: "Returned — needs changes", km: "បានបញ្ជូនត្រឡប់ — ត្រូវកែប្រែ" },
   tellingPendingHint: { en: "The curator will read it before it appears on the story.", km: "អ្នកចងក្រងនឹងអានវា មុនពេលវាបង្ហាញលើរឿង។" },
+  // EditStatus.js (/my-entries) and the owner's note on the story page — a
+  // published telling's changes waiting for review (utils/editableEntry.js).
+  editPendingHint: {
+    en: "Your changes are waiting for review. The story shows the earlier version until the curator approves them.",
+    km: "ការកែប្រែរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ។ រឿងនេះបង្ហាញកំណែមុន រហូតដល់អ្នកចងក្រងអនុម័ត។",
+  },
+  editReturnedHint: {
+    en: "Use Edit to make the changes the note asks for, then save to send them again.",
+    km: "ប្រើប៊ូតុង កែ ដើម្បីកែប្រែតាមកំណត់ចំណាំ រួចរក្សាទុក ដើម្បីផ្ញើវាម្ដងទៀត។",
+  },
+  editPanelTitle: { en: "Your changes", km: "ការកែប្រែរបស់អ្នក" },
+  editFieldPhoto: { en: "New photo", km: "រូបថតថ្មី" },
+  editNothingChanged: { en: "Nothing differs from the published version.", km: "គ្មានអ្វីខុសពីកំណែដែលបានផ្សព្វផ្សាយទេ។" },
+  editPendingShort: { en: "Your changes are waiting for review", km: "ការកែប្រែរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ" },
+  editReturnedShort: { en: "Your changes were returned — see My Entries", km: "ការកែប្រែរបស់អ្នកត្រូវបានបញ្ជូនត្រឡប់ — សូមមើល My Entries" },
+  // SubmittedDialog.js after an edit (?submitted=edit).
+  editSubmittedTitle: { en: "Thank you — your changes are saved.", km: "សូមអរគុណ — ការកែប្រែរបស់អ្នកត្រូវបានរក្សាទុក។" },
+  editSubmittedBody: {
+    en: "They're waiting for review. The story keeps showing the earlier version until the curator approves them.",
+    km: "ការកែប្រែទាំងនោះកំពុងរង់ចាំការពិនិត្យ។ រឿងនេះនៅតែបង្ហាញកំណែមុន រហូតដល់អ្នកចងក្រងអនុម័ត។",
+  },
 
   // FirstTelling.js / StoryMemories.js — the story's first telling and the
   // tellings under it. Khmer strings below are AI-drafted — flag for the

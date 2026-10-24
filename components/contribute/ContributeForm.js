@@ -286,10 +286,23 @@ export default function ContributeForm({
   const [errors, setErrors] = useState({});
   const [formError, setFormError] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  // Editing: Save stays locked until something actually differs from what
+  // the form opened with (spaces at the ends don't count — they're trimmed
+  // on save anyway), so an unchanged edit can't be sent for review.
+  const hasChanges =
+    !isEditing ||
+    !!photoFile ||
+    title.trim() !== (entry.title ?? "").trim() ||
+    place !== (entry.place ?? "") ||
+    description.trim() !== (entry.description ?? "").trim();
 
   async function handleSubmit(e) {
     e.preventDefault();
     setFormError("");
+    // The locked Save button is only the visible half: this also stops a
+    // submit sent another way (the button unlocked in devtools, or
+    // form.requestSubmit()). The database refuses it too (edit-no-changes.sql).
+    if (submitting || !hasChanges) return;
 
     const found = validate({ title, place, description, photoFile, t, newStory, khmerTitle, category });
     setErrors(found);
@@ -303,6 +316,8 @@ export default function ContributeForm({
     // the bucket. `saved` flips only once the row is actually written.
     let uploadedPath = null;
     let saved = false;
+    // Set by an edit: true when it went back to the curator's review.
+    let sentToReview = false;
     try {
       // owner always comes from the session, never the form.
       const { data: auth } = await supabase.auth.getUser();
@@ -344,19 +359,41 @@ export default function ContributeForm({
       }
 
       if (isEditing) {
-        // RLS lets only the owner update, so a non-owner's update matches no
-        // rows — .select() coming back empty is our "it wasn't saved" signal.
-        const { data: updated, error: updateError } = await supabase
-          .from("entries")
-          .update({
-            title: title.trim(),
-            place: province.en,
-            place_khmer: province.km,
-            description: description.trim(),
-            photo_url: photoUrl,
-          })
-          .eq("id", entry.id)
-          .select();
+        // Every edit is reviewed — only a reviewer's own edit isn't. If the
+        // check itself fails it's treated as "not a reviewer", the safe side.
+        const { data: isReviewer } = await supabase.rpc("is_reviewer");
+        sentToReview = isReviewer !== true;
+        const changes = {
+          title: title.trim(),
+          place: province.en,
+          place_khmer: province.km,
+          description: description.trim(),
+          photo_url: photoUrl,
+        };
+        // A published telling stays as it is on the story page: the changes
+        // are saved as its waiting edit (one per telling — editing again
+        // replaces it, and clears a returned edit's note so it's waiting
+        // again) until the curator approves them. A telling that isn't
+        // published yet is changed directly and goes (back) to review.
+        // Either way .select() coming back empty means RLS refused it.
+        const asEdit = sentToReview && entry.status === "published";
+        if (!asEdit && sentToReview) changes.status = "pending";
+        const { data: updated, error: updateError } = asEdit
+          ? await supabase
+              .from("entry_edits")
+              .upsert(
+                { ...changes, entry_id: entry.id, owner: user.id, status: "pending", return_note: null },
+                { onConflict: "entry_id" }
+              )
+              .select()
+          : await supabase.from("entries").update(changes).eq("id", entry.id).select();
+        // The database's refusal of an edit that changes nothing — e.g. the
+        // changes were put back to exactly the published version.
+        if (updateError?.message === "no_changes") {
+          setFormError(t("contributeNoChanges"));
+          setSubmitting(false);
+          return;
+        }
         if (updateError) throw updateError;
         if (!updated || updated.length === 0) {
           console.error("Entry update saved no rows:", entry.id);
@@ -366,9 +403,11 @@ export default function ContributeForm({
         }
         saved = true;
         // Photo was swapped — remove the old file so it isn't orphaned in the
-        // bucket. Best-effort: the update already saved, so a failed cleanup is
-        // only logged.
-        if (photoFile && oldPhotoUrl && oldPhotoUrl !== photoUrl) {
+        // bucket, unless it's the published telling's photo, which is still
+        // on show until the edit is approved. Best-effort: the save already
+        // happened, so a failed cleanup is only logged.
+        const stillShown = asEdit && oldPhotoUrl === (entry.publishedPhotoUrl ?? null);
+        if (photoFile && oldPhotoUrl && oldPhotoUrl !== photoUrl && !stillShown) {
           const oldPath = photoStoragePath(oldPhotoUrl);
           if (oldPath) {
             const { error: rmError } = await supabase.storage.from("photos").remove([oldPath]);
@@ -429,9 +468,10 @@ export default function ContributeForm({
         saved = true;
       }
 
-      // In the modal, onSuccess closes it and refreshes the tellings; on the
-      // standalone page (no callback) fall back to navigating to the story.
-      if (onSuccess) onSuccess();
+      // In the modal, onSuccess closes it and decides where to go next (it's
+      // told whether an edit went back to review); on the standalone page
+      // (no callback) fall back to navigating to the story.
+      if (onSuccess) onSuccess({ sentToReview });
       else router.push(`/${storyId}`);
     } catch (err) {
       // Real error for the developer; a generic, actionable line for the user.
@@ -549,7 +589,7 @@ export default function ContributeForm({
           <button
             type="submit"
             className={`contribute-submit${km ? " km" : ""}`}
-            disabled={submitting}
+            disabled={submitting || !hasChanges}
           >
             {submitting
               ? t("contributeSubmitting")
@@ -582,7 +622,7 @@ export default function ContributeForm({
         .contribute-submit.km {
           letter-spacing: normal;
         }
-        .contribute-submit:hover {
+        .contribute-submit:hover:not(:disabled) {
           background-color: #d4af37;
         }
         .contribute-submit:disabled {

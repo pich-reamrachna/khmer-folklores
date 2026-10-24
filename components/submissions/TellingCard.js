@@ -3,12 +3,15 @@
 import Link from "next/link";
 import { useTranslation } from "../shared/uiText.js";
 import styles from "./entryCardStyles.js";
+import EditEntryButton from "./EditEntryButton.js";
+import EditStatus from "./EditStatus.js";
 
 // One of the user's own tellings on /my-entries, with where it stands:
-// waiting for review (new, or edited and back in review), published (linking
-// to its story), or returned with the curator's note. Same card as
-// SubmissionCard.js. The link's :hover lives in app/globals.css
-// (.share-match-link).
+// waiting for review, published (linking to its story), or returned with the
+// curator's note. Waiting and returned tellings aren't on the story page, so
+// they get an Edit button here; so does a published one with changes waiting
+// (EditStatus.js). Same card as SubmissionCard.js. The link's :hover lives in
+// app/globals.css (.share-match-link).
 
 // Badge colour per status; the label comes from uiText (tellingStatus*).
 const STATUS = {
@@ -44,11 +47,22 @@ export default function TellingCard({ telling }) {
           {telling.returnNote}
         </p>
       ) : null}
-      {telling.status === "published" ? (
-        <Link href={`/${telling.storyId}#tellings`} style={styles.link} className="share-match-link">
-          {t("submissionsViewStory")} →
-        </Link>
-      ) : null}
+      {telling.status === "published" ? <EditStatus telling={telling} /> : null}
+      <div style={styles.actions}>
+        {telling.status === "published" ? (
+          <Link href={`/${telling.storyId}#tellings`} style={styles.link} className="share-match-link">
+            {t("submissionsViewStory")} →
+          </Link>
+        ) : null}
+        {telling.status !== "published" || telling.edit ? (
+          <EditEntryButton
+            storyId={telling.storyId}
+            storyTitle={telling.storyTitle}
+            storyTitleKhmer={telling.storyKhmerTitle}
+            telling={telling}
+          />
+        ) : null}
+      </div>
     </div>
   );
 }

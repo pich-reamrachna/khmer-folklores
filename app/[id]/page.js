@@ -5,6 +5,7 @@ import FirstTelling from "../../components/story/FirstTelling.js";
 import StoryDetails from "../../components/story/StoryDetails.js";
 import StoryMemories from "../../components/story/StoryMemories.js";
 import StoryPageShell from "../../components/story/StoryPageShell.js";
+import { toEdit } from "../../utils/editableEntry.js";
 
 export default async function StoryPage({ params }) {
   const { id } = await params;
@@ -14,7 +15,10 @@ export default async function StoryPage({ params }) {
     .from("stories")
     // !entries_story_id_fkey: a story's tellings, not its origin_entry_id
     // link — two links exist between these tables, so the embed must name one.
-    .select("*, entries!entries_story_id_fkey(*)")
+    // entry_edits: a telling's waiting edit, if any. The database only
+    // returns the visitor's own (or every one, for the curator) — it's only
+    // used to pre-fill the owner's Edit form, never shown on the page.
+    .select("*, entries!entries_story_id_fkey(*, entry_edits(*))")
     .eq("id", id)
     // Pending/rejected stories have no public page — same reasoning as the
     // home page's filter. They 404 like a missing id.
@@ -55,6 +59,10 @@ export default async function StoryPage({ params }) {
       // When the telling's content was last changed (set by a database
       // trigger, null if never edited). Sliced to YYYY-MM-DD like date above.
       editedAt: e.edited_at ? e.edited_at.slice(0, 10) : null,
+      // Always "published" here (only published tellings are fetched); the
+      // edit form reads it to save changes as a waiting edit.
+      status: e.status,
+      edit: toEdit(e.entry_edits),
     }));
 
   // The story's first telling (set when it was submitted, or backfilled to

@@ -3,15 +3,17 @@
 import { useEffect, useState } from "react";
 import { createClient } from "../../utils/supabase/client.js";
 import { formatDate } from "../../utils/formatDate.js";
+import { formEntry } from "../../utils/editableEntry.js";
 import { useContributeModal } from "../contribute/contributeModalContext.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 
 // "The First Telling": the story itself, as its first sharer told it, shown
 // in full under the title and summary. Everyone else's versions are the
-// comments below it (StoryMemories.js). Its owner can edit it (the edit goes
-// back to the curator's review); deleting it isn't possible once the story is
-// published — the database refuses, so there's no Delete here at all.
+// comments below it (StoryMemories.js). Its owner can edit it (the changes
+// wait for the curator's review, and this keeps showing the published text);
+// deleting it isn't possible once the story is published — the database
+// refuses, so there's no Delete here at all.
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
 const styles = {
@@ -72,20 +74,23 @@ export default function FirstTelling({ telling, storyId, storyTitle, storyTitleK
                 storyId,
                 storyTitle,
                 storyTitleKhmer,
-                entry: {
-                  id: telling.id,
-                  title: telling.title,
-                  place: telling.place,
-                  placeKhmer: telling.placeKhmer,
-                  description: telling.description,
-                  photoUrl: telling.photoUrl,
-                },
+                entry: formEntry(telling),
               })
             }
           >
             {t("menuEdit")}
           </button>
-          <p style={styles.note}>{t("menuDeleteLocked")}</p>
+          <p style={styles.note}>
+            {/* The owner's changes wait on the side; this page keeps
+                showing the published version until they're approved. */}
+            {telling.edit ? (
+              <>
+                {t(telling.edit.status === "returned" ? "editReturnedShort" : "editPendingShort")}
+                <br />
+              </>
+            ) : null}
+            {t("menuDeleteLocked")}
+          </p>
         </div>
       ) : null}
 

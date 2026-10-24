@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import ContributeForm from "./ContributeForm.js";
 
@@ -71,14 +71,33 @@ export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, 
 
   // A new telling waits for the curator's review, so it won't appear on the
   // story page yet: go to My Entries, where a thank-you box says so.
-  // An edit (entry given) still closes and re-fetches the server-rendered
-  // tellings, as before (router.push to the same route wouldn't refresh them).
-  const handleSuccess = () => {
-    onClose();
-    if (!entry) {
-      router.push("/my-entries?submitted=telling");
+  // An edit (entry given) goes to review too, unless a reviewer made it (the
+  // story keeps showing the published version meanwhile): same trip to My
+  // Entries, with a box saying the changes are waiting. A reviewer's edit is
+  // saved straight away, so it just closes and re-fetches the
+  // server-rendered page (router.push to the same route wouldn't refresh it).
+  //
+  // The trip to My Entries runs as a transition, and the form stays open (its
+  // button still "sending") until My Entries has loaded — then the form
+  // closes and the thank-you box appears together. Closing first left the
+  // page underneath on screen with no form and no box while My Entries
+  // loaded, so the box seemed to arrive late.
+  const [navigating, startNavigation] = useTransition();
+  const navStarted = useRef(false);
+  useEffect(() => {
+    if (navStarted.current && !navigating) {
+      navStarted.current = false;
+      onClose();
+    }
+  }, [navigating, onClose]);
+
+  const handleSuccess = ({ sentToReview } = {}) => {
+    if (!entry || sentToReview) {
+      navStarted.current = true;
+      startNavigation(() => router.push(`/my-entries?submitted=${entry ? "edit" : "telling"}`));
       return;
     }
+    onClose();
     router.refresh();
   };
 
