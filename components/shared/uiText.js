@@ -127,6 +127,15 @@ const uiText = {
   contributeNotSaved: { en: "That change wasn't saved.", km: "ការផ្លាស់ប្ដូរនោះមិនបានរក្សាទុកទេ។" },
   contributePhotoKeep: { en: "Leave empty to keep the current photo.", km: "ទុកឲ្យនៅទទេ ដើម្បីរក្សារូបថតបច្ចុប្បន្ន។" },
   contributeCurrentPhoto: { en: "Current photo", km: "រូបថតបច្ចុប្បន្ន" },
+  // Shown after "Share Your Version" (SubmittedDialog.js). AI-drafted Khmer,
+  // flag for the curator to review.
+  tellingSubmittedTitle: { en: "Thank you!", km: "សូមអរគុណ!" },
+  tellingSubmittedBody: {
+    en: "Your telling is waiting for review and will appear once the curator approves it.",
+    km: "ការនិទានរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ ហើយនឹងបង្ហាញនៅពេលអ្នកចងក្រងអនុម័ត។",
+  },
+  // SubmittedDialog.js (My Submissions, after either kind of submission).
+  submittedShareNew: { en: "Share a new story", km: "ចែករំលែករឿងថ្មី" },
   menuMore: { en: "More options", km: "ជម្រើសបន្ថែម" },
   menuEdit: { en: "Edit", km: "កែ" },
   menuDelete: { en: "Delete", km: "លុប" },
@@ -177,7 +186,6 @@ const uiText = {
     en: "The curator will read it and write its summary. Once it's published, it will appear in the archive with you credited as the first to share it.",
     km: "អ្នកចងក្រងនឹងអានវា ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា។ នៅពេលវាត្រូវបានផ្សព្វផ្សាយ វានឹងបង្ហាញក្នុងបណ្ណសារ ដោយបញ្ជាក់ថាអ្នកជាអ្នកចែករំលែកដំបូង។",
   },
-  newStoryDoneLink: { en: "Back to the archive", km: "ត្រឡប់ទៅបណ្ណសារ" },
 
   // app/review/page.js + components/review/* (curator only). Khmer strings
   // below are AI-drafted — flag for the curator to review. The form's story

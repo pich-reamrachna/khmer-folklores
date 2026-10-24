@@ -1,7 +1,10 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import SubmissionCard from "./SubmissionCard.js";
+import SubmittedDialog from "./SubmittedDialog.js";
 import { useTranslation } from "../shared/uiText.js";
 
 // /my-submissions' list of the user's own new stories, newest first
@@ -48,8 +51,16 @@ const styles = {
   list: { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 16 },
 };
 
-export default function SubmissionsList({ submissions, loadFailed }) {
+export default function SubmissionsList({ submissions, loadFailed, submitted }) {
   const t = useTranslation();
+  const router = useRouter();
+  // The thank-you box after a submission. Closing it also drops ?submitted
+  // from the address, so a refresh or the back button doesn't show it again.
+  const [dialog, setDialog] = useState(submitted);
+  const closeDialog = useCallback(() => {
+    setDialog(null);
+    router.replace("/my-submissions", { scroll: false });
+  }, [router]);
 
   return (
     <section style={styles.section}>
@@ -76,6 +87,8 @@ export default function SubmissionsList({ submissions, loadFailed }) {
           </ul>
         )}
       </div>
+
+      {dialog ? <SubmittedDialog kind={dialog} onClose={closeDialog} /> : null}
     </section>
   );
 }

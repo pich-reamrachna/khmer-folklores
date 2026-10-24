@@ -7,7 +7,10 @@ import SubmissionsList from "../../components/submissions/SubmissionsList.js";
 // "My Submissions": every new story the logged-in user started from /share —
 // waiting for review, rejected (with the curator's note), or published.
 // Logged-out visitors go to the login page and come back here afterwards.
-export default async function MySubmissionsPage() {
+// ?submitted=story or ?submitted=telling: sent here right after a submission,
+// so the list shows the "waiting for review" thank-you box.
+export default async function MySubmissionsPage({ searchParams }) {
+  const { submitted } = await searchParams;
   const supabase = await createClient();
   const { data: auth } = await supabase.auth.getUser();
   const user = auth?.user;
@@ -39,7 +42,11 @@ export default async function MySubmissionsPage() {
   return (
     <StoryPageShell>
       <NavBar />
-      <SubmissionsList submissions={submissions} loadFailed={!!error} />
+      <SubmissionsList
+        submissions={submissions}
+        loadFailed={!!error}
+        submitted={submitted === "story" || submitted === "telling" ? submitted : null}
+      />
     </StoryPageShell>
   );
 }

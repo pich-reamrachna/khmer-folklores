@@ -173,6 +173,16 @@ main {
   opacity: 0.8;
 }
 
+/* SubmittedDialog.js's "Share a new story" link: gold pill, white on hover.
+   Colour only here (not inline) so the hover rule can change it. */
+.submitted-share-link {
+  background-color: #c5a059;
+  transition: background-color 0.2s ease;
+}
+.submitted-share-link:hover {
+  background-color: #f5efe6;
+}
+
 /* /share's links: StoryMatchCard.js's "Add my version", NewStoryPanel.js's
    "Back to the archive", StartNewStoryButton.js's "Log in" — next/link
    Links, so their :hover lives here, same reason as the rules above. */
