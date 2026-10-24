@@ -3,18 +3,25 @@
 import { useTranslation } from "../shared/uiText.js";
 
 // Approve / Reject buttons under a /review form. Both are disabled while a
-// save is in flight so a double-click can't send it twice.
+// save is in flight so a double-click can't send it twice. The labels are
+// uiText keys — a telling is "returned", not rejected (TellingDecision.js).
 
-export default function ReviewActions({ busy, onApprove, onReject }) {
+export default function ReviewActions({
+  busy,
+  onApprove,
+  onReject,
+  approveLabel = "reviewApprove",
+  rejectLabel = "reviewReject",
+}) {
   const t = useTranslation();
 
   return (
     <div className="review-actions">
       <button type="button" className="review-btn approve" disabled={busy} onClick={onApprove}>
-        {t("reviewApprove")}
+        {t(approveLabel)}
       </button>
       <button type="button" className="review-btn reject" disabled={busy} onClick={onReject}>
-        {t("reviewReject")}
+        {t(rejectLabel)}
       </button>
 
       {/* Native <button>s, so styled-jsx scoping works; base + hover +

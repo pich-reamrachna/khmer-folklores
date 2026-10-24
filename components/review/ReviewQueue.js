@@ -1,10 +1,14 @@
 "use client";
 
 import ReviewCard from "./ReviewCard.js";
+import TellingReviewCard from "./TellingReviewCard.js";
+import EditReviewCard from "./EditReviewCard.js";
 import { useTranslation } from "../shared/uiText.js";
 
-// /review's list of pending new stories, oldest first (app/review/page.js
-// does the fetching and the curator-only check).
+// /review's queue, in three sections — new stories, new tellings on
+// published stories, and waiting changes to published tellings — each oldest
+// first. A section only shows when it has something in it.
+// app/review/page.js does the fetching and the curator-only check.
 
 const styles = {
   // Same top/side padding as /share — clears the fixed 90px NavBar.
@@ -40,15 +44,31 @@ const styles = {
     color: "#BBAEBF",
     margin: "0 0 2rem",
   },
+  heading: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "1.1rem",
+    fontWeight: 700,
+    color: "#E6C575",
+    margin: "0 0 1rem",
+  },
+  part: { marginBottom: "3rem" },
   list: { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 24 },
 };
 
-export default function ReviewQueue({ submissions, loadFailed }) {
+export default function ReviewQueue({ submissions, tellings, edits, loadFailed }) {
   const t = useTranslation();
+  const total = submissions.length + tellings.length + edits.length;
 
-  let status = `${submissions.length} ${t("reviewPendingCount")}`;
+  let status = `${total} ${t("reviewPendingCount")}`;
   if (loadFailed) status = t("reviewLoadError");
-  else if (submissions.length === 0) status = t("reviewEmpty");
+  else if (total === 0) status = t("reviewEmpty");
+
+  // [heading key, items, card for one item]
+  const sections = [
+    ["reviewStoriesHeading", submissions, (x) => <ReviewCard submission={x} />],
+    ["reviewTellingsHeading", tellings, (x) => <TellingReviewCard telling={x} />],
+    ["reviewEditsHeading", edits, (x) => <EditReviewCard edit={x} />],
+  ];
 
   return (
     <section style={styles.section}>
@@ -57,13 +77,20 @@ export default function ReviewQueue({ submissions, loadFailed }) {
         <h1 style={styles.title}>{t("reviewTitle")}</h1>
         <p style={styles.count}>{status}</p>
 
-        <ul style={styles.list}>
-          {submissions.map((submission) => (
-            <li key={submission.id}>
-              <ReviewCard submission={submission} />
-            </li>
-          ))}
-        </ul>
+        {sections.map(([headingKey, items, card]) =>
+          items.length > 0 ? (
+            <div key={headingKey} style={styles.part}>
+              <h2 style={styles.heading}>
+                {t(headingKey)} ({items.length})
+              </h2>
+              <ul style={styles.list}>
+                {items.map((item) => (
+                  <li key={item.id}>{card(item)}</li>
+                ))}
+              </ul>
+            </div>
+          ) : null
+        )}
       </div>
     </section>
   );

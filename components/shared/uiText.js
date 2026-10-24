@@ -195,7 +195,19 @@ const uiText = {
   // app/review/page.js + components/review/* (curator only). Khmer strings
   // below are AI-drafted — flag for the curator to review. The form's story
   // name/Khmer name/category labels reuse the newStory* keys above.
-  reviewTitle: { en: "Stories waiting for review", km: "រឿងដែលកំពុងរង់ចាំការពិនិត្យ" },
+  reviewTitle: { en: "Waiting for review", km: "កំពុងរង់ចាំការពិនិត្យ" },
+  // ReviewQueue.js sections, and the new-telling / waiting-change cards
+  // (TellingReviewCard.js, EditReviewCard.js, TellingDecision.js). Khmer
+  // strings below are AI-drafted — flag for the curator to review.
+  reviewStoriesHeading: { en: "New stories", km: "រឿងថ្មី" },
+  reviewTellingsHeading: { en: "New tellings", km: "ការនិទានថ្មី" },
+  reviewEditsHeading: { en: "Changes to published tellings", km: "ការកែប្រែលើការនិទានដែលបានផ្សព្វផ្សាយ" },
+  reviewReturn: { en: "Return with note", km: "បញ្ជូនត្រឡប់ជាមួយកំណត់ចំណាំ" },
+  reviewReturnNoteLabel: { en: "Note to the owner (needed to return)", km: "កំណត់ចំណាំទៅម្ចាស់ (ត្រូវការដើម្បីបញ្ជូនត្រឡប់)" },
+  reviewReturnNoteError: { en: "Write a note saying what to change before returning.", km: "សូមសរសេរកំណត់ចំណាំថាត្រូវកែអ្វី មុននឹងបញ្ជូនត្រឡប់។" },
+  reviewBefore: { en: "Now on the story", km: "បច្ចុប្បន្ននៅលើរឿង" },
+  reviewAfter: { en: "After approval", km: "ក្រោយការអនុម័ត" },
+  reviewPhotoLabel: { en: "Photo", km: "រូបថត" },
   reviewPendingCount: { en: "waiting", km: "កំពុងរង់ចាំ" },
   reviewEmpty: { en: "Nothing to review — every submission has been handled.", km: "គ្មានអ្វីត្រូវពិនិត្យទេ — រឿងដែលបានដាក់ស្នើទាំងអស់ត្រូវបានពិនិត្យរួចហើយ។" },
   reviewLoadError: { en: "The review queue couldn't be loaded. Refresh to try again.", km: "មិនអាចផ្ទុកបញ្ជីរង់ចាំការពិនិត្យបានទេ។ សូមផ្ទុកទំព័រឡើងវិញ។" },

@@ -23,7 +23,7 @@ export default function ReviewSubmission({ submission }) {
   return (
     <div>
       {submission.khmerTitle ? <p style={reviewStyles.khmerTitle}>{submission.khmerTitle}</p> : null}
-      <h2 style={reviewStyles.title}>{submission.title}</h2>
+      <h3 style={reviewStyles.title}>{submission.title}</h3>
       <p style={reviewStyles.meta}>
         {submission.category} · {t("reviewSubmittedBy")} {origin?.contributor ?? "?"} ·{" "}
         {formatDate(submission.submittedAt)}
