@@ -16,8 +16,10 @@ export default async function StoryPage({ params }) {
     // !entries_story_id_fkey: a story's tellings, not its origin_entry_id
     // link — two links exist between these tables, so the embed must name one.
     // entry_edits: a telling's waiting edit, if any. The database only
-    // returns the visitor's own (or every one, for the curator) — it's only
-    // used to pre-fill the owner's Edit form, never shown on the page.
+    // returns the visitor's own (or every one, for the curator). Its text is
+    // never shown here, but it's still needed: it pre-fills the owner's Edit
+    // form, and its status gives the owner a "waiting for review" / "returned"
+    // line (FirstTelling.js, StoryMemories.js).
     .select("*, entries!entries_story_id_fkey(*, entry_edits(*))")
     .eq("id", id)
     // Pending/rejected stories have no public page — same reasoning as the
