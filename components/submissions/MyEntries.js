@@ -24,7 +24,7 @@ const styles = {
   error: { fontFamily: khmerSans, fontSize: "1rem", color: "#BBAEBF", margin: 0 },
 };
 
-export default function MyEntries({ submissions, tellings, loadFailed, submitted }) {
+export default function MyEntries({ submissions, tellings, storiesFailed, tellingsFailed, submitted }) {
   const t = useTranslation();
   const router = useRouter();
   // The thank-you box after a submission. Closing it also drops ?submitted
@@ -41,20 +41,25 @@ export default function MyEntries({ submissions, tellings, loadFailed, submitted
         <p style={styles.eyebrow}>My Entries</p>
         <h1 style={styles.title}>{t("myEntriesTitle")}</h1>
 
-        {loadFailed ? (
-          <p style={styles.error}>{t("submissionsLoadError")}</p>
-        ) : (
-          <>
-            <div style={styles.part}>
-              <h2 style={styles.heading}>{t("myEntriesStoriesHeading")}</h2>
-              <SubmissionsList submissions={submissions} />
-            </div>
-            <div style={styles.part}>
-              <h2 style={styles.heading}>{t("myEntriesTellingsHeading")}</h2>
-              <TellingsList tellings={tellings} />
-            </div>
-          </>
-        )}
+        {/* Each section stands alone: a list that failed to load shows the
+            error in its own place — never its empty state, which would tell
+            the owner they have nothing when they do. */}
+        <div style={styles.part}>
+          <h2 style={styles.heading}>{t("myEntriesStoriesHeading")}</h2>
+          {storiesFailed ? (
+            <p style={styles.error}>{t("myEntriesListLoadError")}</p>
+          ) : (
+            <SubmissionsList submissions={submissions} />
+          )}
+        </div>
+        <div style={styles.part}>
+          <h2 style={styles.heading}>{t("myEntriesTellingsHeading")}</h2>
+          {tellingsFailed ? (
+            <p style={styles.error}>{t("myEntriesListLoadError")}</p>
+          ) : (
+            <TellingsList tellings={tellings} />
+          )}
+        </div>
       </div>
 
       {dialog ? <SubmittedDialog kind={dialog} onClose={closeDialog} /> : null}

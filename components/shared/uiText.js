@@ -240,7 +240,12 @@ const uiText = {
   // app/my-entries/page.js + components/submissions/*. Khmer strings
   // below are AI-drafted — flag for the curator to review.
   submissionsEmpty: { en: "You haven't started a new story yet.", km: "អ្នកមិនទាន់បានចាប់ផ្ដើមរឿងថ្មីនៅឡើយទេ។" },
-  submissionsLoadError: { en: "Your submissions couldn't be loaded. Refresh to try again.", km: "មិនអាចផ្ទុករឿងដែលអ្នកបានដាក់ស្នើបានទេ។ សូមផ្ទុកទំព័រឡើងវិញ។" },
+  // Shown under either My Entries heading when that one list fails to load.
+  // Khmer chosen by the curator (not AI-drafted).
+  myEntriesListLoadError: {
+    en: "This list couldn't be loaded. Refresh to try again.",
+    km: "មិនអាចបង្ហាញបញ្ជីនេះបានទេ។ សូមបើកទំព័រនេះម្ដងទៀត។",
+  },
   submissionsStatusPending: { en: "Waiting for review", km: "កំពុងរង់ចាំការពិនិត្យ" },
   submissionsStatusPublished: { en: "Published", km: "បានផ្សព្វផ្សាយ" },
   // Khmer chosen by the curator (not AI-drafted): submissionsStatusRejected,

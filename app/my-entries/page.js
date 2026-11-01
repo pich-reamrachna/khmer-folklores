@@ -56,8 +56,10 @@ export default async function MyEntriesPage({ searchParams }) {
       .eq("owner", user.id)
       .order("created_at", { ascending: false }),
   ]);
-  const error = storiesRes.error || tellingsRes.error;
-  if (error) console.error("My entries failed to load:", error);
+  // Each list fails on its own: a failed tellings query mustn't hide the
+  // stories that did load (or the other way round).
+  if (storiesRes.error) console.error("My entries: stories failed to load:", storiesRes.error);
+  if (tellingsRes.error) console.error("My entries: tellings failed to load:", tellingsRes.error);
 
   // camelCase, the shape every other page hands its components.
   const submissions = (storiesRes.data ?? []).map((s) => ({
@@ -99,7 +101,8 @@ export default async function MyEntriesPage({ searchParams }) {
         key={kind ?? "none"}
         submissions={submissions}
         tellings={tellings}
-        loadFailed={!!error}
+        storiesFailed={!!storiesRes.error}
+        tellingsFailed={!!tellingsRes.error}
         submitted={kind}
       />
     </StoryPageShell>
