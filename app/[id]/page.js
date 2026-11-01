@@ -6,6 +6,7 @@ import StoryDetails from "../../components/story/StoryDetails.js";
 import StoryMemories from "../../components/story/StoryMemories.js";
 import StoryPageShell from "../../components/story/StoryPageShell.js";
 import { toEdit } from "../../utils/editableEntry.js";
+import { cambodiaDate } from "../../utils/formatDate.js";
 
 export default async function StoryPage({ params }) {
   const { id } = await params;
@@ -51,16 +52,17 @@ export default async function StoryPage({ params }) {
       owner: e.owner,
       title: e.title,
       contributor: e.contributor,
-      // Shown date comes from created_at (the submission time), sliced to the
-      // YYYY-MM-DD the byline's formatDate expects. UTC date as stored.
-      date: e.created_at ? e.created_at.slice(0, 10) : null,
+      // Shown date comes from created_at (the submission time), as the
+      // Cambodian calendar day in the YYYY-MM-DD the byline's formatDate
+      // expects (see utils/formatDate.js — not the UTC day).
+      date: e.created_at ? cambodiaDate(e.created_at) : null,
       place: e.place,
       placeKhmer: e.place_khmer,
       description: e.description,
       photoUrl: e.photo_url,
       // When the telling's content was last changed (set by a database
-      // trigger, null if never edited). Sliced to YYYY-MM-DD like date above.
-      editedAt: e.edited_at ? e.edited_at.slice(0, 10) : null,
+      // trigger, null if never edited). Cambodian day, like date above.
+      editedAt: e.edited_at ? cambodiaDate(e.edited_at) : null,
       // Always "published" here (only published tellings are fetched); the
       // edit form reads it to save changes as a waiting edit.
       status: e.status,

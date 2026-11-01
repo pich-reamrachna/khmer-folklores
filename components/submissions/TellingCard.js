@@ -1,7 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import { formatTimestamp } from "../../utils/formatDate.js";
 import styles from "./entryCardStyles.js";
 import EditEntryButton from "./EditEntryButton.js";
 import EditStatus from "./EditStatus.js";
@@ -21,9 +23,10 @@ const STATUS = {
 };
 
 export default function TellingCard({ telling }) {
+  const { language } = useLanguage();
   const t = useTranslation();
   const status = STATUS[telling.status] ?? STATUS.pending;
-  const date = telling.createdAt ? telling.createdAt.slice(0, 10) : "";
+  const date = telling.createdAt ? formatTimestamp(telling.createdAt, language) : "";
 
   return (
     <div style={styles.card}>

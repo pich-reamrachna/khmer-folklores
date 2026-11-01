@@ -2,17 +2,11 @@
 
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import { formatTimestamp } from "../../utils/formatDate.js";
 import reviewStyles from "./reviewStyles.js";
 
 // The read-only half of a /review card: the story as submitted and its first
 // telling, so the curator can read it before writing the summary.
-
-// submitted_at is a full timestamp; a plain readable date is enough for the
-// curator's queue.
-function formatDate(iso) {
-  if (!iso) return "";
-  return new Date(iso).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
-}
 
 export default function ReviewSubmission({ submission }) {
   const { language } = useLanguage();
@@ -26,7 +20,7 @@ export default function ReviewSubmission({ submission }) {
       <h3 style={reviewStyles.title}>{submission.title}</h3>
       <p style={reviewStyles.meta}>
         {submission.category} · {t("reviewSubmittedBy")} {origin?.contributor ?? "?"} ·{" "}
-        {formatDate(submission.submittedAt)}
+        {submission.submittedAt ? formatTimestamp(submission.submittedAt, language) : ""}
       </p>
 
       {origin ? (

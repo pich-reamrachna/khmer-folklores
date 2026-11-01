@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import { formatTimestamp } from "../../utils/formatDate.js";
 import styles from "./entryCardStyles.js";
 import EditEntryButton from "./EditEntryButton.js";
 import EditStatus from "./EditStatus.js";
@@ -24,7 +25,7 @@ export default function SubmissionCard({ submission }) {
   const t = useTranslation();
   const status = STATUS[submission.status] ?? STATUS.pending;
   const category = pickText(language, submission.categoryKhmer, submission.category);
-  const date = submission.submittedAt ? submission.submittedAt.slice(0, 10) : "";
+  const date = submission.submittedAt ? formatTimestamp(submission.submittedAt, language) : "";
   const isPublished = submission.status === "published";
   // The story's first telling — its waiting edit, if any, is shown once the
   // story is published (before that, the story's own review covers it).

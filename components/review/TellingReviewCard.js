@@ -2,7 +2,7 @@
 
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
-import { formatDate } from "../../utils/formatDate.js";
+import { formatTimestamp } from "../../utils/formatDate.js";
 import TellingDecision from "./TellingDecision.js";
 import s from "./reviewStyles.js";
 
@@ -22,7 +22,7 @@ export default function TellingReviewCard({ telling }) {
       <h3 style={s.title}>{story?.title ?? "?"}</h3>
       <p style={s.meta}>
         {t("reviewSubmittedBy")} {telling.contributor} ·{" "}
-        {telling.createdAt ? formatDate(telling.createdAt.slice(0, 10), language) : ""}
+        {telling.createdAt ? formatTimestamp(telling.createdAt, language) : ""}
       </p>
 
       <p style={s.meta}>
