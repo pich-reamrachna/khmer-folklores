@@ -10,6 +10,7 @@ import LocationSelect from "./LocationSelect.js";
 import NewStoryFields from "./NewStoryFields.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import { findKhmerOrderProblems } from "../../utils/khmerOrder.js";
 
 // Fills {min}/{max}/{n} placeholders in a translated template string.
 const fill = (str, vars) => str.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
@@ -83,22 +84,39 @@ async function detectImageExtension(file) {
   return null;
 }
 
+// The message for Khmer typed in an order phones can't show (see
+// utils/khmerOrder.js), or null if there's none: names up to three of the
+// words, each with its corrected spelling when there's one sure answer.
+function khmerOrderError(text, t) {
+  const problems = findKhmerOrderProblems(text);
+  if (problems.length === 0) return null;
+  const words = problems
+    .slice(0, 3)
+    .map((p) => (p.fix ? `"${p.word}" → "${p.fix}"` : `"${p.word}"`))
+    .join(", ");
+  return fill(t("khmerOrderError"), { words });
+}
+
 // Synchronous checks (the photo's real type is checked async in handleSubmit).
 // `t` is the translation function, so messages follow the language toggle.
 function validate({ title, place, description, photoFile, t, newStory, khmerTitle, category }) {
   const errors = {};
 
   const titleVal = title.trim();
+  const titleOrderError = khmerOrderError(titleVal, t);
   if (len(titleVal) < TITLE_MIN || len(titleVal) > TITLE_MAX)
     errors.title = fill(t("contributeTitleLenError"), { min: TITLE_MIN, max: TITLE_MAX });
   else if (hasForbiddenChars(titleVal, false)) errors.title = t("contributeTitleCharError");
+  else if (titleOrderError) errors.title = titleOrderError;
 
   // newStory only: the Khmer name is optional, the category is required.
   if (newStory) {
     const khmerVal = khmerTitle.trim();
+    const khmerOrderErr = khmerOrderError(khmerVal, t);
     if (len(khmerVal) > TITLE_MAX)
       errors.khmerTitle = fill(t("newStoryKhmerTitleLenError"), { max: TITLE_MAX });
     else if (hasForbiddenChars(khmerVal, false)) errors.khmerTitle = t("contributeTitleCharError");
+    else if (khmerOrderErr) errors.khmerTitle = khmerOrderErr;
     if (!categories.some((c) => c.en === category)) errors.category = t("newStoryCategoryError");
   }
 
@@ -106,9 +124,11 @@ function validate({ title, place, description, photoFile, t, newStory, khmerTitl
 
   const d = description.trim();
   const dClean = stripInvisible(d);
+  const descOrderError = khmerOrderError(d, t);
   if (len(dClean) < DESC_MIN || len(dClean) > DESC_MAX)
     errors.description = fill(t("contributeStoryLenError"), { min: DESC_MIN, max: DESC_MAX.toLocaleString() });
   else if (hasForbiddenChars(d, true)) errors.description = t("contributeStoryCharError");
+  else if (descOrderError) errors.description = descOrderError;
 
   if (photoFile && photoFile.size > MAX_PHOTO_BYTES) errors.photo = t("contributePhotoSizeError");
 
@@ -476,7 +496,9 @@ export default function ContributeForm({
     } catch (err) {
       // Real error for the developer; a generic, actionable line for the user.
       console.error("Contribute submit failed:", err);
-      setFormError(t("contributeSubmitError"));
+      // The database's own Khmer spelling-order check (khmer-order.sql) —
+      // normally the form catches it first, so this is only a backstop.
+      setFormError(t(err?.message === "khmer_order" ? "khmerOrderDbError" : "contributeSubmitError"));
       setSubmitting(false);
     } finally {
       // Best-effort, like the swapped-photo cleanup above: the user already

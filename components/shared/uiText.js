@@ -116,6 +116,16 @@ const uiText = {
   contributeLocationError: { en: "Please choose a location.", km: "សូមជ្រើសរើសទីតាំង។" },
   contributeLocationInvalid: { en: "Please choose a location from the list.", km: "សូមជ្រើសរើសទីតាំងពីបញ្ជី។" },
   contributeStoryLenError: { en: "Story must be {min}–{max} characters.", km: "រឿងត្រូវមានពី {min} ទៅ {max} តួអក្សរ។" },
+  // utils/khmerOrder.js — Khmer typed in an order phones can't show.
+  // AI-drafted Khmer — flag for the curator to review.
+  khmerOrderError: {
+    en: "Some Khmer letters are typed in an order phones can't show: {words}. Please retype them.",
+    km: "អក្សរខ្មែរខ្លះត្រូវបានវាយតាមលំដាប់ដែលទូរស័ព្ទមិនអាចបង្ហាញបាន៖ {words}។ សូមវាយឡើងវិញ។",
+  },
+  khmerOrderDbError: {
+    en: "Some Khmer letters are typed in an order phones can't show. Please check the spelling and try again.",
+    km: "អក្សរខ្មែរខ្លះត្រូវបានវាយតាមលំដាប់ដែលទូរស័ព្ទមិនអាចបង្ហាញបាន។ សូមពិនិត្យអក្ខរាវិរុទ្ធ ហើយព្យាយាមម្ដងទៀត។",
+  },
   contributeStoryCharError: { en: "Story contains characters that aren't allowed.", km: "រឿងមានតួអក្សរដែលមិនអនុញ្ញាត។" },
   contributePhotoSizeError: { en: "Photo must be 5 MB or smaller.", km: "រូបថតត្រូវមានទំហំ 5 MB ឬតិចជាងនេះ។" },
   contributePhotoTypeError: { en: "Photo must be a real JPG, PNG, or WEBP image.", km: "រូបថតត្រូវជា JPG, PNG, ឬ WEBP ពិតប្រាកដ។" },
