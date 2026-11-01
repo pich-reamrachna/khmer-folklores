@@ -19,6 +19,9 @@ const uiText = {
   navCloseMenu: { en: "Close menu", km: "បិទម៉ឺនុយ" },
   navChangeLanguage: { en: "Change language", km: "ប្ដូរភាសា" },
   navAccount: { en: "Account", km: "គណនី" },
+  // Translated, unlike the top bar's links: editReturnedShort sends people
+  // here by name, so a Khmer reader has to be able to find it in the menu.
+  navMyEntries: { en: "My Entries", km: "កំណត់ត្រារបស់ខ្ញុំ" },
 
   // StoryHero.js — heroEyebrow ("Featured Stories of Khmer Folklores") is
   // deliberately not here: a decorative label, kept English always.
@@ -240,9 +243,11 @@ const uiText = {
   submissionsLoadError: { en: "Your submissions couldn't be loaded. Refresh to try again.", km: "មិនអាចផ្ទុករឿងដែលអ្នកបានដាក់ស្នើបានទេ។ សូមផ្ទុកទំព័រឡើងវិញ។" },
   submissionsStatusPending: { en: "Waiting for review", km: "កំពុងរង់ចាំការពិនិត្យ" },
   submissionsStatusPublished: { en: "Published", km: "បានផ្សព្វផ្សាយ" },
-  submissionsStatusRejected: { en: "Not accepted", km: "មិនត្រូវបានទទួលយក" },
+  // Khmer chosen by the curator (not AI-drafted): submissionsStatusRejected,
+  // submissionsNoteLabel, tellingStatusReturned, editReturnedShort.
+  submissionsStatusRejected: { en: "Not accepted", km: "មិនបានទទួលយក" },
   submissionsPendingHint: { en: "The curator will read it and write its summary before it's published.", km: "អ្នកចងក្រងនឹងអានវា ហើយសរសេរសេចក្ដីសង្ខេបរបស់វា មុនពេលផ្សព្វផ្សាយ។" },
-  submissionsNoteLabel: { en: "Note from the curator", km: "កំណត់ចំណាំពីអ្នកចងក្រង" },
+  submissionsNoteLabel: { en: "Note from the curator", km: "សារពីអ្នកចងក្រង" },
   submissionsViewStory: { en: "View story", km: "មើលរឿង" },
   myEntriesTitle: { en: "Your stories and tellings", km: "រឿង និងការនិទានរបស់អ្នក" },
   myEntriesStoriesHeading: { en: "Stories you started", km: "រឿងដែលអ្នកបានចាប់ផ្ដើម" },
@@ -250,7 +255,7 @@ const uiText = {
   tellingsEmpty: { en: "You haven't shared a telling on a published story yet.", km: "អ្នកមិនទាន់បានចែករំលែកការនិទានលើរឿងដែលបានផ្សព្វផ្សាយនៅឡើយទេ។" },
   tellingStatusPending: { en: "Waiting for review", km: "កំពុងរង់ចាំការពិនិត្យ" },
   tellingStatusPublished: { en: "Published", km: "បានផ្សព្វផ្សាយ" },
-  tellingStatusReturned: { en: "Returned — needs changes", km: "បានបញ្ជូនត្រឡប់ — ត្រូវកែប្រែ" },
+  tellingStatusReturned: { en: "Returned — needs changes", km: "រង់ចាំការកែសម្រួលពីអ្នក" },
   tellingPendingHint: { en: "The curator will read it before it appears on the story.", km: "អ្នកចងក្រងនឹងអានវា មុនពេលវាបង្ហាញលើរឿង។" },
   // EditStatus.js (/my-entries) and the owner's note on the story page — a
   // published telling's changes waiting for review (utils/editableEntry.js).
@@ -266,7 +271,7 @@ const uiText = {
   editFieldPhoto: { en: "New photo", km: "រូបថតថ្មី" },
   editNothingChanged: { en: "Nothing differs from the published version.", km: "គ្មានអ្វីខុសពីកំណែដែលបានផ្សព្វផ្សាយទេ។" },
   editPendingShort: { en: "Your changes are waiting for review", km: "ការកែប្រែរបស់អ្នកកំពុងរង់ចាំការពិនិត្យ" },
-  editReturnedShort: { en: "Your changes were returned — see My Entries", km: "ការកែប្រែរបស់អ្នកត្រូវបានបញ្ជូនត្រឡប់ — សូមមើល My Entries" },
+  editReturnedShort: { en: "Your changes were returned — see My Entries", km: "ការកែប្រែរបស់អ្នកបានផ្ញើត្រឡប់មកអ្នកវិញ — សូមមើលក្នុង «កំណត់ត្រារបស់ខ្ញុំ»" },
   // SubmittedDialog.js after an edit (?submitted=edit).
   editSubmittedTitle: { en: "Thank you — your changes are saved.", km: "សូមអរគុណ — ការកែប្រែរបស់អ្នកត្រូវបានរក្សាទុក។" },
   editSubmittedBody: {

@@ -404,12 +404,14 @@ const styles = {
     margin: 0,
   },
   // My Entries / Review Submissions in the account dropdown — same
-  // typography as Log Out below so the menu reads as one list.
+  // typography as Log Out below so the menu reads as one list. Khmer
+  // first, same reasoning as langPill: "My Entries" can be Khmer, and
+  // Latin text still falls through to --font-jakarta.
   userMenuLink: {
     display: "block",
     padding: "0.4rem 0",
     color: "#F5EFE6",
-    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.85rem",
     fontWeight: 600,
     textDecoration: "none",
@@ -649,7 +651,7 @@ export default function NavBar() {
                   <p style={styles.userEmail}>{user.email}</p>
                 </div>
                 <Link href="/my-entries" style={styles.userMenuLink} onClick={() => setUserMenuOpen(false)}>
-                  My Entries
+                  {t("navMyEntries")}
                 </Link>
                 {isCurator ? (
                   <Link href="/review" style={styles.userMenuLink} onClick={() => setUserMenuOpen(false)}>
@@ -784,8 +786,16 @@ export default function NavBar() {
               <p style={styles.mobileUserName}>{username ?? t("navAccount")}</p>
               <p style={styles.mobileUserEmail}>{user.email}</p>
             </div>
-            <Link href="/my-entries" style={styles.linkIdle} onClick={() => setMenuOpen(false)}>
-              My Entries
+            <Link
+              href="/my-entries"
+              style={{
+                ...styles.linkIdle,
+                fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+                ...(language === "km" ? styles.trackingNone : null),
+              }}
+              onClick={() => setMenuOpen(false)}
+            >
+              {t("navMyEntries")}
             </Link>
             {isCurator ? (
               <Link href="/review" style={styles.linkIdle} onClick={() => setMenuOpen(false)}>
