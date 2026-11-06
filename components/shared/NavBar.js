@@ -8,7 +8,8 @@ import { useLanguage } from "./LanguageContext.js";
 import { useTranslation } from "./uiText.js";
 import { createClient } from "../../utils/supabase/client.js";
 
-// Text-only nav bar: site lockup on the left, page links on the right.
+// Text-only nav bar: site lockup on the left, the two page links in the
+// middle, account + language controls on the right.
 // No logo/icon — the archive's identity comes from collection.config.js.
 // The gold underline (linkActive) marks the current section: "Share a Memory"
 // on /share, "Browse the Archive" everywhere else.
@@ -42,22 +43,25 @@ const styles = {
     borderBottom: "1px solid #2A172F",
     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.6)",
   },
-  // Inner wrapper: centered 1560px max-width, matching the mockup's
-  // .nav-container. Side padding (2rem) lives here, not on `nav`.
+  // Inner wrapper: centered, up to 1800px wide, so on a wide screen the
+  // lockup and controls sit nearer the edges. Side padding (2rem) lives
+  // here, not on `nav`. Its layout (a three-column grid, so the page links
+  // stay truly centred) lives in app/globals.css's .nav-inner rule — phone
+  // switches it to a plain row, and a media query can't beat inline styles.
   inner: {
     width: "100%",
-    maxWidth: 1560,
+    maxWidth: 1800,
     margin: "0 auto",
     padding: "0 2rem",
     boxSizing: "border-box",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
   },
   lockup: {
     display: "flex",
     flexDirection: "column",
     textDecoration: "none",
+    // Its own width, not the whole left grid column (.nav-inner) — so only
+    // the name itself is the home link.
+    justifySelf: "start",
   },
   siteName: {
     fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
@@ -607,13 +611,13 @@ export default function NavBar() {
 
   return (
     <nav style={{ ...styles.nav, ...(scrolled ? styles.navScrolled : null) }} aria-label="Primary">
-      <div style={styles.inner}>
+      <div style={styles.inner} className="nav-inner">
         <Link href="/" style={styles.lockup}>
           <span style={styles.siteName}>{collection.name}</span>
           <span style={styles.kicker}>A Khmer Folklore Archive</span>
         </Link>
 
-        <div className="nav-links">
+        <div className="nav-links nav-center">
           <Link
             href="/"
             style={onBrowse ? styles.linkActive : styles.linkIdle}
@@ -628,7 +632,9 @@ export default function NavBar() {
           >
             Share a Memory
           </Link>
+        </div>
 
+        <div className="nav-links nav-actions">
           {user ? (
             <div style={styles.userMenu} ref={userMenuRef}>
               <button
