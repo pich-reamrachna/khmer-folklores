@@ -84,6 +84,40 @@ main {
   }
 }
 
+/* NavBar.js's two page links (desktop): a gold underline that grows out
+   from the centre on hover, and stays shown on the current page. The text
+   brightens with it. */
+.nav-tab {
+  position: relative;
+  color: #bbaebf;
+  transition: color 0.2s ease;
+}
+.nav-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background-color: #c5a059;
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.nav-tab:hover,
+.nav-tab.is-active {
+  color: #f5efe6;
+}
+.nav-tab:hover::after,
+.nav-tab.is-active::after {
+  transform: scaleX(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-tab::after {
+    transition: none;
+  }
+}
+
 /* NavBar.js's mobile menu. */
 .nav-links {
   display: flex;

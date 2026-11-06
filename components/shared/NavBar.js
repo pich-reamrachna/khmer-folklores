@@ -11,8 +11,9 @@ import { createClient } from "../../utils/supabase/client.js";
 // Text-only nav bar: site lockup on the left, the two page links in the
 // middle, account + language controls on the right.
 // No logo/icon — the archive's identity comes from collection.config.js.
-// The gold underline (linkActive) marks the current section: "Share a Memory"
-// on /share, "Browse the Archive" everywhere else.
+// The gold underline marks the current section: "Share a Memory" on /share,
+// "Browse the Archive" everywhere else (.nav-tab on desktop, linkActive in
+// the phone menu). On desktop it also grows in under a link on hover.
 // Fixed to the viewport (matches the mockup's .navbar) so it stays visible
 // over both page sections. Once the page is scrolled past the top of the
 // hero, it picks up a translucent blurred background (mockup's
@@ -100,6 +101,18 @@ const styles = {
   linkIdle: {
     textDecoration: "none",
     color: "#BBAEBF",
+    fontSize: "0.78rem",
+    fontWeight: 700,
+    letterSpacing: "0.18em",
+    textTransform: "uppercase",
+    padding: "0.5rem 0",
+  },
+  // The desktop bar's two page links. Same type as linkIdle, but colour and
+  // the gold underline live in app/globals.css's .nav-tab rule: the
+  // underline grows out from the centre on hover (and stays shown on the
+  // current page), and neither :hover nor an animated ::after can be inline.
+  tab: {
+    textDecoration: "none",
     fontSize: "0.78rem",
     fontWeight: 700,
     letterSpacing: "0.18em",
@@ -627,14 +640,16 @@ export default function NavBar() {
         <div className="nav-links nav-center">
           <Link
             href="/"
-            style={onBrowse ? styles.linkActive : styles.linkIdle}
+            style={styles.tab}
+            className={onBrowse ? "nav-tab is-active" : "nav-tab"}
             aria-current={onBrowse ? "page" : undefined}
           >
             Browse the Archive
           </Link>
           <Link
             href="/share"
-            style={onShare ? styles.linkActive : styles.linkIdle}
+            style={styles.tab}
+            className={onShare ? "nav-tab is-active" : "nav-tab"}
             aria-current={onShare ? "page" : undefined}
           >
             Share a Memory
