@@ -23,13 +23,14 @@ const uiText = {
   // here by name, so a Khmer reader has to be able to find it in the menu.
   navMyEntries: { en: "My Entries", km: "កំណត់ត្រារបស់ខ្ញុំ" },
 
-  // StoryHero.js — heroEyebrow ("Featured Stories of Khmer Folklores") is
-  // deliberately not here: a decorative label, kept English always.
-  heroReadStory: { en: "Read This Story", km: "អានរឿងនេះ" },
-  heroScrollCue: { en: "Scroll to open ledger", km: "អូសដើម្បីបើកសៀវភៅកត់ត្រា" },
+  // StoryHero.js. The two arrow labels are AI-drafted Khmer — flag for the
+  // curator to review.
+  heroPrevStory: { en: "Previous story", km: "រឿងមុន" },
+  heroNextStory: { en: "Next story", km: "រឿងបន្ទាប់" },
+  heroReadStory: { en: "Read the Story", km: "អានរឿងនេះ" },
 
   // ArchiveBrowser.js / ArchiveSearch.js — archiveEyebrow ("Open the
-  // Ledger") is deliberately not here, same reason as heroEyebrow above.
+  // Ledger") is deliberately not here: a decorative label, kept English always.
   archiveTitle: { en: "Find a story to follow.", km: "ស្វែងរករឿងមួយដើម្បីតាមដាន។" },
   archiveSubtitle: {
     en: "A living archive of Khmer legends, spirits, and the community memories that keep them alive.",
@@ -48,7 +49,7 @@ const uiText = {
   goBack: { en: "Go Back", km: "ត្រឡប់ក្រោយ" },
 
   // StoryMemories.js — memoriesEyebrow ("Voices from the Community") is
-  // deliberately not here, same reason as heroEyebrow above.
+  // deliberately not here, same reason as archiveEyebrow above.
   memoriesTitle: { en: "What people remember.", km: "អ្វីដែលមនុស្សនៅចាំ។" },
   memoriesSubtitle: {
     en: "Each memory is a small lantern showing how folklore lives in daily Cambodian conversation.",

@@ -1,15 +1,15 @@
 "use client";
 
-import { useRef } from "react";
 import Link from "next/link";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 
-// StoryHero — the hero-section from the mockup: eyebrow, title, summary,
-// CTA, and a meta tag, laid out as a two-column grid. `children` (the entry
-// card carousel) renders below the grid, inside the same container, so it
-// shares this section's padding/max-width/gap instead of managing its own.
-// "use client" is required for the scroll-cue's onClick handler.
+// StoryHero — the home page's first screen: the selected story's category,
+// title, summary and "Read the Story" button over a charcoal-and-gold-brush
+// backdrop with its picture, plus previous/next arrows at the edges.
+// `children` (the featured-story row) renders below the text, inside the
+// same container, so it shares this section's padding/gap instead of
+// managing its own. "use client" is required for the arrows' onClick.
 
 // Properties that vary by breakpoint can't stay inline — a stylesheet rule
 // can never override an inline style — so they live in the plain <style>
@@ -27,20 +27,20 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    // No overflow:hidden — the entry cards below need room for their
-    // hover lift (translateY) and glow (box-shadow) to render past the
-    // card's own box without being clipped at this section's edges.
-    backgroundColor: "#08040A",
+    // No overflow:hidden here — the backdrop layer below clips its own
+    // overhanging images instead.
+    // Warm charcoal rather than the site's purple-black, so the gold brush
+    // strokes behind the picture read as paint on a dark wall.
+    backgroundColor: "#1A1817",
     boxSizing: "border-box",
     scrollSnapAlign: "start",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
   },
-  // Decorative golden-waves backdrop. Lives in its own absolutely
+  // Decorative gold-brush backdrop. Lives in its own absolutely
   // positioned layer (below `container`'s zIndex: 2) with its own
-  // overflow:hidden, so the image is clipped to the section without
-  // clipping the entry cards' hover lift/glow the way overflow:hidden on
-  // `section` itself would. pointerEvents:none keeps it from ever
+  // overflow:hidden, so the brush strokes and picture that overhang the
+  // section are clipped to it. pointerEvents:none keeps it from ever
   // intercepting clicks on the content above it.
   backdrop: {
     position: "absolute",
@@ -49,34 +49,50 @@ const styles = {
     overflow: "hidden",
     pointerEvents: "none",
   },
-  // The waves sit in the image's lower two-thirds, so anchoring it to the
-  // bottom keeps them behind the card row and away from the title/summary.
-  // Low opacity plus the mask fade (top and bottom edges dissolve into
-  // `section`'s background) keep it an ambient texture, not a picture
-  // competing with the text.
-  backdropImage: {
+  // Worn charcoal texture (soft smudges, faint scratches) under everything
+  // else — the dark wall the brush strokes are painted on. `section`'s
+  // backgroundColor shows until it loads. app/page.js preloads it.
+  texture: {
     position: "absolute",
     inset: 0,
-    // A 2000px WebP of the original PNG (602 KB instead of 2.7 MB) — at this
-    // low opacity the smaller size isn't visible. app/page.js preloads it.
-    backgroundImage: "url(/golden-waves.webp)",
+    backgroundImage: "url(/rustic-charcoal.webp)",
     backgroundSize: "cover",
-    backgroundPosition: "center bottom",
+    backgroundPosition: "center",
     backgroundRepeat: "no-repeat",
-    opacity: 0.25,
-    WebkitMaskImage:
-      "linear-gradient(to bottom, transparent 0%, #000 35%, #000 80%, transparent 100%)",
-    maskImage:
-      "linear-gradient(to bottom, transparent 0%, #000 35%, #000 80%, transparent 100%)",
   },
-  // Readability scrim: darkest behind the left-aligned text column and
-  // fading out toward the right, so the waves stay visible on the open
-  // side of the layout while the title/summary keep full contrast.
-  backdropScrim: {
+  // The big diagonal gold stroke behind the picture, running from the
+  // bottom-left of the right half up past the top-right corner. Its box and
+  // opacity live in this file's <style> tag below (.hero-brush-main) —
+  // phone fades it right down, and a media query can't beat inline styles.
+  // app/page.js preloads it.
+  brushMain: {
     position: "absolute",
-    inset: 0,
+    backgroundImage: "url(/gold-brush-main-cropped.png)",
+    backgroundSize: "contain",
+    backgroundPosition: "right center",
+    backgroundRepeat: "no-repeat",
+  },
+  // A smaller, muted stroke low on the left, under the story row — balances
+  // the main stroke. Box/opacity in the <style> tag (.hero-brush-accent).
+  brushAccent: {
+    position: "absolute",
+    backgroundImage: "url(/gold-brush-accent-cropped.png)",
+    backgroundSize: "contain",
+    backgroundPosition: "left bottom",
+    backgroundRepeat: "no-repeat",
+  },
+  // A dark band across the bottom of the hero, on top of the brush and the
+  // picture, so the story row under the text stays readable where it
+  // crosses the bright gold stroke. Fades in from nothing, so there's no
+  // hard edge where it starts.
+  rowBand: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: "45%",
     background:
-      "linear-gradient(90deg, rgba(8, 4, 10, 0.92) 0%, rgba(8, 4, 10, 0.7) 35%, rgba(8, 4, 10, 0.2) 70%, rgba(8, 4, 10, 0) 100%)",
+      "linear-gradient(to top, rgba(14, 12, 11, 0.88) 0%, rgba(14, 12, 11, 0.72) 45%, rgba(14, 12, 11, 0) 100%)",
   },
   // The selected story's own picture (stories.photo_url), as a large
   // cinematic layer filling the right of the hero — above the waves/scrim,
@@ -117,9 +133,10 @@ const styles = {
     // reads as standing in front of the landscape, not printed on it.
     filter: "drop-shadow(-22px 28px 30px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 8px rgba(0, 0, 0, 0.6))",
   },
-  // gap: shrinks on short viewports.
+  // gap: shrinks on short viewports. No max-width: the side padding in the
+  // <style> tag below scales with the screen instead, so the text keeps the
+  // same distance from the edge on a wide monitor as on a laptop.
   container: {
-    maxWidth: 1560,
     width: "100%",
     margin: "0 auto",
     display: "flex",
@@ -127,53 +144,49 @@ const styles = {
     position: "relative",
     zIndex: 2,
   },
-  // justifyContent: centered on phone instead of left-aligned — lives in
-  // this file's own <style> tag below since it needs a media query.
+  // The story's category ("LEGEND") above the title. Can show
+  // categoryKhmer, so it needs var(--font-khmer).
   eyebrow: {
-    display: "flex",
-    alignItems: "center",
-    gap: "1rem",
-    margin: 0,
-  },
-  eyebrowLine: {
-    height: 1,
-    width: 48,
-    backgroundColor: "rgba(197, 160, 89, 0.65)",
-  },
-  eyebrowText: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 600,
-    color: "#E6C575",
-    letterSpacing: "0.25em",
+    color: "#A89F91",
+    letterSpacing: "0.3em",
     textTransform: "uppercase",
-    // Centers a short second line under a longer first line when this
-    // wraps on phone — plain left-align stranded it flush left, leaving
-    // visible dead space to its right.
-    textAlign: "center",
+    margin: "0 0 1.2rem",
   },
-  // grid-template-columns: 1 column on phone. minHeight: shrinks on short
-  // viewports.
+  // minHeight: shrinks on short viewports.
   main: {
-    display: "grid",
+    display: "flex",
     alignItems: "center",
-    gap: "3rem",
   },
+  // Under the English title, quieter than it — the English one leads.
   khmerTitle: {
     fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
-    fontSize: "2.2rem",
-    fontWeight: 600,
-    color: "#D4AF37",
-    letterSpacing: "0.04em",
-    margin: "0 0 0.5rem",
+    fontSize: "1.35rem",
+    fontWeight: 400,
+    color: "#D9D2C5",
+    margin: "0 0 1.4rem",
+  },
+  // Three hairlines of different lengths under the Khmer title — a
+  // decorative break before the summary, like ruled lines in a ledger.
+  rule: {
+    display: "flex",
+    gap: 6,
+    margin: "0 0 1.6rem",
+  },
+  ruleLine: {
+    height: 1,
+    backgroundColor: "rgba(245, 239, 230, 0.28)",
   },
   // fontSize/marginBottom: shrink on short viewports, so this box doesn't
   // single-handedly keep `main` tall on wide-but-short screens.
   title: {
     fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
-    fontWeight: 600,
-    color: "#F5EFE6",
+    fontWeight: 500,
+    color: "#C9A961",
     lineHeight: 1.05,
-    letterSpacing: "-0.01em",
+    letterSpacing: "0.01em",
     marginTop: 0,
     marginLeft: 0,
     marginRight: 0,
@@ -192,11 +205,10 @@ const styles = {
   // generic system Khmer font instead of the loaded Kantumruy Pro.
   summary: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "1.05rem",
-    color: "#BBAEBF",
-    fontWeight: 300,
-    lineHeight: 1.7,
-    maxWidth: 680,
+    fontSize: "1.15rem",
+    color: "#F5EFE6",
+    fontWeight: 400,
+    lineHeight: 1.65,
     marginTop: 0,
     marginLeft: 0,
     marginRight: 0,
@@ -204,32 +216,25 @@ const styles = {
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
   },
-  // color/borderBottomColor live in app/globals.css's .read-link rule —
-  // needed for :hover to work, and a plain stylesheet avoids the
-  // hydration-gap flash a <style jsx> block here would have.
-  readLink: {
+  // The filled gold button. backgroundColor/color live in app/globals.css's
+  // .hero-read-btn rule — it's a Link, and its :hover can only be styled
+  // from there (see CLAUDE.md on <style jsx> and Link).
+  readButton: {
     display: "inline-flex",
     alignItems: "center",
-    background: "transparent",
-    border: "none",
+    gap: "0.9rem",
+    padding: "1.05rem 1.5rem",
     textDecoration: "none",
+    fontFamily: "var(--font-khmer), var(--font-cinzel), serif",
     fontSize: "0.85rem",
     fontWeight: 700,
-    letterSpacing: "0.22em",
+    letterSpacing: "0.2em",
     textTransform: "uppercase",
-    paddingBottom: 6,
-    borderBottomWidth: 2,
-    borderBottomStyle: "solid",
-    cursor: "pointer",
-    // "inherit" isn't enough now that this label is translated — the
-    // nearest ancestor with an explicit fontFamily is `section`'s
-    // Latin-only stack, so Khmer text would fall back to a generic
-    // system font instead of the loaded Kantumruy Pro.
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
   },
-  metaAside: {
-    alignSelf: "flex-end",
-    paddingBottom: "1rem",
+  // The small ◆ either side of the button's label.
+  diamond: {
+    fontSize: "0.55rem",
+    letterSpacing: "normal",
   },
   // Letter-spacing is a Latin small-caps convention — applied to Khmer,
   // it pries apart the stacked consonant/vowel signs that make up a
@@ -239,51 +244,25 @@ const styles = {
   trackingNone: {
     letterSpacing: "normal",
   },
-  // white-space/overflow/textOverflow: truncates to one line on phone
-  // instead of wrapping — wrapping let this box's height vary by entry
-  // (1 line vs 2), which grew `main` and pushed the card row/scroll cue
-  // below it up or down when switching entries.
-  metaTag: {
-    margin: 0,
-    // Can now show categoryKhmer/placeKhmer — see summary above for why
-    // this needs var(--font-khmer) explicitly instead of inheriting.
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.8rem",
-    fontWeight: 700,
-    color: "#E6C575",
-    letterSpacing: "0.22em",
-    textTransform: "uppercase",
-    // Sits over the story's picture, which can be light there (Bramat
-    // Promong's scarf) — a soft dark halo keeps the gold text readable.
-    textShadow: "0 0 10px rgba(8, 4, 10, 0.9), 0 0 3px rgba(8, 4, 10, 0.9)",
-  },
-  // paddingTop: shrinks on short viewports.
-  scrollCue: {
+  // The previous/next arrows at the hero's left and right edges.
+  // left/right/top live in this file's <style> tag below (.hero-arrow-prev/-next) — they tighten on
+  // phone, and a media query can't beat inline styles.
+  arrow: {
+    position: "absolute",
+    zIndex: 3,
+    transform: "translateY(-50%)",
     display: "flex",
-    justifyContent: "center",
-  },
-  // color/font-size live in app/globals.css's .scroll-cue-link rule, same
-  // reason as readLink above.
-  scrollCueLink: {
-    display: "inline-flex",
-    alignItems: "center",
-    gap: "0.5rem",
+    padding: "0.5rem",
     background: "transparent",
     border: "none",
-    fontWeight: 600,
-    letterSpacing: "0.22em",
-    textTransform: "uppercase",
     cursor: "pointer",
-    // Same reasoning as readLink above — this label is now translated.
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
   },
-  // Recolored via mask-image, same technique as the other icons in this
-  // app. background-color and the float animation's @keyframes live in
-  // app/globals.css, same reason as scrollCueLink above.
-  scrollCueIcon: {
-    display: "inline-block",
-    width: 14,
-    height: 14,
+  // The site's chevron icon, turned to point left or right (rotate below).
+  // background-color lives in app/globals.css's .hero-arrow rules (hover).
+  arrowIcon: {
+    display: "block",
+    width: 22,
+    height: 22,
     WebkitMaskImage: "url(/icons/arrow-down-sign-to-navigate.png)",
     maskImage: "url(/icons/arrow-down-sign-to-navigate.png)",
     WebkitMaskSize: "contain",
@@ -292,24 +271,17 @@ const styles = {
     maskRepeat: "no-repeat",
     WebkitMaskPosition: "center",
     maskPosition: "center",
-    animation: "scroll-cue-float 1.6s ease-in-out infinite",
   },
 };
 
-export default function StoryHero({ entry, children }) {
-  const sectionRef = useRef(null);
+// The three hairlines' lengths, left to right (see `rule` above).
+const RULE_WIDTHS = [108, 216, 72];
+
+// `index` is the shown story's place among the `total` featured stories;
+// onSelect(index) switches the hero to another one.
+export default function StoryHero({ entry, index, total, onSelect, children }) {
   const { language } = useLanguage();
   const t = useTranslation();
-
-  // Scrolls to this section's actual next sibling, not a fixed
-  // one-viewport-height guess — this section's height varies (minHeight:
-  // 100vh), so a fixed guess can land short on short viewports.
-  const scrollToNextSection = () => {
-    sectionRef.current?.nextElementSibling?.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  };
 
   // khmerTitle/title stack (both shown together) regardless of language —
   // everything else swaps, falling back to English when untranslated.
@@ -318,13 +290,20 @@ export default function StoryHero({ entry, children }) {
   // version is shown separately and correctly attributed.
   const summary = pickText(language, entry.summaryKhmer, entry.summary);
   const category = pickText(language, entry.categoryKhmer, entry.category);
-  const place = pickText(language, entry.placeKhmer, entry.place);
+  // Letter-spacing off for Khmer labels (see trackingNone above).
+  const tracking = language === "km" ? styles.trackingNone : null;
+
+  // The arrows wrap around: before the first story comes the last, and
+  // after the last comes the first.
+  const prevIndex = (index - 1 + total) % total;
+  const nextIndex = (index + 1) % total;
 
   return (
-    <section ref={sectionRef} style={styles.section} className="hero-section">
+    <section style={styles.section} className="hero-section">
       <div style={styles.backdrop} aria-hidden="true">
-        <div style={styles.backdropImage} />
-        <div style={styles.backdropScrim} />
+        <div style={styles.texture} />
+        <div style={styles.brushMain} className="hero-brush-main" />
+        <div style={styles.brushAccent} className="hero-brush-accent" />
         {entry.photoUrl ? (
           <div style={styles.pictureLayer} className="hero-picture-layer">
             {/* key + hero-fade: fades in with the text when the selected
@@ -339,68 +318,62 @@ export default function StoryHero({ entry, children }) {
             />
           </div>
         ) : null}
+        <div style={styles.rowBand} />
       </div>
 
-      <div style={styles.container} className="hero-container">
-        <p style={styles.eyebrow} className="hero-eyebrow">
-          <span style={styles.eyebrowLine} />
-          {/* Deliberately not translated — decorative label, kept English
-              like the site's other stylistic branding text. */}
-          <span style={styles.eyebrowText}>Featured Stories of Khmer Folklores</span>
-          <span style={styles.eyebrowLine} />
-        </p>
+      {total > 1 ? (
+        <>
+          <button
+            type="button"
+            style={styles.arrow}
+            className="hero-arrow hero-arrow-prev"
+            onClick={() => onSelect(prevIndex)}
+            aria-label={t("heroPrevStory")}
+          >
+            <span style={{ ...styles.arrowIcon, transform: "rotate(90deg)" }} className="hero-arrow-icon" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            style={styles.arrow}
+            className="hero-arrow hero-arrow-next"
+            onClick={() => onSelect(nextIndex)}
+            aria-label={t("heroNextStory")}
+          >
+            <span style={{ ...styles.arrowIcon, transform: "rotate(-90deg)" }} className="hero-arrow-icon" aria-hidden="true" />
+          </button>
+        </>
+      ) : null}
 
+      <div style={styles.container} className="hero-container">
         <div style={styles.main} className="hero-main-grid">
           {/* max-width lives in the <style> tag below (.hero-text) — it
               narrows on small screens to keep clear of the picture. */}
           <div key={entry.id} className="hero-fade hero-text">
+            {category ? <p style={{ ...styles.eyebrow, ...tracking }}>{category}</p> : null}
+
+            <h1 style={styles.title} className="hero-title">{entry.title}</h1>
+
             {entry.khmerTitle ? (
               <div style={styles.khmerTitle}>{entry.khmerTitle}</div>
             ) : null}
 
-            <h1 style={styles.title} className="hero-title">{entry.title}</h1>
+            <div style={styles.rule} aria-hidden="true">
+              {RULE_WIDTHS.map((width) => (
+                <span key={width} style={{ ...styles.ruleLine, width }} />
+              ))}
+            </div>
 
             <p style={styles.summary} className="hero-summary">{summary}</p>
 
-            <Link
-              href={`/${entry.id}`}
-              style={{ ...styles.readLink, ...(language === "km" ? styles.trackingNone : null) }}
-              className="read-link"
-              aria-label={t("heroReadStory")}
-            >
+            <Link href={`/${entry.id}`} style={{ ...styles.readButton, ...tracking }} className="hero-read-btn">
+              <span style={styles.diamond} aria-hidden="true">◆</span>
               {t("heroReadStory")}
+              <span style={styles.diamond} aria-hidden="true">◆</span>
             </Link>
           </div>
-
-          {category || place ? (
-            <div style={styles.metaAside}>
-              <p
-                style={{ ...styles.metaTag, ...(language === "km" ? styles.trackingNone : null) }}
-                key={entry.id}
-                className="hero-fade hero-meta-tag"
-              >
-                {category}
-                {category && place ? " • " : ""}
-                {place}
-              </p>
-            </div>
-          ) : null}
         </div>
 
         {children}
-
-        <div style={styles.scrollCue} className="hero-scroll-cue">
-          <button
-            type="button"
-            style={{ ...styles.scrollCueLink, ...(language === "km" ? styles.trackingNone : null) }}
-            className="scroll-cue-link"
-            onClick={scrollToNextSection}
-            aria-label={t("heroScrollCue")}
-          >
-            {t("heroScrollCue")}
-            <span style={styles.scrollCueIcon} className="scroll-cue-icon" aria-hidden="true" />
-          </button>
-        </div>
       </div>
 
       {/* Plain <style>, not <style jsx> — its CSS text renders straight into
@@ -411,15 +384,44 @@ export default function StoryHero({ entry, children }) {
           padding-top: 130px;
           padding-bottom: 3rem;
         }
+        /* Side padding puts the text about 9% of the screen width in from
+           each edge (with the section's own 2rem), and never less than 5rem
+           — the gutter the edge arrows need so they never sit on the text
+           or the story row. */
         .hero-container {
           gap: 2.2rem;
+          padding-left: max(5rem, calc(9vw - 2rem));
+          padding-right: max(5rem, calc(9vw - 2rem));
+          box-sizing: border-box;
+        }
+        .hero-arrow {
+          top: 42%;
+        }
+        .hero-arrow-prev {
+          left: 2.75rem;
+        }
+        .hero-arrow-next {
+          right: 2.75rem;
         }
         .hero-main-grid {
-          grid-template-columns: 1fr auto;
           min-height: 280px;
         }
-        .hero-meta-tag {
-          white-space: nowrap;
+        /* Overhangs the top and bottom so the stroke's ragged ends run off
+           the section instead of stopping inside it. */
+        .hero-brush-main {
+          top: -14%;
+          bottom: -14%;
+          right: -4%;
+          width: 72%;
+        }
+        /* Flush with the left edge: the image's own left side is cut
+           straight, so anywhere else it shows as a hard vertical line. */
+        .hero-brush-accent {
+          left: 0;
+          bottom: -2%;
+          width: 34%;
+          height: 22%;
+          opacity: 0.55;
         }
         /* Landscape screens: the frame is the right 60% of the hero, from
            just above its top to well past its bottom — each picture file is
@@ -434,8 +436,10 @@ export default function StoryHero({ entry, children }) {
         .hero-picture-img {
           object-position: center top;
         }
+        /* Narrow like the mockup's column, so the summary wraps into short
+           lines and the picture on the right has room. */
         .hero-text {
-          max-width: 760px;
+          max-width: 560px;
         }
         /* Tall screens (portrait tablets, narrow windows): the hero is taller
            than it is wide, so its text sits around the middle while a
@@ -458,62 +462,51 @@ export default function StoryHero({ entry, children }) {
             object-position: center 35%;
           }
         }
-        /* Too narrow for the title column and the category/place tag side by
-           side (the tag never wraps, and was running off-screen): the tag
-           drops onto its own line under the text, as on phone, shortened
-           with an ellipsis only if it still doesn't fit. */
+        /* Narrow screens: keep the text column clear of the picture on the
+           right. */
         @media (max-width: 860px) {
-          .hero-main-grid {
-            grid-template-columns: minmax(0, 1fr);
-          }
-          .hero-meta-tag {
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
-          /* With the tag on its own line the text column would otherwise
-             stretch across the full width, over the picture on the right. */
           .hero-text {
             max-width: 56%;
           }
         }
-        .hero-eyebrow {
-          justify-content: flex-start;
-        }
         .hero-title {
-          font-size: clamp(2.8rem, 6vw, 5.2rem);
-          margin-bottom: 1.2rem;
+          font-size: clamp(2.8rem, 5.2vw, 4.8rem);
+          margin-bottom: 0.8rem;
         }
         .hero-summary {
-          height: 5.1em;
+          height: 4.95em;
           -webkit-line-clamp: 3;
-          margin-bottom: 1.8rem;
-        }
-        .hero-scroll-cue {
-          padding-top: 0.5rem;
+          margin-bottom: 2rem;
         }
         @media (max-width: 640px) {
-          .hero-main-grid {
-            /* minmax(0, ...), not plain 1fr — a bare 1fr track's automatic
-               min-width is its content's min-content size, so .hero-meta-tag's
-               nowrap text (needed for its ellipsis) would force this column
-               wider than the viewport instead of being clipped inside it. */
-            grid-template-columns: minmax(0, 1fr);
-          }
-          .hero-meta-tag {
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
           /* Phone: the text spans the full width, so a picture behind it
              would fight the title and summary — hidden here. */
           .hero-picture-layer {
+            display: none;
+          }
+          /* The text runs across the brush on phone — faded right down so
+             the title and summary stay readable over it. */
+          .hero-brush-main {
+            width: 120%;
+            opacity: 0.18;
+          }
+          .hero-brush-accent {
             display: none;
           }
           /* No picture on phone, so the text uses the full width again. */
           .hero-text {
             max-width: none;
           }
-          .hero-eyebrow {
-            justify-content: center;
+          /* Phone: a slimmer gutter, with the arrows tucked into it. */
+          .hero-container {
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+          }
+          .hero-arrow-prev {
+            left: -0.75rem;
+          }
+          .hero-arrow-next {
+            right: -0.75rem;
           }
         }
         /* minHeight:100vh above lets this section grow taller than a short
@@ -535,12 +528,9 @@ export default function StoryHero({ entry, children }) {
             margin-bottom: 0.8rem;
           }
           .hero-summary {
-            height: 3.4em;
+            height: 3.3em;
             -webkit-line-clamp: 2;
             margin-bottom: 1rem;
-          }
-          .hero-scroll-cue {
-            padding-top: 0.25rem;
           }
         }
         /* Smaller title on phone: a long single word in Cinzel capitals

@@ -2,169 +2,118 @@
 
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 
-// The mockup's .story-card. Dark surface, gold active border, no icon.
-// "use client" is required for the <style jsx> hover rules below.
+// One featured story in the row under the hero: its title, a hairline with
+// a diamond marker in the middle, then its place. The selected story's line
+// and diamond turn gold and its title brightens.
+//
+// Everything that changes with hover or selection (title colour and size,
+// line colour, diamond fill) lives in app/globals.css's .entry-card rules,
+// not inline — an inline value can never be overridden by :hover, and a
+// plain stylesheet shows the right colours from the first paint.
 
 const styles = {
   card: {
     width: "100%",
-    boxSizing: "border-box",
-    textAlign: "left",
-    cursor: "pointer",
-    padding: "1.2rem 1.4rem",
-    backgroundColor: "#120916",
-    // Width/style stay constant across active/inactive/hover — only
-    // color changes. A border-WIDTH change here would shift the card's
-    // auto height (box-sizing doesn't protect against that), which
-    // desyncs the carousel row's stretch-height and nudges the hero
-    // content above it.
-    //
-    // borderWidth/Style/Color kept separate, not the border shorthand —
-    // cardActive below overrides only borderColor, and mixing a
-    // shorthand base with a longhand override triggers a React warning.
-    borderWidth: 2,
-    borderStyle: "solid",
-    borderColor: "#2A172F",
-    borderRadius: 16,
-    color: "#F5EFE6",
-    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
-    display: "flex",
-    alignItems: "center",
-    transition: "all 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-    position: "relative",
-    // z-index lives in the <style jsx> block below, not here — an inline
-    // z-index would always beat the .entry-card:hover CSS rule, so a
-    // hovered card's glow could never rise above its siblings.
-  },
-  // Persistent indicator for the selected card — stays gold regardless
-  // of hover. Inline styles always win over the .entry-card:hover CSS
-  // class below, so hovering the active card can't dull this. Only
-  // borderColor (not the border shorthand) so width/style stay constant.
-  cardActive: {
-    backgroundColor: "#1D1024",
-    borderColor: "#C5A059",
-    boxShadow: "0 0 3px rgba(197, 160, 89, 0.8), 0 0 24px rgba(197, 160, 89, 0.45)",
-  },
-  // Small glowing dot that previews on hover for unselected cards only
-  // (the active card already has its own persistent indicator, so it
-  // isn't rendered there — see the isActive check below).
-  hoverPip: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    width: 6,
-    height: 6,
-    borderRadius: "50%",
-    backgroundColor: "#C5A059",
-    opacity: 0,
-    transition: "opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1)",
-    pointerEvents: "none",
-  },
-  body: {
     display: "flex",
     flexDirection: "column",
-    gap: "0.35rem",
-    minWidth: 0,
-    flex: 1,
-  },
-  headerRow: {
-    display: "flex",
-    justifyContent: "space-between",
     alignItems: "center",
-    width: "100%",
-    gap: 12,
-  },
-  number: {
-    fontSize: "0.75rem",
-    fontWeight: 700,
-    color: "#E6C575",
-    letterSpacing: "0.15em",
-    margin: 0,
-    flex: "0 0 auto",
-  },
-  // fontFamily on place/title/category: each of these can now show a
-  // Khmer field (title swaps to khmerTitle), so each needs var(--font-khmer)
-  // explicitly — otherwise they'd inherit/use a Latin-only stack and fall
-  // back to a generic system Khmer font instead of the loaded Kantumruy Pro.
-  place: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.65rem",
-    fontWeight: 600,
-    color: "#C5A059",
-    letterSpacing: "0.15em",
-    textTransform: "uppercase",
-    margin: 0,
-    textAlign: "right",
-  },
-  title: {
-    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "1.15rem",
-    fontWeight: 600,
+    padding: 0,
+    background: "transparent",
+    border: "none",
+    cursor: "pointer",
     color: "#F5EFE6",
-    margin: "2px 0 0",
+    textAlign: "center",
+  },
+  // Fixed two-line height, titles sitting on its bottom edge — so a title
+  // that wraps (Crocodile Reincarnation) and one that doesn't still meet
+  // the line at the same place.
+  head: {
+    width: "100%",
+    minHeight: "3.4rem",
+    display: "flex",
+    alignItems: "flex-end",
+    justifyContent: "center",
+    padding: "0 1.5rem 0.8rem",
+    boxSizing: "border-box",
+  },
+  // Can show khmerTitle, so it needs var(--font-khmer) ahead of Cinzel.
+  // A soft dark halo keeps it readable where it crosses the gold brush.
+  title: {
+    margin: 0,
+    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
+    fontWeight: 500,
+    lineHeight: 1.1,
+    textTransform: "uppercase",
+    textShadow: "0 0 8px rgba(8, 4, 10, 0.95), 0 0 2px rgba(8, 4, 10, 0.9)",
+  },
+  // The hairline and the diamond sitting on it.
+  rule: {
+    position: "relative",
+    width: "100%",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  line: {
+    position: "absolute",
+    left: 0,
+    right: 0,
+  },
+  diamond: {
+    position: "relative",
+    width: 9,
+    height: 9,
+    transform: "rotate(45deg)",
+    boxSizing: "border-box",
+  },
+  // The story's place. A Khmer value needs var(--font-khmer).
+  meta: {
+    margin: "0.9rem 0 0",
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "0.75rem",
+    fontWeight: 600,
+    color: "#CFC6B8",
+    letterSpacing: "0.2em",
+    textTransform: "uppercase",
+    textShadow: "0 0 8px rgba(8, 4, 10, 0.95), 0 0 2px rgba(8, 4, 10, 0.9)",
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
+    maxWidth: "100%",
   },
-  category: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.68rem",
-    fontWeight: 600,
-    color: "#7A697F",
-    letterSpacing: "0.15em",
-    textTransform: "uppercase",
-    margin: 0,
+  // Letter-spacing pries apart Khmer glyph clusters — off for Khmer text.
+  trackingNone: {
+    letterSpacing: "normal",
   },
 };
 
 export default function EntryCard({ entry, index, isActive, onSelect }) {
   const { language } = useLanguage();
-  // Unlike StoryHero/StoryDetails/ArchiveBrowser, the card swaps its title
+  // Unlike StoryHero/StoryDetails/ArchiveBrowser, the row swaps its title
   // rather than stacking both — too little room here for two title lines.
   const title = pickText(language, entry.khmerTitle, entry.title);
-  const category = pickText(language, entry.categoryKhmer, entry.category);
   const place = pickText(language, entry.placeKhmer, entry.place);
 
   return (
     <button
       type="button"
       onClick={() => onSelect(index)}
-      style={{ ...styles.card, ...(isActive ? styles.cardActive : null) }}
+      style={styles.card}
       aria-pressed={isActive}
-      className="entry-card"
+      className={isActive ? "entry-card is-active" : "entry-card"}
     >
-      <div style={styles.body}>
-        <div style={styles.headerRow}>
-          <p style={styles.number}>{String(index + 1).padStart(2, "0")}</p>
-          {place ? <p style={styles.place}>{place}</p> : null}
-        </div>
-        <h2 style={styles.title}>{title}</h2>
-        <p style={styles.category}>{category}</p>
+      <div style={styles.head}>
+        <h2 style={styles.title} className="entry-card-title">{title}</h2>
       </div>
 
-      {!isActive ? (
-        <span style={styles.hoverPip} className="entry-card-pip" aria-hidden="true" />
-      ) : null}
+      <div style={styles.rule} aria-hidden="true">
+        <span style={styles.line} className="entry-card-line" />
+        <span style={styles.diamond} className="entry-card-diamond" />
+      </div>
 
-      {/* :hover, translateY lift, and the pip's descendant selector can't
-          be expressed as inline styles — styled-jsx (built into Next.js)
-          scopes real CSS to just this component. */}
-      <style jsx>{`
-        .entry-card {
-          z-index: 1;
-        }
-        .entry-card:hover {
-          z-index: 10;
-          border-color: #c5a059;
-          background-color: #170f1c;
-          box-shadow: 0 0 3px rgba(197, 160, 89, 0.8), 0 0 24px rgba(197, 160, 89, 0.45);
-          transform: translateY(-4px);
-        }
-        .entry-card:hover .entry-card-pip {
-          opacity: 1;
-          box-shadow: 0 0 8px rgba(197, 160, 89, 0.65);
-        }
-      `}</style>
+      {place ? (
+        <p style={{ ...styles.meta, ...(language === "km" ? styles.trackingNone : null) }}>{place}</p>
+      ) : null}
     </button>
   );
 }

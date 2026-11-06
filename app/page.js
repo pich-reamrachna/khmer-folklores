@@ -13,9 +13,13 @@ import { getCachedStories, setCachedStories } from "../utils/archiveCache.js";
 // How many stories the hero carousel features (the archive list below shows
 // them all). Shared by the image preload and the carousel itself.
 const FEATURED_COUNT = 5;
-// The hero's gold-waves backdrop (StoryHero.js) — preloaded with the
-// featured pictures so the whole hero appears at once.
-const HERO_BACKDROP = "/golden-waves.webp";
+// The hero's charcoal texture and gold brush strokes (StoryHero.js) —
+// preloaded with the featured pictures so the whole hero appears at once.
+const HERO_BACKDROPS = [
+  "/rustic-charcoal.webp",
+  "/gold-brush-main-cropped.png",
+  "/gold-brush-accent-cropped.png",
+];
 
 // Shapes one story + its tellings into the flat object the home components
 // read (entry.title, entry.place, entry.khmerTitle, ...), mapping the DB's
@@ -137,7 +141,7 @@ export default function Home() {
         // with the pictures still popping in. preloadImages gives up after
         // a few seconds so a slow connection still gets the page.
         await preloadImages([
-          HERO_BACKDROP,
+          ...HERO_BACKDROPS,
           ...stories.slice(0, FEATURED_COUNT).map((s) => s.photoUrl),
         ]);
         if (!error && data) setCachedStories(stories);
@@ -195,7 +199,12 @@ export default function Home() {
     >
       <NavBar />
 
-      <StoryHero entry={selectedEntry}>
+      <StoryHero
+        entry={selectedEntry}
+        index={selectedIndex}
+        total={featuredStories.length}
+        onSelect={setSelectedIndex}
+      >
         <EntryCardRow
           entries={featuredStories}
           selectedIndex={selectedIndex}

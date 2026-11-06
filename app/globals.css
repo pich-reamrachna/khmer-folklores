@@ -93,41 +93,67 @@ main {
   }
 }
 
-/* StoryHero.js's "Read This Story" link and "Scroll to open ledger". */
-.scroll-cue-link {
-  color: #e6c575;
-  font-size: 0.85rem;
-  transition: color 0.2s ease;
-}
-.scroll-cue-link:hover {
-  color: #ffffff;
-}
-/* Plain class, not :global() — a normal stylesheet doesn't need
-   styled-jsx's scoping hash the way a same-component <style jsx> would. */
-.read-link {
-  color: #e6c575;
-  border-bottom-color: #c5a059;
-  transition: color 0.2s ease, border-bottom-color 0.2s ease;
-}
-.read-link:hover {
-  color: #ffffff;
-  border-bottom-color: #ffffff;
-}
-.scroll-cue-icon {
-  background-color: #e6c575;
+/* StoryHero.js's edge arrows. */
+.hero-arrow-icon {
+  background-color: #d9d2c5;
   transition: background-color 0.2s ease;
 }
-.scroll-cue-link:hover .scroll-cue-icon {
-  background-color: #ffffff;
+.hero-arrow:hover .hero-arrow-icon {
+  background-color: #c9a961;
 }
-@keyframes scroll-cue-float {
-  0%,
-  100% {
-    transform: translateY(0);
+/* EntryCard.js — the featured-story row under the hero. Muted by default;
+   hover brightens the title and outlines the diamond in gold; the selected
+   story gets a larger cream title, a gold line and a filled gold diamond. */
+.entry-card-title {
+  color: #ece5d8;
+  font-size: 1.25rem;
+  transition: color 0.25s ease, font-size 0.25s ease;
+}
+.entry-card:hover .entry-card-title,
+.entry-card.is-active .entry-card-title {
+  color: #f5efe6;
+}
+.entry-card.is-active .entry-card-title {
+  font-size: 1.6rem;
+}
+.entry-card-line {
+  height: 1px;
+  background-color: rgba(245, 239, 230, 0.28);
+  transition: background-color 0.25s ease;
+}
+.entry-card.is-active .entry-card-line {
+  height: 2px;
+  background-color: #c9a961;
+}
+.entry-card-diamond {
+  background-color: #1a1817;
+  border: 1px solid rgba(245, 239, 230, 0.55);
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+.entry-card:hover .entry-card-diamond {
+  border-color: #c9a961;
+}
+.entry-card.is-active .entry-card-diamond {
+  background-color: #c9a961;
+  border-color: #c9a961;
+}
+@media (max-width: 640px) {
+  .entry-card-title {
+    font-size: 1.1rem;
   }
-  50% {
-    transform: translateY(4px);
+  .entry-card.is-active .entry-card-title {
+    font-size: 1.35rem;
   }
+}
+/* StoryHero.js's "Read the Story" button — a Link, so its hover can't
+   live in the component's <style jsx>. */
+.hero-read-btn {
+  background-color: #c9a961;
+  color: #1a1817;
+  transition: background-color 0.2s ease;
+}
+.hero-read-btn:hover {
+  background-color: #e6c575;
 }
 
 /* BackButton.js's "Go Back" link. */
