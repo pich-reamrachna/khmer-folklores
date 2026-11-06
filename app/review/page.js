@@ -3,6 +3,7 @@ import { createClient } from "../../utils/supabase/server.js";
 import NavBar from "../../components/shared/NavBar.js";
 import StoryPageShell from "../../components/story/StoryPageShell.js";
 import ReviewQueue from "../../components/review/ReviewQueue.js";
+import LiveRefresh from "../../components/shared/LiveRefresh.js";
 
 // The curator's review queue, in three parts, each oldest first so the
 // longest-waiting is at the top:
@@ -98,6 +99,12 @@ export default async function ReviewPage() {
   return (
     <StoryPageShell>
       <NavBar />
+      {/* Re-fetches when anyone submits, edits or withdraws, or another
+          reviewer decides — the queue stays current without a reload. */}
+      <LiveRefresh
+        channel="review-queue"
+        tables={[{ table: "stories" }, { table: "entries" }, { table: "entry_edits" }]}
+      />
       <ReviewQueue submissions={submissions} tellings={tellings} edits={edits} loadFailed={!!error} />
     </StoryPageShell>
   );

@@ -3,6 +3,7 @@ import { createClient } from "../../utils/supabase/server.js";
 import NavBar from "../../components/shared/NavBar.js";
 import StoryPageShell from "../../components/story/StoryPageShell.js";
 import MyEntries from "../../components/submissions/MyEntries.js";
+import LiveRefresh from "../../components/shared/LiveRefresh.js";
 import { toEdit } from "../../utils/editableEntry.js";
 
 // The ?submitted= values that open the thank-you box (SubmittedDialog.js).
@@ -93,6 +94,16 @@ export default async function MyEntriesPage({ searchParams }) {
   return (
     <StoryPageShell>
       <NavBar />
+      {/* Re-fetches when a reviewer decides on one of the user's stories,
+          tellings or edits — only their own rows, the same ones listed. */}
+      <LiveRefresh
+        channel={`my-entries-${user.id}`}
+        tables={[
+          { table: "stories", filter: `first_shared_by=eq.${user.id}` },
+          { table: "entries", filter: `owner=eq.${user.id}` },
+          { table: "entry_edits", filter: `owner=eq.${user.id}` },
+        ]}
+      />
       {/* key: an edit made from this page comes back here with a new
           ?submitted while the page stays mounted — the key starts MyEntries
           afresh, so its thank-you box opens in the same render as the new
