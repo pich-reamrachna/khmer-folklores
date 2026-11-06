@@ -6,7 +6,7 @@ import { pickText, useLanguage } from "./LanguageContext.js";
 import { useTranslation } from "./uiText.js";
 
 // The archive's trailing footer — name/description, curator, source, nav
-// links, and a "back to top" button. Reused as the last snap-stop on both
+// links, and a "back to top" button. Reused as the last section on both
 // the home page and each story page; the caller owns the scroll container
 // and passes down what "back to top" means for it.
 // "use client" is required for the back-to-top button's onClick.
@@ -18,7 +18,6 @@ const styles = {
     color: "#E8EDF2",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     boxSizing: "border-box",
-    scrollSnapAlign: "start",
   },
   inner: {
     maxWidth: 1560,

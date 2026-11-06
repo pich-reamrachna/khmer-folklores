@@ -9,6 +9,7 @@ import ArchiveBrowser from "../components/home/ArchiveBrowser.js";
 import Footer from "../components/shared/Footer.js";
 import { preloadImages } from "../utils/preloadImages.js";
 import { getCachedStories, setCachedStories } from "../utils/archiveCache.js";
+import { useSectionPager } from "../utils/useSectionPager.js";
 
 // How many stories the hero carousel features (the archive list below shows
 // them all). Shared by the image preload and the carousel itself.
@@ -93,6 +94,10 @@ export default function Home() {
   // loaded the archive, so coming back to the home page shows it instantly
   // instead of the loading message again.
   const [flattenedStories, setFlattenedStories] = useState(getCachedStories);
+  // One wheel flick / swipe / key press = one smooth move to the next
+  // section (utils/useSectionPager.js). Only once there's a page to move
+  // through — the loading and empty screens don't page.
+  const scrollToY = useSectionPager(mainRef, flattenedStories?.length > 0);
 
   useEffect(() => {
     let active = true;
@@ -187,14 +192,12 @@ export default function Home() {
       ref={mainRef}
       style={{
         backgroundColor: "#0C0A12",
-        // <main> is the scroll container so scroll-snap works reliably.
-        // Each direct child (firstSection, identity, footer) is a snap stop
-        // and at least one viewport tall, so vertical swipes page through
-        // the archive instead of scrolling a long continuous page.
+        // <main> is the scroll container, but hidden overflow: visitors
+        // can't scroll it freely — useSectionPager above moves it one
+        // section at a time instead. (Code can still scroll a hidden-
+        // overflow box, so NavBar.js still sees scroll events.)
         height: "100vh",
-        overflowY: "auto",
-        scrollSnapType: "y mandatory",
-        scrollBehavior: "smooth",
+        overflowY: "hidden",
       }}
     >
       <NavBar />
@@ -214,9 +217,7 @@ export default function Home() {
 
       <ArchiveBrowser stories={flattenedStories} />
 
-      <Footer
-        onBackToTop={() => mainRef.current?.scrollTo({ top: 0, behavior: "smooth" })}
-      />
+      <Footer onBackToTop={() => scrollToY(0)} />
     </main>
   );
 }

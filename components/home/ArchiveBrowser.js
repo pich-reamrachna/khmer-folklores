@@ -123,10 +123,6 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
-    // Makes this a valid stop for <main>'s scroll-snap-type: y mandatory —
-    // without this, a scroll gesture from the hero skips straight past
-    // this section to the next one that has scroll-snap-align set.
-    scrollSnapAlign: "start",
   },
   container: {
     maxWidth: 1560,

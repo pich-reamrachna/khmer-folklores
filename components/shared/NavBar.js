@@ -186,7 +186,7 @@ const styles = {
     marginRight: 8,
   },
   // Recolored via mask-image, same technique as every other icon in this
-  // project (BackButton.js, StoryHero.js's scroll cue). Rotates 180deg
+  // project (BackButton.js, StoryHero.js's arrows). Rotates 180deg
   // open, same base+open merge pattern as langDropdown below.
   langPillIcon: {
     display: "inline-block",

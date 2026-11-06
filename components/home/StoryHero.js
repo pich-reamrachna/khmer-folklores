@@ -33,7 +33,6 @@ const styles = {
     // strokes behind the picture read as paint on a dark wall.
     backgroundColor: "#1A1817",
     boxSizing: "border-box",
-    scrollSnapAlign: "start",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
   },
