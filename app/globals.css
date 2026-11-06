@@ -305,6 +305,40 @@ select:-webkit-autofill {
   filter: none;
 }
 
+/* utils/useSectionPager.js: a one-shot gold glow just outside the edge of a
+   scrolling list (the archive's) when a scroll runs into its end — the cue
+   that the rest of that scroll stayed in the list, and that scrolling again
+   moves the page. Outside the edge, since the rows' own backgrounds would
+   cover a glow inside it. */
+.pager-end-down {
+  animation: pager-end-down 0.9s ease-out;
+}
+.pager-end-up {
+  animation: pager-end-up 0.9s ease-out;
+}
+@keyframes pager-end-down {
+  from {
+    box-shadow: 0 14px 18px -12px rgba(201, 169, 97, 0.8);
+  }
+  to {
+    box-shadow: 0 14px 18px -12px rgba(201, 169, 97, 0);
+  }
+}
+@keyframes pager-end-up {
+  from {
+    box-shadow: 0 -14px 18px -12px rgba(201, 169, 97, 0.8);
+  }
+  to {
+    box-shadow: 0 -14px 18px -12px rgba(201, 169, 97, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pager-end-down,
+  .pager-end-up {
+    animation-duration: 0.01s;
+  }
+}
+
 /* Phone-only: search bar spans full width, and rows lose their individual
    card border/background inside ArchiveBrowser.js's dropdown (the only
    place .archive-row renders at this width) — plain rows with a hover
