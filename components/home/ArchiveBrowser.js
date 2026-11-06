@@ -21,7 +21,8 @@ import { useTranslation } from "../shared/uiText.js";
 // "use client" is required here for useState and the router.push navigation.
 
 const ROW_HEIGHT = 104;
-const ROW_GAP = 14;
+// Rows sit edge to edge, divided by a ruled line (globals.css .archive-row).
+const ROW_GAP = 0;
 const VISIBLE_ROWS = 4;
 const SNIPPET_WORD_LIMIT = 16;
 
@@ -113,7 +114,14 @@ const styles = {
   // the space that centering would otherwise leave unused above the
   // content instead of running out of room below the search bar.
   section: {
-    backgroundColor: "#0D0812",
+    // Misty ink-wash mountains on old paper — a light parchment section,
+    // with dark ink text, between the dark hero and footer. The plain
+    // paper colour shows until the picture loads.
+    backgroundColor: "#D8D3CA",
+    backgroundImage: "url(/mist-inkwash.webp)",
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
     minHeight: "100vh",
     width: "100%",
     // Same top padding as StoryHero — clears the fixed 90px NavBar.
@@ -129,51 +137,50 @@ const styles = {
     width: "100%",
     margin: "0 auto",
   },
+  // The heading block is centred over the search and list, like a title
+  // page. Deliberately not translated — a decorative label, kept English
+  // like the site's other stylistic branding text.
   eyebrow: {
-    display: "flex",
-    alignItems: "center",
-    gap: "0.75rem",
-    margin: "0 0 1rem",
-  },
-  eyebrowLine: {
-    height: 1,
-    width: 32,
-    backgroundColor: "rgba(197, 160, 89, 0.65)",
-  },
-  // eyebrowText: deliberately not translated — a decorative label, kept
-  // English like the site's other stylistic branding text.
-  eyebrowText: {
     fontSize: "0.75rem",
     fontWeight: 600,
-    color: "#E6C575",
+    color: "#7A5C2E",
     letterSpacing: "0.25em",
     textTransform: "uppercase",
+    textAlign: "center",
+    margin: "0 0 1.1rem",
   },
   // title/subtitle: this section's own static heading copy (not a
   // story's title, which always stays English per Step 5) and are
   // translated, so each needs var(--font-khmer) explicitly instead of
   // inheriting `section`'s Latin-only stack.
+  // Cinzel first: the Khmer font also draws Latin letters, so listed first
+  // it would win for English too. Cinzel has no Khmer letters, so Khmer
+  // text still falls through to the Khmer font.
   title: {
-    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "2.75rem",
-    fontWeight: 600,
-    color: "#F5EFE6",
-    lineHeight: 1.15,
-    margin: "0 0 1rem",
+    fontFamily: "var(--font-cinzel), var(--font-khmer), serif, 'Times New Roman'",
+    fontSize: "clamp(2.2rem, 4vw, 3.4rem)",
+    fontWeight: 500,
+    color: "#24201B",
+    letterSpacing: "0.03em",
+    textTransform: "uppercase",
+    textAlign: "center",
+    lineHeight: 1.1,
+    margin: "0 0 1.2rem",
   },
   subtitle: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "1.05rem",
-    color: "#BBAEBF",
-    fontWeight: 300,
+    fontSize: "1.1rem",
+    color: "#4A4339",
+    fontWeight: 400,
     lineHeight: 1.6,
+    textAlign: "center",
     maxWidth: 640,
-    margin: "0 0 2.5rem",
+    margin: "0 auto 2.75rem",
   },
+  // The search bar spans the full width (.archive-search-bar--light).
   searchRow: {
     display: "flex",
-    justifyContent: "flex-end",
-    marginBottom: "1.5rem",
+    marginBottom: "1.75rem",
   },
   // Letter-spacing is a Latin small-caps convention — applied to Khmer,
   // it pries apart the stacked consonant/vowel signs that make up a
@@ -186,18 +193,16 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    borderBottom: "1px solid #2A172F",
+    borderBottom: "1px solid rgba(60, 50, 40, 0.25)",
     paddingBottom: "0.85rem",
-    marginBottom: "1.25rem",
   },
-  // Translated ("Stories in View" label) — needs var(--font-khmer).
+  // Translated ("Stories in View" label) — needs var(--font-khmer). An
+  // italic old-print note, like a ledger annotation.
   listCount: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.75rem",
-    fontWeight: 700,
-    color: "#8A7F91",
-    letterSpacing: "0.15em",
-    textTransform: "uppercase",
+    fontFamily: "var(--font-fell), var(--font-khmer), serif",
+    fontSize: "1rem",
+    fontStyle: "italic",
+    color: "#5A5248",
     margin: 0,
   },
   // Shows exactly VISIBLE_ROWS rows before scrolling — matches the
@@ -227,7 +232,6 @@ const styles = {
     minHeight: ROW_HEIGHT,
     boxSizing: "border-box",
     padding: "1.1rem 1.4rem",
-    borderRadius: 16,
     cursor: "pointer",
   },
   textCol: {
@@ -237,15 +241,15 @@ const styles = {
   khmerTitle: {
     fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
     fontSize: "0.9rem",
-    fontWeight: 600,
-    color: "#D4AF37",
+    fontWeight: 400,
+    color: "#6B6257",
     margin: "0 0 0.2rem",
   },
   rowTitle: {
     fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "1.2rem",
-    fontWeight: 600,
-    color: "#F5EFE6",
+    fontSize: "1.3rem",
+    fontWeight: 500,
+    color: "#24201B",
     margin: 0,
   },
   // fontFamily on snippet/place: both can now show a Khmer field
@@ -253,8 +257,8 @@ const styles = {
   // needs var(--font-khmer) explicitly.
   snippet: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.88rem",
-    color: "#8A7F91",
+    fontSize: "0.9rem",
+    color: "#5A5248",
     margin: "0.3rem 0 0",
     whiteSpace: "nowrap",
     overflow: "hidden",
@@ -274,13 +278,13 @@ const styles = {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 700,
-    color: "#BBAEBF",
+    color: "#6B5B45",
     letterSpacing: "0.15em",
     textTransform: "uppercase",
     whiteSpace: "nowrap",
     margin: 0,
   },
-  // The PNG is recolored gold via mask-image (background-color shows
+  // The PNG is recolored ink-brown via mask-image (background-color shows
   // through wherever the image is opaque), same technique as the other
   // icons in this app. The hover-triggered nudge lives in app/globals.css's
   // .archive-row:hover rule, not here — an inline transform would always
@@ -289,7 +293,7 @@ const styles = {
     display: "inline-block",
     width: 10,
     height: 10,
-    backgroundColor: "#C5A059",
+    backgroundColor: "#6B5B45",
     WebkitMaskImage: "url(/icons/top-right.png)",
     maskImage: "url(/icons/top-right.png)",
     WebkitMaskSize: "contain",
@@ -336,17 +340,16 @@ export default function ArchiveBrowser({ stories }) {
   return (
     <section style={styles.section} className="archive-section">
       <div style={styles.container}>
-        <p style={styles.eyebrow}>
-          <span style={styles.eyebrowLine} />
-          <span style={styles.eyebrowText}>Open the Ledger</span>
-        </p>
+        <p style={styles.eyebrow}>Open the Ledger</p>
 
-        <h2 style={styles.title}>{t("archiveTitle")}</h2>
+        <h2 style={{ ...styles.title, ...(language === "km" ? styles.trackingNone : null) }}>
+          {t("archiveTitle")}
+        </h2>
         <p style={styles.subtitle}>{t("archiveSubtitle")}</p>
 
         <div className={`archive-search-panel${query ? " has-query" : ""}`}>
           <div style={styles.searchRow}>
-            <ArchiveSearch value={query} onChange={setQuery} />
+            <ArchiveSearch value={query} onChange={setQuery} light />
           </div>
 
           <div className="archive-results">
@@ -410,7 +413,7 @@ export default function ArchiveBrowser({ stories }) {
                     Picking it searches for its title, which matches. */}
                 {suggestion ? (
                   <div style={styles.suggestion}>
-                    <DidYouMean story={suggestion} onPick={setQuery} />
+                    <DidYouMean story={suggestion} onPick={setQuery} light />
                   </div>
                 ) : null}
               </>
@@ -438,6 +441,17 @@ export default function ArchiveBrowser({ stories }) {
           max-height: ${VISIBLE_ROWS * ROW_HEIGHT + (VISIBLE_ROWS - 1) * ROW_GAP}px;
           overflow-y: auto;
         }
+        /* An ink-brown scrollbar on the parchment, in place of the shared
+           gold-on-dark one (globals.css .archive-scroll). */
+        .archive-section .archive-scroll {
+          scrollbar-color: #8a7354 rgba(60, 50, 40, 0.12);
+        }
+        .archive-section .archive-scroll::-webkit-scrollbar-track {
+          background: rgba(60, 50, 40, 0.12);
+        }
+        .archive-section .archive-scroll::-webkit-scrollbar-thumb {
+          background-color: #8a7354;
+        }
         @media (max-width: 640px) {
           /* Top-aligned instead of centered — centering left space unused
              above the content while the dropdown ran out of room below the
@@ -456,9 +470,9 @@ export default function ArchiveBrowser({ stories }) {
             left: 0;
             right: 0;
             z-index: 20;
-            background: #0D0812;
-            border: 1px solid #2A172F;
-            border-radius: 18px;
+            background: #e6e1d8;
+            border: 1px solid rgba(60, 50, 40, 0.25);
+            border-radius: 4px;
             padding: 1rem;
             box-sizing: border-box;
             opacity: 0;

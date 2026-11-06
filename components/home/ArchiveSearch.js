@@ -67,6 +67,19 @@ const styles = {
     padding: 0,
     cursor: "pointer",
   },
+  // `light`: the home archive's parchment look — a flat, square-cornered
+  // pale bar with dark ink text and icon, instead of the dark gold pill
+  // /share keeps. Spread over the base styles above.
+  barLight: {
+    backgroundColor: "rgba(238, 234, 226, 0.72)",
+    borderRadius: 2,
+  },
+  iconLight: {
+    backgroundColor: "#4A4339",
+  },
+  inputLight: {
+    color: "#24201B",
+  },
   clearIcon: {
     width: 12,
     height: 12,
@@ -82,19 +95,23 @@ const styles = {
 };
 
 // placeholder is optional — /share's search (ShareSearch.js) reuses this pill
-// with its own wording; the archive keeps the default.
-export default function ArchiveSearch({ value, onChange, placeholder }) {
+// with its own wording; the archive keeps the default. light switches to the
+// home archive's parchment look (see barLight above).
+export default function ArchiveSearch({ value, onChange, placeholder, light = false }) {
   const t = useTranslation();
   return (
-    <div style={styles.bar} className="archive-search-bar">
-      <span style={styles.icon} aria-hidden="true" />
+    <div
+      style={{ ...styles.bar, ...(light ? styles.barLight : null) }}
+      className={light ? "archive-search-bar archive-search-bar--light" : "archive-search-bar"}
+    >
+      <span style={{ ...styles.icon, ...(light ? styles.iconLight : null) }} aria-hidden="true" />
       <input
         type="text"
         value={value}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder ?? t("searchPlaceholder")}
         aria-label={t("searchAriaLabel")}
-        style={styles.input}
+        style={{ ...styles.input, ...(light ? styles.inputLight : null) }}
         className="archive-search-input"
       />
       {value ? (
@@ -120,6 +137,12 @@ export default function ArchiveSearch({ value, onChange, placeholder }) {
         }
         .archive-clear-button:hover .archive-clear-icon {
           background-color: #ffffff;
+        }
+        .archive-search-bar--light .archive-clear-icon {
+          background-color: #4a4339;
+        }
+        .archive-search-bar--light .archive-clear-button:hover .archive-clear-icon {
+          background-color: #24201b;
         }
       `}</style>
     </div>

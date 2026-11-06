@@ -276,8 +276,9 @@ main {
   border-color: #c5a059;
 }
 
-/* ArchiveBrowser.js's story-list rows, plus the shared .archive-scroll
-   scrollbar — reused on ContributeForm.js's story textarea so both match. */
+/* The shared .archive-scroll scrollbar — gold on dark, for ContributeForm.js
+   and LocationSelect.js (ArchiveBrowser.js recolours it for its parchment) —
+   plus ArchiveBrowser.js's story-list rows: ruled lines on the parchment. */
 .archive-scroll {
   scrollbar-width: thin;
   scrollbar-color: #c5a059 rgba(255, 255, 255, 0.06);
@@ -294,13 +295,13 @@ main {
   border-radius: 8px;
 }
 .archive-row {
-  border: 1px solid #2a172f;
-  background-color: #120916;
-  transition: background-color 150ms ease, border-color 150ms ease;
+  border: none;
+  border-bottom: 1px solid rgba(60, 50, 40, 0.22);
+  background-color: transparent;
+  transition: background-color 150ms ease;
 }
 .archive-row:hover {
-  background-color: #1d1024;
-  border-color: #c5a059;
+  background-color: rgba(255, 255, 255, 0.3);
 }
 .archive-row-icon {
   transition: transform 150ms ease;
@@ -320,6 +321,22 @@ main {
 }
 .archive-search-bar:focus-within {
   border-color: #c5a059;
+}
+/* The home archive's parchment variant (ArchiveSearch.js `light`): full
+   width, a faint ink border, an italic placeholder. */
+.archive-search-bar--light {
+  border-color: rgba(60, 50, 40, 0.2);
+  flex: 1 1 auto;
+  max-width: none;
+}
+.archive-search-bar--light:focus-within {
+  border-color: rgba(60, 50, 40, 0.45);
+}
+.archive-search-bar--light .archive-search-input::placeholder {
+  color: #6b6257;
+  font-family: var(--font-fell), var(--font-khmer), serif;
+  font-style: italic;
+  font-size: 1.05rem;
 }
 
 /* Every field on the site — keeps it dark when the browser fills it from a
@@ -371,19 +388,13 @@ select:-webkit-autofill {
   }
 }
 
-/* Phone-only: search bar spans full width, and rows lose their individual
-   card border/background inside ArchiveBrowser.js's dropdown (the only
-   place .archive-row renders at this width) — plain rows with a hover
-   highlight instead, matching a typeahead dropdown rather than a stacked
-   card list. Tablet/desktop are untouched. */
+/* Phone-only: search bar spans full width. */
 @media (max-width: 640px) {
   .archive-search-bar {
     flex: 1 1 auto;
     max-width: none;
   }
   .archive-row {
-    border: none;
-    background-color: transparent;
-    border-radius: 10px;
+    border-radius: 0;
   }
 }

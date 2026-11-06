@@ -14,15 +14,23 @@ const styles = {
     color: "#BBAEBF",
     margin: 0,
   },
+  // light: dark ink for the home archive's parchment background.
+  lineLight: {
+    color: "#4A4339",
+  },
 };
 
-export default function DidYouMean({ story, onPick }) {
+export default function DidYouMean({ story, onPick, light = false }) {
   const t = useTranslation();
 
   return (
-    <p style={styles.line}>
+    <p style={{ ...styles.line, ...(light ? styles.lineLight : null) }}>
       {t("shareDidYouMean")}{" "}
-      <button type="button" className="did-you-mean-btn" onClick={() => onPick(story.title)}>
+      <button
+        type="button"
+        className={light ? "did-you-mean-btn light" : "did-you-mean-btn"}
+        onClick={() => onPick(story.title)}
+      >
         {story.title}
       </button>
       ?
@@ -42,6 +50,12 @@ export default function DidYouMean({ story, onPick }) {
         }
         .did-you-mean-btn:hover {
           color: #ffffff;
+        }
+        .did-you-mean-btn.light {
+          color: #7a5c2e;
+        }
+        .did-you-mean-btn.light:hover {
+          color: #24201b;
         }
       `}</style>
     </p>
