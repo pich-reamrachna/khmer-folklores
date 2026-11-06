@@ -531,9 +531,13 @@ export default function NavBar() {
   useEffect(() => {
     // The page scrolls inside <main>, not the window, and scroll events
     // don't bubble — a capture-phase listener on document still catches
-    // them, with event.target being the actual scrolling element.
+    // them, with event.target being the actual scrolling element. Only
+    // <main> counts: a list that scrolls on its own (the home archive's)
+    // sends its scroll events here too, and reading its position made the
+    // bar go transparent whenever the list was scrolled back to its top.
     const onScroll = (event) => {
-      const top = event.target?.scrollTop ?? 0;
+      if (!(event.target instanceof Element) || event.target.tagName !== "MAIN") return;
+      const top = event.target.scrollTop;
       setScrolled(top > SCROLL_THRESHOLD);
     };
     document.addEventListener("scroll", onScroll, true);

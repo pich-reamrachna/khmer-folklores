@@ -298,10 +298,15 @@ main {
   border: none;
   border-bottom: 1px solid rgba(60, 50, 40, 0.22);
   background-color: transparent;
-  transition: background-color 150ms ease;
 }
+/* Hover: white on the left, fading out to nothing on the right. */
 .archive-row:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.7) 0%,
+    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0) 100%
+  );
 }
 .archive-row-icon {
   transition: transform 150ms ease;

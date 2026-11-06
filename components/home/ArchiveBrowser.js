@@ -238,18 +238,20 @@ const styles = {
     minWidth: 0,
     flex: 1,
   },
+  // Sizes, weights and inks chosen to read clearly on the pale, textured
+  // paper — lighter/smaller versions blurred into it.
   khmerTitle: {
     fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
-    fontSize: "0.9rem",
-    fontWeight: 400,
-    color: "#6B6257",
+    fontSize: "1rem",
+    fontWeight: 500,
+    color: "#4A4339",
     margin: "0 0 0.2rem",
   },
   rowTitle: {
     fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "1.3rem",
-    fontWeight: 500,
-    color: "#24201B",
+    fontSize: "1.45rem",
+    fontWeight: 600,
+    color: "#1C1915",
     margin: 0,
   },
   // fontFamily on snippet/place: both can now show a Khmer field
@@ -257,8 +259,9 @@ const styles = {
   // needs var(--font-khmer) explicitly.
   snippet: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.9rem",
-    color: "#5A5248",
+    fontSize: "1rem",
+    fontWeight: 500,
+    color: "#3A342C",
     margin: "0.3rem 0 0",
     whiteSpace: "nowrap",
     overflow: "hidden",
@@ -276,9 +279,9 @@ const styles = {
   },
   place: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.75rem",
-    fontWeight: 700,
-    color: "#6B5B45",
+    fontSize: "0.8rem",
+    fontWeight: 600,
+    color: "#4F4130",
     letterSpacing: "0.15em",
     textTransform: "uppercase",
     whiteSpace: "nowrap",
@@ -293,7 +296,7 @@ const styles = {
     display: "inline-block",
     width: 10,
     height: 10,
-    backgroundColor: "#6B5B45",
+    backgroundColor: "#4F4130",
     WebkitMaskImage: "url(/icons/top-right.png)",
     maskImage: "url(/icons/top-right.png)",
     WebkitMaskSize: "contain",
