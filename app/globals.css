@@ -188,6 +188,59 @@ main {
   background-color: #e6c575;
 }
 
+/* Footer.js's round "back to top" button, fixed to the screen's
+   bottom-right corner. Hidden (faded, unclickable) until the page is
+   scrolled down; .is-visible shows it. Gold on hover. */
+.scroll-top-btn {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 90;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px solid rgba(201, 169, 97, 0.55);
+  background-color: #1a1817;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease, background-color 0.2s ease;
+}
+.scroll-top-btn.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+.scroll-top-btn:hover {
+  background-color: #c9a961;
+}
+.scroll-top-btn-icon {
+  background-color: #c9a961;
+  transition: background-color 0.2s ease;
+}
+.scroll-top-btn:hover .scroll-top-btn-icon {
+  background-color: #1a1817;
+}
+@media (max-width: 640px) {
+  .scroll-top-btn {
+    right: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-top-btn {
+    transition: none;
+  }
+}
+
 /* BackButton.js's "Go Back" link. */
 .back-button {
   color: #c5a059;

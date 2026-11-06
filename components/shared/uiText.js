@@ -10,10 +10,9 @@ import { useLanguage } from "./LanguageContext.js";
 const uiText = {
   // NavBar.js / Footer.js (shared) — kicker ("A Khmer Folklore Archive")
   // is deliberately not here: it's part of the fixed brand lockup in
-  // both places, kept English always. navBrowseArchive/navShareMemory
-  // are only used in Footer.js's own nav section now — NavBar.js's top
-  // bar keeps its matching links hardcoded English for the same reason.
-  navBrowseArchive: { en: "Browse the Archive", km: "រុករកបណ្ណសារ" },
+  // both places, kept English always. NavBar.js's top bar keeps its links
+  // hardcoded English for the same reason; navShareMemory is used by
+  // My Entries' empty state (SubmissionsList.js).
   navShareMemory: { en: "Share a Memory", km: "ចែករំលែកការចងចាំ" },
   navOpenMenu: { en: "Open menu", km: "បើកម៉ឺនុយ" },
   navCloseMenu: { en: "Close menu", km: "បិទម៉ឺនុយ" },
@@ -62,9 +61,7 @@ const uiText = {
   memoriesLoginToast: { en: "Log in to contribute", km: "សូមចូលគណនីដើម្បីចូលរួម" },
 
   // Footer.js
-  footerNavHeading: { en: "Archive Navigation", km: "ការរុករកបណ្ណសារ" },
-  footerAscendHeading: { en: "Ascend", km: "ឡើងលើ" },
-  footerBackToTop: { en: "Back to top ↑", km: "ត្រឡប់ទៅលើ ↑" },
+  footerBackToTop: { en: "Back to top", km: "ត្រឡប់ទៅលើ" },
   footerCreditLine: { en: "Curated by", km: "ចងក្រងដោយ" },
   footerSourceLine: { en: "Source:", km: "ប្រភព៖" },
   footerBuiltIn: {

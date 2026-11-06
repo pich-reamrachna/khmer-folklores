@@ -36,11 +36,12 @@ const styles = {
     transition: "background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
   },
+  // Warm charcoal, the same as Footer.js, with the footer's faint rule.
   navScrolled: {
-    backgroundColor: "rgba(10, 6, 12, 0.95)",
+    backgroundColor: "rgba(26, 24, 23, 0.95)",
     backdropFilter: "blur(12px)",
     WebkitBackdropFilter: "blur(12px)",
-    borderBottom: "1px solid #2A172F",
+    borderBottom: "1px solid rgba(245, 239, 230, 0.08)",
     boxShadow: "0 10px 30px rgba(0, 0, 0, 0.6)",
   },
   // Inner wrapper: centered, up to 1800px wide, so on a wide screen the
@@ -143,8 +144,8 @@ const styles = {
     gap: "1.25rem",
     padding: "1.25rem 2rem 1.5rem",
     boxSizing: "border-box",
-    backgroundColor: "rgba(10, 6, 12, 0.98)",
-    borderBottom: "1px solid #2A172F",
+    backgroundColor: "rgba(26, 24, 23, 0.98)",
+    borderBottom: "1px solid rgba(245, 239, 230, 0.08)",
   },
   langSwitcher: {
     position: "relative",
@@ -221,7 +222,7 @@ const styles = {
     // Solid, not translucent — this floats over whatever page content
     // sits beneath the nav, so a see-through background let that content
     // show through it.
-    backgroundColor: "#0A060C",
+    backgroundColor: "#1A1817",
     border: "1px solid #2A172F",
     borderRadius: 14,
     padding: 6,
@@ -310,8 +311,7 @@ const styles = {
   authLinkActive: {
     borderBottom: "2px solid #C5A059",
   },
-  // Get Started: filled gold pill, same shape/weight as Footer.js's
-  // backToTopBtn. backgroundColor lives in app/globals.css's
+  // Get Started: filled gold pill. backgroundColor lives in app/globals.css's
   // .auth-primary-btn rule: it turns white on hover and on /signup, and an
   // inline background would beat both.
   authPrimaryBtn: {
@@ -368,7 +368,7 @@ const styles = {
     top: "calc(100% + 10px)",
     right: 0,
     minWidth: 220,
-    backgroundColor: "#0A060C",
+    backgroundColor: "#1A1817",
     border: "1px solid #2A172F",
     borderRadius: 14,
     padding: "0.85rem",
