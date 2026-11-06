@@ -40,7 +40,10 @@ const styles = {
   // A soft dark halo keeps it readable where it crosses the gold brush.
   title: {
     margin: 0,
-    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
+    // Cinzel first: the Khmer font also draws Latin letters, so listed first
+    // it would win for English too. Cinzel has no Khmer letters, so a Khmer
+    // title still falls through to the Khmer font.
+    fontFamily: "var(--font-cinzel), var(--font-khmer), serif, 'Times New Roman'",
     fontWeight: 500,
     lineHeight: 1.1,
     textTransform: "uppercase",

@@ -256,20 +256,19 @@ const styles = {
     border: "none",
     cursor: "pointer",
   },
-  // The site's chevron icon, turned to point left or right (rotate below).
-  // background-color lives in app/globals.css's .hero-arrow rules (hover).
+  // The blade-shaped arrows (public/arrow-left.svg / arrow-right.svg), each
+  // a lit facet over a shaded one. Shown as images, not recoloured through
+  // mask-image like the site's other icons: a mask would flatten the two
+  // facets into one colour, and the shading is the point of the design.
+  // Sized to the files' own 40:72 shape. The hover glow and nudge live in
+  // app/globals.css's .hero-arrow rules.
   arrowIcon: {
     display: "block",
     width: 22,
-    height: 22,
-    WebkitMaskImage: "url(/icons/arrow-down-sign-to-navigate.png)",
-    maskImage: "url(/icons/arrow-down-sign-to-navigate.png)",
-    WebkitMaskSize: "contain",
-    maskSize: "contain",
-    WebkitMaskRepeat: "no-repeat",
-    maskRepeat: "no-repeat",
-    WebkitMaskPosition: "center",
-    maskPosition: "center",
+    height: 40,
+    backgroundSize: "contain",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
   },
 };
 
@@ -329,7 +328,11 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
             onClick={() => onSelect(prevIndex)}
             aria-label={t("heroPrevStory")}
           >
-            <span style={{ ...styles.arrowIcon, transform: "rotate(90deg)" }} className="hero-arrow-icon" aria-hidden="true" />
+            <span
+              style={{ ...styles.arrowIcon, backgroundImage: "url(/arrow-left.svg)" }}
+              className="hero-arrow-icon"
+              aria-hidden="true"
+            />
           </button>
           <button
             type="button"
@@ -338,7 +341,11 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
             onClick={() => onSelect(nextIndex)}
             aria-label={t("heroNextStory")}
           >
-            <span style={{ ...styles.arrowIcon, transform: "rotate(-90deg)" }} className="hero-arrow-icon" aria-hidden="true" />
+            <span
+              style={{ ...styles.arrowIcon, backgroundImage: "url(/arrow-right.svg)" }}
+              className="hero-arrow-icon"
+              aria-hidden="true"
+            />
           </button>
         </>
       ) : null}

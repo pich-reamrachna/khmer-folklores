@@ -161,11 +161,17 @@ main {
 
 /* StoryHero.js's edge arrows. */
 .hero-arrow-icon {
-  background-color: #d9d2c5;
-  transition: background-color 0.2s ease;
+  transition: transform 0.25s ease, filter 0.25s ease;
 }
+/* Hover: a soft gold glow, and a small nudge the way the arrow points. */
 .hero-arrow:hover .hero-arrow-icon {
-  background-color: #c9a961;
+  filter: drop-shadow(0 0 6px rgba(201, 169, 97, 0.65)) brightness(1.08);
+}
+.hero-arrow-prev:hover .hero-arrow-icon {
+  transform: translateX(-3px);
+}
+.hero-arrow-next:hover .hero-arrow-icon {
+  transform: translateX(3px);
 }
 /* EntryCard.js — the featured-story row under the hero. Muted by default;
    hover brightens the title and outlines the diamond in gold; the selected
