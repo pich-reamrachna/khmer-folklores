@@ -308,25 +308,10 @@ const styles = {
     color: "#E6C575",
     backgroundColor: "#1D1024",
   },
-  // Sign In: plain nav-link typography, same as linkActive minus the
-  // "current page" underline.
-  authLink: {
-    textDecoration: "none",
-    color: "#F5EFE6",
-    fontSize: "0.78rem",
-    fontWeight: 700,
-    letterSpacing: "0.18em",
-    textTransform: "uppercase",
-    padding: "0.5rem 0",
-  },
-  // Spread over authLink on /login: the same gold "current page" underline
-  // as linkActive.
-  authLinkActive: {
-    borderBottom: "2px solid #C5A059",
-  },
-  // Get Started: filled gold pill. backgroundColor lives in app/globals.css's
-  // .auth-primary-btn rule: it turns white on hover and on /signup, and an
-  // inline background would beat both.
+  // Sign In / Sign Up: one filled gold pill for both, leading to the sign-in
+  // page, whose tabs switch to sign-up. backgroundColor lives in
+  // app/globals.css's .auth-primary-btn rule: it turns white on hover and
+  // while you're on either page, and an inline background would beat both.
   authPrimaryBtn: {
     display: "inline-flex",
     alignItems: "center",
@@ -453,27 +438,8 @@ const styles = {
     paddingTop: "0.5rem",
     borderTop: "1px solid #2A172F",
   },
-  mobileAuthLink: {
-    textAlign: "center",
-    padding: "0.6rem",
-    borderRadius: 10,
-    border: "1px solid #2A172F",
-    color: "#F5EFE6",
-    textDecoration: "none",
-    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.78rem",
-    fontWeight: 700,
-    letterSpacing: "0.1em",
-    textTransform: "uppercase",
-  },
-  // Spread over mobileAuthLink on /login: a gold outline marks the current
-  // page (an underline doesn't suit the boxed mobile buttons).
-  mobileAuthLinkActive: {
-    borderColor: "#C5A059",
-    color: "#E6C575",
-  },
-  // backgroundColor lives in app/globals.css (.auth-primary-btn), same as
-  // authPrimaryBtn above.
+  // The phone menu's Sign In / Sign Up button. backgroundColor lives in
+  // app/globals.css (.auth-primary-btn), same as authPrimaryBtn above.
   mobileAuthPrimaryBtn: {
     textAlign: "center",
     padding: "0.6rem",
@@ -533,8 +499,8 @@ export default function NavBar() {
   // /share's page is light parchment from the very top, where a see-through
   // bar's cream text would vanish — so there the bar is solid from the start,
   // not only once scrolled (see navScrolled).
-  const onLogin = pathname === "/login";
-  const onSignup = pathname === "/signup";
+  // On either account page — the Sign In / Sign Up button shows as current.
+  const onAuth = pathname === "/login" || pathname === "/signup";
   const onBrowse = !["/share", "/login", "/signup", "/my-entries", "/my-submissions", "/review"].includes(pathname);
   const langSwitcherRef = useRef(null);
   const [supabase] = useState(() => createClient());
@@ -692,24 +658,14 @@ export default function NavBar() {
               </div>
             </div>
           ) : (
-            <>
-              <Link
-                href="/login"
-                style={onLogin ? { ...styles.authLink, ...styles.authLinkActive } : styles.authLink}
-                className="auth-link"
-                aria-current={onLogin ? "page" : undefined}
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/signup"
-                style={styles.authPrimaryBtn}
-                className={onSignup ? "auth-primary-btn is-current" : "auth-primary-btn"}
-                aria-current={onSignup ? "page" : undefined}
-              >
-                Get Started
-              </Link>
-            </>
+            <Link
+              href="/login"
+              style={styles.authPrimaryBtn}
+              className={onAuth ? "auth-primary-btn is-current" : "auth-primary-btn"}
+              aria-current={onAuth ? "page" : undefined}
+            >
+              Sign In / Sign Up
+            </Link>
           )}
 
           <div style={styles.langSwitcher} ref={langSwitcherRef}>
@@ -845,20 +801,12 @@ export default function NavBar() {
           <div style={styles.mobileAuthRow}>
             <Link
               href="/login"
-              style={onLogin ? { ...styles.mobileAuthLink, ...styles.mobileAuthLinkActive } : styles.mobileAuthLink}
-              aria-current={onLogin ? "page" : undefined}
-              onClick={() => setMenuOpen(false)}
-            >
-              Sign In
-            </Link>
-            <Link
-              href="/signup"
               style={styles.mobileAuthPrimaryBtn}
-              className={onSignup ? "auth-primary-btn is-current" : "auth-primary-btn"}
-              aria-current={onSignup ? "page" : undefined}
+              className={onAuth ? "auth-primary-btn is-current" : "auth-primary-btn"}
+              aria-current={onAuth ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
             >
-              Get Started
+              Sign In / Sign Up
             </Link>
           </div>
         )}

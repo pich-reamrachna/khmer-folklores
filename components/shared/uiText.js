@@ -78,6 +78,15 @@ const uiText = {
   authConfirmPasswordLabel: { en: "Confirm password", km: "បញ្ជាក់ពាក្យសម្ងាត់" },
   authLoginTitle: { en: "Welcome Back!", km: "សូមស្វាគមន៍!" },
   authLoginButton: { en: "Sign In", km: "ចូលគណនី" },
+  // The sign-in / sign-up box's sliding overlay (auth/AuthCard.js).
+  // AI-drafted Khmer — flag for the curator to review.
+  authOverlaySignupTitle: { en: "New to the archive?", km: "ទើបមកដល់បណ្ណសារលើកដំបូងមែនទេ?" },
+  authOverlaySignupText: {
+    en: "Make an account to share the stories you remember.",
+    km: "បង្កើតគណនី ដើម្បីចែករំលែករឿងដែលអ្នកនៅចាំ។",
+  },
+  authOverlaySigninTitle: { en: "Welcome back", km: "សូមស្វាគមន៍ការត្រឡប់មកវិញ" },
+  authOverlaySigninText: { en: "Sign in to add your telling.", km: "ចូលគណនី ដើម្បីបន្ថែមការនិទានរបស់អ្នក។" },
   authLoginError: { en: "Invalid email or password", km: "អ៊ីមែល ឬពាក្យសម្ងាត់មិនត្រឹមត្រូវ" },
   authSignupTitle: { en: "Sign Up", km: "បង្កើតគណនី" },
   signupHeading: { en: "Share What You Remember", km: "ចែករំលែកអ្វីដែលអ្នកនៅចាំ" },

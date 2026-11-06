@@ -281,6 +281,16 @@ main {
   }
 }
 
+/* The sign-in / sign-up box's phone-only tabs (auth/AuthCard.js): the tab
+   not showing — colour + hover here, since its colour changes on hover. */
+.auth-tab {
+  color: #8c8478;
+  transition: color 0.2s ease;
+}
+.auth-tab:hover {
+  color: #f5efe6;
+}
+
 /* BackButton.js's "Go Back" link. */
 .back-button {
   color: #c5a059;
@@ -297,16 +307,11 @@ main {
   background-color: #ffffff;
 }
 
-/* NavBar.js's Sign In / Get Started links. Plain stylesheet, not
-   <style jsx>, for the same reason as BackButton.js above — styled-jsx
-   only auto-scopes native lowercase elements, not a custom component
-   like next/link's Link, so a scoped :hover rule here would never
-   match the rendered <a>. */
-.auth-link:hover {
-  opacity: 0.8;
-}
-/* Get Started (desktop pill and mobile button): gold, turning white on
-   hover and while you're on the Sign Up page (.is-current). The colour lives
+/* NavBar.js's Sign In / Sign Up button (desktop pill and mobile button).
+   Plain stylesheet, not <style jsx>, for the same reason as BackButton.js
+   above — styled-jsx only auto-scopes native lowercase elements, not a
+   custom component like next/link's Link. Gold, turning white on hover and
+   while you're on the sign-in or sign-up page (.is-current). The colour lives
    only here, not inline in NavBar.js, so these rules can change it. */
 .auth-primary-btn {
   background-color: #c5a059;
