@@ -264,6 +264,21 @@ main {
   border-color: #c5a059;
 }
 
+/* Every field on the site — keeps it dark when the browser fills it from a
+   saved suggestion (or previews one on hover). The browser's own autofill
+   style forces a near-white background and dark text with !important, so it
+   can't be overridden directly; instead its colour change is held back
+   indefinitely, leaving each field its own background and text colour
+   (several are see-through, so painting over them with a set colour wouldn't
+   match). filter: none clears Firefox's autofill tint. */
+input:-webkit-autofill,
+textarea:-webkit-autofill,
+select:-webkit-autofill {
+  transition-property: background-color, color;
+  transition-delay: 600000s;
+  filter: none;
+}
+
 /* Phone-only: search bar spans full width, and rows lose their individual
    card border/background inside ArchiveBrowser.js's dropdown (the only
    place .archive-row renders at this width) — plain rows with a hover
