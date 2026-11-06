@@ -517,6 +517,9 @@ export default function NavBar() {
   // curator pages.
   const pathname = usePathname();
   const onShare = pathname === "/share";
+  // /share's page is light parchment from the very top, where a see-through
+  // bar's cream text would vanish — so there the bar is solid from the start,
+  // not only once scrolled (see navScrolled).
   const onLogin = pathname === "/login";
   const onSignup = pathname === "/signup";
   const onBrowse = !["/share", "/login", "/signup", "/my-entries", "/my-submissions", "/review"].includes(pathname);
@@ -614,7 +617,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav style={{ ...styles.nav, ...(scrolled ? styles.navScrolled : null) }} aria-label="Primary">
+    <nav style={{ ...styles.nav, ...(scrolled || onShare ? styles.navScrolled : null) }} aria-label="Primary">
       <div style={styles.inner} className="nav-inner">
         <Link href="/" style={styles.lockup}>
           <span style={styles.siteName}>{collection.name}</span>

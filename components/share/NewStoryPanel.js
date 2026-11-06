@@ -13,15 +13,25 @@ import { useTranslation } from "../shared/uiText.js";
 const KHMER_SCRIPT = /[ក-៿]/;
 
 const styles = {
+  // Dark ink, on /share's parchment.
   backBtn: {
     background: "transparent",
     border: "none",
     padding: 0,
-    color: "#C5A059",
+    color: "#6B4F26",
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.85rem",
     fontWeight: 700,
     cursor: "pointer",
+  },
+  // The form is written for a dark background (it's the same one the story
+  // page's "Share your telling" pop-up uses), so on /share's parchment it
+  // sits on a charcoal card — the same charcoal as the footer.
+  formCard: {
+    marginTop: "1.25rem",
+    backgroundColor: "#1A1817",
+    borderRadius: 4,
+    boxShadow: "0 18px 40px rgba(0, 0, 0, 0.35)",
   },
 };
 
@@ -47,13 +57,15 @@ export default function NewStoryPanel({ query, onBack }) {
       <button type="button" style={styles.backBtn} onClick={onBack}>
         ← {t("shareBackToSearch")}
       </button>
-      <ContributeForm
-        newStory
-        embedded
-        initialTitle={isKhmer ? "" : query}
-        initialKhmerTitle={isKhmer ? query : ""}
-        onSuccess={() => router.push("/my-entries?submitted=story")}
-      />
+      <div style={styles.formCard}>
+        <ContributeForm
+          newStory
+          embedded
+          initialTitle={isKhmer ? "" : query}
+          initialKhmerTitle={isKhmer ? query : ""}
+          onSuccess={() => router.push("/my-entries?submitted=story")}
+        />
+      </div>
     </div>
   );
 }

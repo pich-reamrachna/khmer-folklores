@@ -27,6 +27,7 @@ export default function ShareSearch() {
   if (composing) {
     return (
       <section style={styles.section}>
+        <div style={styles.waves} aria-hidden="true" />
         <div style={styles.container}>
           <NewStoryPanel query={query.trim()} onBack={() => setComposing(false)} />
         </div>
@@ -36,13 +37,14 @@ export default function ShareSearch() {
 
   return (
     <section style={styles.section}>
+      <div style={styles.waves} aria-hidden="true" />
       <div style={styles.container}>
         <p style={styles.eyebrow}>Share a Memory</p>
         <h1 style={styles.title}>{t("shareTitle")}</h1>
         <p style={styles.subtitle}>{t("shareSubtitle")}</p>
 
         <div style={styles.searchWrap}>
-          <ArchiveSearch value={query} onChange={setQuery} placeholder={t("sharePlaceholder")} />
+          <ArchiveSearch value={query} onChange={setQuery} placeholder={t("sharePlaceholder")} light />
         </div>
 
         {/* aria-live so screen-reader users hear matches appear as they type. */}
@@ -67,7 +69,7 @@ export default function ShareSearch() {
                 </>
               ) : suggestion ? (
                 <div style={styles.centred}>
-                  <DidYouMean story={suggestion} onPick={setQuery} />
+                  <DidYouMean story={suggestion} onPick={setQuery} light />
                 </div>
               ) : (
                 <p style={styles.resultsHeading}>{t("shareNoMatches")}</p>

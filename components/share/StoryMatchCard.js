@@ -10,39 +10,40 @@ import { useTranslation } from "../shared/uiText.js";
 // The link's :hover lives in app/globals.css (.share-match-link) — styled-jsx
 // can't scope through next/link's Link.
 
+// A ruled row on /share's parchment, styled like the home archive's story
+// rows (ArchiveBrowser.js): dark ink, no card.
 const styles = {
   card: {
-    backgroundColor: "#120916",
-    border: "1px solid #2A172F",
-    borderRadius: 16,
+    borderBottom: "1px solid rgba(60, 50, 40, 0.25)",
     padding: "1.1rem 1.4rem",
   },
   khmerTitle: {
     fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
-    fontSize: "0.9rem",
-    fontWeight: 600,
-    color: "#D4AF37",
+    fontSize: "1rem",
+    fontWeight: 500,
+    color: "#4A4339",
     margin: "0 0 0.2rem",
   },
   title: {
     fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "1.2rem",
+    fontSize: "1.45rem",
     fontWeight: 600,
-    color: "#F5EFE6",
+    color: "#1C1915",
     margin: 0,
   },
   summary: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.9rem",
+    fontSize: "1rem",
+    fontWeight: 500,
     lineHeight: 1.6,
-    color: "#8A7F91",
+    color: "#3A342C",
     margin: "0.4rem 0 0.9rem",
   },
   link: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.85rem",
     fontWeight: 700,
-    color: "#C5A059",
+    color: "#6B4F26",
     textDecoration: "none",
   },
 };
@@ -59,7 +60,7 @@ export default function StoryMatchCard({ story }) {
       {story.khmerTitle ? <p style={styles.khmerTitle}>{story.khmerTitle}</p> : null}
       <h2 style={styles.title}>{story.title}</h2>
       {summary ? <p style={styles.summary}>{summary}</p> : null}
-      <Link href={`/${story.id}#tellings`} style={styles.link} className="share-match-link">
+      <Link href={`/${story.id}#tellings`} style={styles.link} className="share-match-link ink-link">
         {t("shareAddVersion")} →
       </Link>
     </div>

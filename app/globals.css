@@ -294,12 +294,18 @@ main {
   background-color: #f5efe6;
 }
 
-/* /share's links: StoryMatchCard.js's "Add my version", NewStoryPanel.js's
-   "Back to the archive", StartNewStoryButton.js's "Log in" — next/link
-   Links, so their :hover lives here, same reason as the rules above. */
+/* Gold links on the dark pages — StoryMatchCard.js-style "Add my version"
+   links (also used on My Entries) and StartNewStoryButton.js's "Log in" —
+   next/link Links, so their :hover lives here, same reason as the rules
+   above. */
 .share-match-link:hover,
 .share-login-link:hover {
   color: #ffffff;
+}
+/* The same links on /share's parchment: ink-brown, darkening on hover.
+   After the rule above, so it wins there. */
+.ink-link:hover {
+  color: #1c1915;
 }
 
 /* StoryMemories.js's owner-menu items (Edit is a next/link Link, so its hover

@@ -12,14 +12,16 @@ import { useTranslation } from "../shared/uiText.js";
 // styled-jsx can't scope through next/link's Link.
 
 const styles = {
-  wrap: { marginTop: "2rem", borderTop: "1px solid #2A172F", paddingTop: "1.5rem" },
+  // Dark ink on /share's parchment. No rule above: the match rows above it
+  // already end on one (StoryMatchCard.js), and two made a double line.
+  wrap: { marginTop: "2.25rem" },
   loginNote: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.9rem",
-    color: "#BBAEBF",
+    fontSize: "0.95rem",
+    color: "#4A4339",
     margin: "1rem 0 0",
   },
-  loginLink: { color: "#C5A059", fontWeight: 700, textDecoration: "none" },
+  loginLink: { color: "#6B4F26", fontWeight: 700, textDecoration: "none" },
 };
 
 export default function StartNewStoryButton({ onStart }) {
@@ -41,7 +43,7 @@ export default function StartNewStoryButton({ onStart }) {
         <p style={styles.loginNote}>
           {t("shareLoginToStart")}{" "}
           {/* ?next= brings them back here after logging in (see app/login/page.js). */}
-          <Link href="/login?next=/share" style={styles.loginLink} className="share-login-link">
+          <Link href="/login?next=/share" style={styles.loginLink} className="share-login-link ink-link">
             {t("shareLoginLink")}
           </Link>
         </p>
@@ -51,10 +53,10 @@ export default function StartNewStoryButton({ onStart }) {
       <style jsx>{`
         .start-new-btn {
           background: transparent;
-          border: 1px solid #c5a059;
+          border: 1px solid #6b4f26;
           border-radius: 999px;
           padding: 0.75rem 1.4rem;
-          color: #e6c575;
+          color: #4f3a1c;
           font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
           font-size: 0.9rem;
           font-weight: 700;
@@ -62,8 +64,9 @@ export default function StartNewStoryButton({ onStart }) {
           transition: background-color 0.2s ease, color 0.2s ease;
         }
         .start-new-btn:hover {
-          background-color: #c5a059;
-          color: #0c0a12;
+          background-color: #24201b;
+          border-color: #24201b;
+          color: #f5efe6;
         }
       `}</style>
     </div>
