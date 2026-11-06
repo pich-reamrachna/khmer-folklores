@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
@@ -279,6 +280,24 @@ const RULE_WIDTHS = [108, 216, 72];
 // onSelect(index) switches the hero to another one.
 export default function StoryHero({ entry, index, total, onSelect, children }) {
   const { language } = useLanguage();
+
+  // Whether the hero is the section in view — drives the text block's
+  // enter/exit animation (.hero-section.is-in-view in the <style> below):
+  // the text slides in from the left as the page arrives here (including on
+  // first load) and back out as it leaves. Watched against <main>, the
+  // page's scroll container, and counted as "in view" once most of it shows.
+  const sectionRef = useRef(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return;
+    const observer = new IntersectionObserver(([e]) => setInView(e.isIntersecting), {
+      root: section.closest("main"),
+      threshold: 0.6,
+    });
+    observer.observe(section);
+    return () => observer.disconnect();
+  }, []);
   const t = useTranslation();
 
   // khmerTitle/title stack (both shown together) regardless of language —
@@ -297,7 +316,7 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
   const nextIndex = (index + 1) % total;
 
   return (
-    <section style={styles.section} className="hero-section">
+    <section ref={sectionRef} style={styles.section} className={inView ? "hero-section is-in-view" : "hero-section"}>
       <div style={styles.backdrop} aria-hidden="true">
         <div style={styles.texture} />
         <div style={styles.brushMain} className="hero-brush-main" />
@@ -411,6 +430,25 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
         }
         .hero-main-grid {
           min-height: 280px;
+        }
+        /* Enter/exit, after the reference site's text panels: away from the
+           hero, the text block rests faded and shifted 5rem left; arriving,
+           it slides into place and fades up, and leaving reverses it. On
+           the wrapper, not .hero-text, whose own fade replays per story. */
+        .hero-main-grid {
+          opacity: 0.2;
+          transform: translateX(-5rem);
+          transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hero-section.is-in-view .hero-main-grid {
+          opacity: 1;
+          transform: none;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-main-grid {
+            transform: none;
+            transition: opacity 0.3s ease;
+          }
         }
         /* Overhangs the top and bottom so the stroke's ragged ends run off
            the section instead of stopping inside it. */
