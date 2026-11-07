@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import collection from "../../collection.config.js";
 import { useLanguage } from "./LanguageContext.js";
 import { useTranslation } from "./uiText.js";
@@ -487,6 +487,11 @@ const styles = {
   },
 };
 
+// Pages only a signed-in visitor can see — each checks on the server when it
+// loads, so signing out while on one has to leave it (see the auth listener
+// in NavBar). /my-submissions just forwards to /my-entries.
+const SIGNED_IN_ONLY = ["/my-entries", "/my-submissions", "/review"];
+
 export default function NavBar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -497,6 +502,11 @@ export default function NavBar() {
   // archive itself (home and story pages), not the share, account or
   // curator pages.
   const pathname = usePathname();
+  const router = useRouter();
+  // The current address for the sign-out handler below, which is set up
+  // once and would otherwise only ever see the first page's address.
+  const pathnameRef = useRef(pathname);
+  pathnameRef.current = pathname;
   const onShare = pathname === "/share";
   // /share's page is light parchment from the very top, where a see-through
   // bar's cream text would vanish — so there the bar is solid from the start,
@@ -546,11 +556,22 @@ export default function NavBar() {
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user ?? null);
     });
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
+      // Signed out (here, or in another tab): the page on screen was built
+      // for a signed-in visitor. On a signed-in-only page, leave for home;
+      // anywhere else, redo the page on the server so nothing of the
+      // account's (e.g. an owner's Edit button) lingers.
+      if (event === "SIGNED_OUT") {
+        if (SIGNED_IN_ONLY.some((path) => pathnameRef.current.startsWith(path))) {
+          router.replace("/");
+        } else {
+          router.refresh();
+        }
+      }
     });
     return () => listener.subscription.unsubscribe();
-  }, [supabase]);
+  }, [supabase, router]);
 
   // Load the account's username for the menu — shown as the primary identity,
   // with the email kept as a secondary line. Cleared when logged out.
@@ -590,8 +611,8 @@ export default function NavBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [userMenuOpen]);
 
-  // No redirect afterward — the header re-renders to the logged-out
-  // state and the visitor stays on whatever page they're on.
+  // Where the visitor ends up afterwards is decided by the sign-out handler
+  // in the auth listener above.
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUserMenuOpen(false);
