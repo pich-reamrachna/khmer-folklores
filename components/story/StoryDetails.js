@@ -225,8 +225,8 @@ export default function StoryDetails({ entry, children }) {
   // swaps, falling back to English when untranslated.
   const summary = pickText(language, entry.summaryKhmer, entry.summary);
   const place = pickText(language, entry.placeKhmer, entry.place);
-  // Both names of the kind, like "Legend · រឿងព្រេង", when there's a Khmer one.
-  const kind = [entry.category, entry.categoryKhmer].filter(Boolean).join(" · ");
+  // The kind in the chosen language (English when there's no Khmer one).
+  const kind = pickText(language, entry.categoryKhmer, entry.category);
   const tracking = language === "km" ? styles.trackingNone : null;
 
   // Only the details this story has.

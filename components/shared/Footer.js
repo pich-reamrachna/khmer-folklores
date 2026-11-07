@@ -20,8 +20,11 @@ import { useTranslation } from "./uiText.js";
 const SHOW_AFTER = 400;
 
 const styles = {
+  // A shade darker than the pages' warm charcoal (#1A1817), so the footer
+  // reads as its own band where a page's last section is charcoal too (the
+  // story page's tellings). NavBar.js uses the same shade, so the two match.
   footer: {
-    backgroundColor: "#1A1817",
+    backgroundColor: "#121110",
     padding: "48px 0 28px",
     color: "#E8E2D6",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",

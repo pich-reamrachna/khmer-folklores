@@ -39,7 +39,7 @@ const styles = {
   },
   // Warm charcoal, the same as Footer.js, with the footer's faint rule.
   navScrolled: {
-    backgroundColor: "rgba(26, 24, 23, 0.95)",
+    backgroundColor: "rgba(18, 17, 16, 0.95)",
     backdropFilter: "blur(12px)",
     WebkitBackdropFilter: "blur(12px)",
     borderBottom: "1px solid rgba(245, 239, 230, 0.08)",
@@ -157,7 +157,7 @@ const styles = {
     gap: "1.25rem",
     padding: "1.25rem 2rem 1.5rem",
     boxSizing: "border-box",
-    backgroundColor: "rgba(26, 24, 23, 0.98)",
+    backgroundColor: "rgba(18, 17, 16, 0.98)",
     borderBottom: "1px solid rgba(245, 239, 230, 0.08)",
   },
   langSwitcher: {

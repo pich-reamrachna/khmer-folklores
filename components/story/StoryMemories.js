@@ -449,8 +449,8 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
 
   return (
     // id="tellings": /share's "Add my version" links land here (/<id>#tellings).
-    <section id="tellings" style={styles.section}>
-      <div style={styles.container}>
+    <section id="tellings" style={styles.section} className="tellings-section">
+      <div style={styles.container} className="tellings-content">
         <p style={styles.eyebrow}>
           Voices from the Community
         </p>
@@ -643,6 +643,89 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
           hover uses opacity (a different property from their inline bg, so no
           inline-vs-stylesheet clash). */}
       <style jsx>{`
+        /* The section's background: ink-wash bamboo hanging down the right
+           side, in gold, faint behind the tellings. The file
+           (public/bamboo-hq-transparent.png) is pale grey leaves on a
+           transparent ground, so it's used as a mask over a gold fill — the
+           leaves show gold, same recolouring trick as the site's icons. A
+           second mask fades in its top edge, which cuts through leaves.
+           Its own layer, clipped to the section; the content sits above it. */
+        /* The section's ground: the hero's worn charcoal texture
+           (public/rustic-charcoal.webp — soft smudges, specks and fine
+           scratches), toned well down under a wash of the charcoal colour,
+           and faded in from the top so it doesn't start on a line under the
+           story's header. On the background-image only — the charcoal
+           colour is inline. */
+        .tellings-section {
+          position: relative;
+          overflow: hidden;
+          background-image: linear-gradient(to bottom, #1a1817 0, rgba(26, 24, 23, 0) 220px),
+            linear-gradient(rgba(26, 24, 23, 0.6), rgba(26, 24, 23, 0.6)),
+            url(/rustic-charcoal.webp);
+          background-size: 100% 100%, 100% 100%, cover;
+          background-position: center;
+          background-repeat: no-repeat;
+        }
+        /* Embers: a few small warm glows (public/candle-glow-core.png)
+           scattered across the section, drifting slowly upward and back.
+           Its own layer, behind the tellings, never catching clicks. */
+        .tellings-section::after {
+          content: "";
+          position: absolute;
+          inset: -40px 0 0;
+          background-image: url(/candle-glow-core.png),
+            url(/candle-glow-core.png),
+            url(/candle-glow-core.png),
+            url(/candle-glow-core.png),
+            url(/candle-glow-core.png),
+            url(/candle-glow-core.png);
+          background-position: 8% 22%, 35% 30%, 58% 14%, 66% 56%, 83% 38%, 22% 80%;
+          background-size: 12px 12px, 14px 14px, 8px 8px, 12px 12px, 10px 10px, 9px 9px;
+          background-repeat: no-repeat;
+          opacity: 0.5;
+          pointer-events: none;
+          animation: tellings-embers 14s ease-in-out infinite alternate;
+        }
+        @keyframes tellings-embers {
+          from {
+            transform: translateY(0);
+            opacity: 0.4;
+          }
+          to {
+            transform: translateY(-28px);
+            opacity: 0.6;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .tellings-section::after {
+            animation: none;
+          }
+        }
+        .tellings-section::before {
+          content: "";
+          position: absolute;
+          top: 0;
+          right: 0;
+          bottom: 0;
+          width: min(560px, 45%);
+          background-color: #c9a961;
+          -webkit-mask-image: url(/bamboo-hq-transparent.png),
+            linear-gradient(to bottom, transparent 0%, #000 22%);
+          mask-image: url(/bamboo-hq-transparent.png), linear-gradient(to bottom, transparent 0%, #000 22%);
+          -webkit-mask-size: contain, 100% 100%;
+          mask-size: contain, 100% 100%;
+          -webkit-mask-position: right top, 0 0;
+          mask-position: right top, 0 0;
+          -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+          -webkit-mask-composite: source-in;
+          mask-composite: intersect;
+          opacity: 0.16;
+          pointer-events: none;
+        }
+        .tellings-content {
+          position: relative;
+        }
         .telling-grid {
           grid-template-columns: repeat(3, minmax(0, 1fr));
         }
