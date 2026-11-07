@@ -24,6 +24,7 @@ export default function NewStoryFields({ khmerTitle, onKhmerTitleChange, categor
         </label>
         <input
           id="khmerTitle"
+          className="contribute-input"
           style={styles.input}
           value={khmerTitle}
           onChange={(e) => onKhmerTitleChange(e.target.value)}
@@ -38,6 +39,7 @@ export default function NewStoryFields({ khmerTitle, onKhmerTitleChange, categor
         </label>
         <select
           id="category"
+          className="contribute-input"
           style={styles.input}
           value={category}
           onChange={(e) => onCategoryChange(e.target.value)}

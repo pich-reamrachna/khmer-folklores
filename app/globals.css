@@ -401,21 +401,33 @@ main {
    which is a pseudo-element and so can't be styled inline. */
 .contribute-file::file-selector-button {
   margin-right: 0.9rem;
-  padding: 0.45rem 1rem;
-  border: 1px solid #2a172f;
-  border-radius: 8px;
-  background-color: #1d1024;
+  padding: 0.5rem 1rem;
+  border: 1px solid #c5a059;
+  border-radius: 2px;
+  background-color: transparent;
   color: #e6c575;
   font-family: var(--font-jakarta), system-ui, sans-serif;
-  font-size: 0.8rem;
+  font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
   cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 .contribute-file::file-selector-button:hover {
-  background-color: #2a172f;
-  border-color: #c5a059;
+  background-color: #c5a059;
+  color: #1a1817;
+}
+
+/* ContributeForm.js's fields: the same gold underline glow on focus as the
+   sign-in / sign-up fields (AuthCard.js's .auth-input:focus). */
+.contribute-input:focus {
+  box-shadow: 0 1px 0 0 rgba(197, 160, 89, 0.85);
+}
+/* The story box: a gold outline while typing. A box-shadow ring, not
+   border-color — the box's border is inline, which a stylesheet can't beat. */
+textarea.contribute-input:focus {
+  box-shadow: 0 0 0 1px #c5a059;
 }
 
 /* The shared .archive-scroll scrollbar — gold on dark, for ContributeForm.js
@@ -544,4 +556,71 @@ select:-webkit-autofill {
   .archive-row {
     border-radius: 0;
   }
+}
+
+/* MyEntries.js's two tabs. The gold pill behind the chosen one is its own
+   sliding element (inline in MyEntries.js), so the tabs themselves stay
+   transparent and only their text changes: dark on the gold, light off it. */
+.my-entries-tab {
+  background-color: transparent;
+  color: #d9d2c5;
+  transition: background-color 0.2s ease, color 0.3s ease;
+}
+.my-entries-tab:not(.is-active):hover {
+  background-color: rgba(201, 169, 97, 0.12);
+  color: #e6c575;
+}
+.my-entries-tab.is-active {
+  color: #1a1817;
+}
+
+/* MyEntries.js's page: the hero's worn charcoal texture
+   (public/rustic-charcoal.webp), toned down under a wash of the charcoal
+   colour so the rows stay easy to read, with the gold ink-wash bamboo of the
+   story page's tellings (StoryMemories.js) hanging down both sides — the
+   right as drawn, the left mirrored. The bamboo is the file used as a mask
+   over a gold fill (its pale leaves sit on a transparent ground), faint, and
+   faded in at the top where the file cuts through leaves. On the
+   background-image only — the charcoal colour is inline. */
+.my-entries-section {
+  position: relative;
+  overflow: hidden;
+  background-image: linear-gradient(rgba(26, 24, 23, 0.45), rgba(26, 24, 23, 0.45)),
+    url(/rustic-charcoal.webp);
+  background-size: 100% 100%, cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+.my-entries-section::before,
+.my-entries-section::after {
+  content: "";
+  position: absolute;
+  top: 90px;
+  bottom: 0;
+  width: min(420px, 28%);
+  background-color: #c9a961;
+  -webkit-mask-image: url(/bamboo-hq-transparent.png), linear-gradient(to bottom, transparent 0%, #000 20%);
+  mask-image: url(/bamboo-hq-transparent.png), linear-gradient(to bottom, transparent 0%, #000 20%);
+  -webkit-mask-size: contain, 100% 100%;
+  mask-size: contain, 100% 100%;
+  -webkit-mask-position: right top, 0 0;
+  mask-position: right top, 0 0;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+  opacity: 0.14;
+  pointer-events: none;
+}
+.my-entries-section::before {
+  right: 0;
+}
+.my-entries-section::after {
+  left: 0;
+  transform: scaleX(-1);
+}
+.my-entries-content {
+  position: relative;
+  z-index: 1;
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useLanguage } from "../shared/LanguageContext.js";
+import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import { formatTimestamp } from "../../utils/formatDate.js";
 import styles from "./entryCardStyles.js";
@@ -27,43 +27,47 @@ export default function TellingCard({ telling }) {
   const t = useTranslation();
   const status = STATUS[telling.status] ?? STATUS.pending;
   const date = telling.createdAt ? formatTimestamp(telling.createdAt, language) : "";
+  const tracking = language === "km" ? styles.trackingNone : null;
 
   return (
-    <div style={styles.card}>
+    <div style={telling.status === "returned" ? { ...styles.card, ...styles.cardFlagged } : styles.card}>
       <div style={styles.top}>
         <div>
-          {/* Which story it's a telling of: Khmer name above the English. */}
-          {telling.storyKhmerTitle ? <p style={styles.khmerTitle}>{telling.storyKhmerTitle}</p> : null}
-          <h3 style={styles.title}>{telling.storyTitle}</h3>
-          <p style={styles.meta}>
-            {telling.title ? `"${telling.title}" · ` : ""}
-            {date}
-          </p>
+          <p style={styles.meta}>{date}</p>
+          {/* Which story it's a telling of, in the chosen language (Khmer
+              name when Khmer is on and there is one, else the English). */}
+          <h3 style={styles.title}>{pickText(language, telling.storyKhmerTitle, telling.storyTitle)}</h3>
+          {/* The telling's own title, under the story it belongs to. */}
+          {telling.title ? <p style={styles.subtitle}>{telling.title}</p> : null}
         </div>
-        <span style={{ ...styles.badge, color: status.color, borderColor: status.color }}>{t(status.key)}</span>
+        <span style={{ ...styles.badge, ...tracking, color: status.color }}>
+          {t(status.key)}
+        </span>
       </div>
 
       {telling.status === "pending" ? <p style={styles.hint}>{t("tellingPendingHint")}</p> : null}
       {telling.status === "returned" && telling.returnNote ? (
         <p style={styles.note}>
-          <span style={styles.noteLabel}>{t("submissionsNoteLabel")}</span>
+          <span style={{ ...styles.noteLabel, ...tracking }}>{t("submissionsNoteLabel")}</span>
           {telling.returnNote}
         </p>
       ) : null}
       {telling.status === "published" ? <EditStatus telling={telling} /> : null}
       <div style={styles.actions}>
         {telling.status === "published" ? (
-          <Link href={`/${telling.storyId}#tellings`} style={styles.link} className="share-match-link">
+          <Link href={`/${telling.storyId}#tellings`} style={{ ...styles.link, ...tracking }} className="share-match-link">
             {t("submissionsViewStory")} →
           </Link>
         ) : null}
         {telling.status !== "published" || telling.edit ? (
-          <EditEntryButton
-            storyId={telling.storyId}
-            storyTitle={telling.storyTitle}
-            storyTitleKhmer={telling.storyKhmerTitle}
-            telling={telling}
-          />
+          <div style={styles.editSlot}>
+            <EditEntryButton
+              storyId={telling.storyId}
+              storyTitle={telling.storyTitle}
+              storyTitleKhmer={telling.storyKhmerTitle}
+              telling={telling}
+            />
+          </div>
         ) : null}
       </div>
     </div>

@@ -9,7 +9,8 @@ const FOCUSABLE =
 
 // Overlay + dialog styling lives in the <style> block below, not inline —
 // their layout changes at the phone breakpoint, and a media query can never
-// override an inline style. Only the non-responsive close button stays inline.
+// override an inline style. Only the close button's box stays inline; its
+// colours are in the <style> block too (.contribute-close), for the hover.
 const styles = {
   closeBtn: {
     position: "absolute",
@@ -19,9 +20,6 @@ const styles = {
     width: 36,
     height: 36,
     borderRadius: "50%",
-    border: "1px solid #2A172F",
-    backgroundColor: "#120916",
-    color: "#C5A059",
     fontSize: "1.4rem",
     lineHeight: 1,
     cursor: "pointer",
@@ -117,7 +115,7 @@ export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, 
         tabIndex={-1}
         className="contribute-dialog"
       >
-        <button type="button" onClick={onClose} aria-label="Close" style={styles.closeBtn}>
+        <button type="button" onClick={onClose} aria-label="Close" style={styles.closeBtn} className="contribute-close">
           ×
         </button>
         <ContributeForm
@@ -143,12 +141,25 @@ export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, 
           justify-content: center;
           padding: 2rem 1rem;
           box-sizing: border-box;
-          background-color: rgba(8, 4, 10, 0.6);
+          background-color: rgba(10, 9, 8, 0.7);
           -webkit-backdrop-filter: blur(6px);
           backdrop-filter: blur(6px);
           /* The overlay scrolls if the dialog is taller than the viewport —
              the page behind stays locked (StoryPageShell freezes its main). */
           overflow-y: auto;
+        }
+        /* The close button: gold-outlined, filling gold on hover, like the
+           navbar's round buttons. */
+        .contribute-close {
+          border: 1px solid rgba(201, 169, 97, 0.45);
+          background-color: transparent;
+          color: #c5a059;
+          transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+        }
+        .contribute-close:hover {
+          background-color: #c9a961;
+          border-color: #c9a961;
+          color: #1a1817;
         }
         .contribute-dialog {
           position: relative;
@@ -158,9 +169,9 @@ export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, 
           margin: auto;
           width: 100%;
           max-width: 680px;
-          background-color: #0c0a12;
-          border: 1px solid #2a172f;
-          border-radius: 16px;
+          background-color: #1a1817;
+          border: 1px solid rgba(201, 169, 97, 0.25);
+          border-radius: 4px;
           box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
           outline: none;
         }

@@ -12,17 +12,20 @@ import { useTranslation } from "../shared/uiText.js";
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
 const styles = {
-  box: { marginTop: "1rem", padding: "0.9rem 1rem", borderRadius: 12, backgroundColor: "#1A0F20", borderLeft: "3px solid" },
+  // A dark panel like the curator's note on the row (entryCardStyles.js),
+  // with a left rule in the status colour.
+  box: { marginTop: "1.1rem", padding: "0.9rem 1.1rem", backgroundColor: "rgba(0, 0, 0, 0.22)", borderLeft: "2px solid" },
   head: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.6rem" },
   heading: { fontFamily: khmerSans, fontSize: "0.9rem", fontWeight: 700, color: "#F5EFE6", margin: 0 },
-  badge: { fontFamily: khmerSans, fontSize: "0.72rem", fontWeight: 700, border: "1px solid", borderRadius: 999, padding: "0.15rem 0.6rem", whiteSpace: "nowrap" },
+  // Plain coloured capitals, like the row's own status (entryCardStyles.js).
+  badge: { fontFamily: khmerSans, fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", whiteSpace: "nowrap" },
   note: { fontFamily: khmerSans, fontSize: "0.88rem", lineHeight: 1.6, color: "#F5EFE6", margin: "0 0 0.75rem", whiteSpace: "pre-wrap", overflowWrap: "anywhere" },
   noteLabel: { display: "block", fontWeight: 700, color: "#E0736A", marginBottom: "0.2rem" },
-  label: { fontFamily: khmerSans, fontSize: "0.72rem", fontWeight: 700, color: "#8A7F91", margin: "0.6rem 0 0.15rem" },
+  label: { fontFamily: khmerSans, fontSize: "0.72rem", fontWeight: 700, color: "#A89F91", margin: "0.6rem 0 0.15rem" },
   // pre-wrap keeps the owner's line breaks; anywhere breaks a long run.
-  value: { fontFamily: khmerSans, fontSize: "0.88rem", lineHeight: 1.6, color: "#D8CFDC", margin: 0, whiteSpace: "pre-wrap", overflowWrap: "anywhere" },
+  value: { fontFamily: khmerSans, fontSize: "0.88rem", lineHeight: 1.6, color: "#D9D2C5", margin: 0, whiteSpace: "pre-wrap", overflowWrap: "anywhere" },
   photo: { display: "block", maxWidth: 160, maxHeight: 120, borderRadius: 8, objectFit: "cover" },
-  hint: { fontFamily: khmerSans, fontSize: "0.8rem", color: "#8A7F91", margin: "0.75rem 0 0" },
+  hint: { fontFamily: khmerSans, fontSize: "0.8rem", color: "#A89F91", margin: "0.75rem 0 0" },
 };
 
 export default function EditStatus({ telling }) {
@@ -51,7 +54,7 @@ export default function EditStatus({ telling }) {
     <div style={{ ...styles.box, borderLeftColor: color }}>
       <div style={styles.head}>
         <p style={styles.heading}>{t("editPanelTitle")}</p>
-        <span style={{ ...styles.badge, color, borderColor: color }}>
+        <span style={{ ...styles.badge, color }}>
           {t(returned ? "tellingStatusReturned" : "tellingStatusPending")}
         </span>
       </div>

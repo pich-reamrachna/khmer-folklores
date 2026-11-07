@@ -11,10 +11,11 @@ const styles = {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1rem",
     lineHeight: 1.6,
-    color: "#BBAEBF",
-    margin: 0,
+    color: "#A89F91",
+    margin: "1.25rem 0 0",
   },
-  list: { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 16 },
+  // Rows sit flush — each draws its own rule underneath.
+  list: { listStyle: "none", margin: 0, padding: 0 },
 };
 
 export default function TellingsList({ tellings }) {

@@ -135,6 +135,15 @@ function validate({ title, place, description, photoFile, t, newStory, khmerTitl
   return errors;
 }
 
+// Laid out like the sign-in / sign-up forms (components/auth/authStyles.js):
+// small spaced-capital labels, underline-only fields and a square gold
+// button, on the site's warm charcoal — in the main site's type: the heading
+// in gold Cinzel (as on the story pages), the fields in the body font. The story box keeps a faint outline (a bare underline under a
+// tall box reads oddly). Focus glows live in app/globals.css's
+// .contribute-input rule, since a :focus can't be inline.
+const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
+// Cinzel has no Khmer letters, so a Khmer story name falls through.
+const cinzel = "var(--font-cinzel), var(--font-khmer), serif";
 const styles = {
   // Standalone page: full-height, top padding clears the fixed NavBar.
   section: {
@@ -143,7 +152,7 @@ const styles = {
     padding: "130px 2rem 4rem",
     display: "flex",
     justifyContent: "center",
-    backgroundColor: "#0C0A12",
+    backgroundColor: "#1A1817",
     minHeight: "100vh",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
@@ -153,7 +162,7 @@ const styles = {
   sectionEmbedded: {
     width: "100%",
     boxSizing: "border-box",
-    padding: "2.5rem 2rem 2rem",
+    padding: "2.75rem 2.5rem 2.5rem",
     display: "flex",
     justifyContent: "center",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
@@ -164,70 +173,82 @@ const styles = {
     maxWidth: 640,
   },
   eyebrow: {
-    fontSize: "0.75rem",
-    fontWeight: 600,
-    color: "#E6C575",
+    fontFamily: khmerSans,
+    fontSize: "0.7rem",
+    fontWeight: 700,
+    color: "#A89F91",
     letterSpacing: "0.25em",
     textTransform: "uppercase",
     margin: "0 0 0.75rem",
   },
   title: {
-    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "2rem",
-    fontWeight: 600,
-    color: "#F5EFE6",
+    fontFamily: cinzel,
+    fontSize: "clamp(1.8rem, 2.8vw, 2.3rem)",
+    fontWeight: 500,
+    color: "#C9A961",
     margin: "0 0 2rem",
-    lineHeight: 1.2,
+    lineHeight: 1.15,
+    overflowWrap: "anywhere",
   },
   // newStory only — sits between the heading and the form, so the heading's
   // own bottom margin already spaces it from above.
   reviewNote: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "0.95rem",
+    fontFamily: khmerSans,
+    fontSize: "0.92rem",
     lineHeight: 1.6,
-    color: "#BBAEBF",
+    color: "#A89F91",
     margin: "-1rem 0 2rem",
   },
   field: {
     display: "flex",
     flexDirection: "column",
-    gap: "0.4rem",
-    marginBottom: "1.5rem",
+    gap: "0.35rem",
+    marginBottom: "1.6rem",
   },
   label: {
-    fontSize: "0.8rem",
+    fontFamily: khmerSans,
+    fontSize: "0.66rem",
     fontWeight: 700,
-    color: "#BBAEBF",
-    letterSpacing: "0.1em",
+    color: "#A89F91",
+    letterSpacing: "0.2em",
     textTransform: "uppercase",
   },
+  // Underline-only, like the sign-in fields. colorScheme: dark, so a
+  // <select>'s native option list (NewStoryFields' category) is dark too.
   input: {
     width: "100%",
     boxSizing: "border-box",
-    padding: "0.8rem 1rem",
-    backgroundColor: "#120916",
-    border: "1px solid #2A172F",
-    borderRadius: 10,
+    padding: "0.5rem 0 0.55rem",
+    backgroundColor: "transparent",
+    border: "none",
+    borderBottom: "1px solid rgba(245, 239, 230, 0.22)",
+    borderRadius: 0,
     color: "#F5EFE6",
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: khmerSans,
     fontSize: "1rem",
+    outline: "none",
+    colorScheme: "dark",
   },
   textarea: {
     width: "100%",
     boxSizing: "border-box",
-    padding: "0.8rem 1rem",
-    backgroundColor: "#120916",
-    border: "1px solid #2A172F",
-    borderRadius: 10,
+    marginTop: "0.35rem",
+    padding: "0.8rem 0.9rem",
+    backgroundColor: "rgba(0, 0, 0, 0.18)",
+    border: "1px solid rgba(245, 239, 230, 0.16)",
+    borderRadius: 2,
     color: "#F5EFE6",
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: khmerSans,
     fontSize: "1rem",
-    minHeight: 160,
+    lineHeight: 1.7,
+    minHeight: 180,
     resize: "vertical",
+    outline: "none",
   },
   hint: {
+    fontFamily: khmerSans,
     fontSize: "0.75rem",
-    color: "#8A7F91",
+    color: "#8A8277",
     margin: 0,
   },
   // Thumbnail of the existing photo while editing (until a new one is picked).
@@ -235,7 +256,7 @@ const styles = {
     maxWidth: 120,
     maxHeight: 120,
     objectFit: "cover",
-    borderRadius: 8,
+    borderRadius: 2,
     display: "block",
     margin: "0.5rem 0 0",
   },
@@ -248,27 +269,30 @@ const styles = {
   // Live character counter — pinned right so it stays put with or without an
   // error beside it.
   counter: {
+    fontFamily: khmerSans,
     fontSize: "0.72rem",
-    color: "#8A7F91",
+    color: "#8A8277",
     margin: 0,
     marginLeft: "auto",
     flexShrink: 0,
     whiteSpace: "nowrap",
   },
   counterOver: {
-    color: "#E0736A",
+    color: "#E58B8B",
   },
   fieldError: {
+    fontFamily: khmerSans,
     fontSize: "0.8rem",
-    color: "#E0736A",
+    color: "#E58B8B",
     margin: 0,
     // Takes the left of the meta row; wraps instead of shoving the counter.
     flex: 1,
     minWidth: 0,
   },
   formError: {
-    fontSize: "0.9rem",
-    color: "#E0736A",
+    fontFamily: khmerSans,
+    fontSize: "0.88rem",
+    color: "#E58B8B",
     margin: "0 0 1.25rem",
   },
   // Khmer's stacked glyph clusters shouldn't be pried apart by Latin letter-
@@ -530,6 +554,7 @@ export default function ContributeForm({
             </label>
             <input
               id="title"
+              className="contribute-input"
               style={styles.input}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -569,7 +594,7 @@ export default function ContributeForm({
             </label>
             <textarea
               id="description"
-              className="archive-scroll"
+              className="archive-scroll contribute-input"
               style={styles.textarea}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -629,15 +654,17 @@ export default function ContributeForm({
       <style jsx>{`
         .contribute-submit {
           width: 100%;
-          padding: 0.9rem 1rem;
+          margin-top: 0.4rem;
+          padding: 1rem;
           border: none;
-          border-radius: 10px;
+          border-radius: 2px;
           background-color: #c5a059;
-          color: #0c0a12;
-          font-family: var(--font-jakarta), system-ui, sans-serif;
-          font-size: 1rem;
+          color: #1a1817;
+          font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+          font-size: 0.72rem;
           font-weight: 700;
-          letter-spacing: 0.05em;
+          letter-spacing: 0.22em;
+          text-transform: uppercase;
           cursor: pointer;
           transition: background-color 0.2s ease, opacity 0.2s ease;
         }
@@ -645,7 +672,7 @@ export default function ContributeForm({
           letter-spacing: normal;
         }
         .contribute-submit:hover:not(:disabled) {
-          background-color: #d4af37;
+          opacity: 0.85;
         }
         .contribute-submit:disabled {
           opacity: 0.55;

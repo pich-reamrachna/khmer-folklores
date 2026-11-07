@@ -1,23 +1,95 @@
-// Shared look for the cards on /my-entries: your stories (SubmissionCard.js)
-// and your tellings (TellingCard.js) — same card, title, status badge and
-// note, so both sections read as one list.
+// Shared look for the rows on /my-entries: your stories (SubmissionCard.js)
+// and your tellings (TellingCard.js) — same row, title, status badge and
+// note, so both tabs read as one list.
+//
+// Each entry is a ruled row rather than a boxed card: small details on top,
+// the title in the chosen language — Cinzel for English (as on the story
+// pages' tellings), the Khmer font at the same size for Khmer — and its
+// status on the right. A row the curator sent back (a story
+// not accepted, a telling returned) carries a red rule down its left side,
+// with the curator's note in a dark panel.
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
+// Cinzel for titles; Khmer (which it has no letters for) falls through to
+// the Khmer font.
+const cinzel = "var(--font-cinzel), var(--font-khmer), serif";
 
 const entryCardStyles = {
-  card: { backgroundColor: "#120916", border: "1px solid #2A172F", borderRadius: 16, padding: "1.2rem 1.4rem" },
-  top: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem" },
-  khmerTitle: { fontFamily: "var(--font-khmer), serif", fontSize: "0.9rem", fontWeight: 600, color: "#D4AF37", margin: "0 0 0.2rem" },
+  card: {
+    padding: "1.75rem 0 1.85rem 1.25rem",
+    borderBottom: "1px solid rgba(245, 239, 230, 0.08)",
+  },
+  // Added to `card` for a story not accepted / a telling returned.
+  cardFlagged: {
+    borderLeft: "1px solid rgba(224, 115, 106, 0.7)",
+  },
+  top: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1.5rem" },
+  // The date, above the title.
+  meta: { fontFamily: khmerSans, fontSize: "0.78rem", color: "#A89F91", margin: "0 0 0.55rem", overflowWrap: "anywhere" },
   // overflowWrap: the title is whatever the submitter typed.
-  title: { fontFamily: "var(--font-cinzel), serif", fontSize: "1.2rem", fontWeight: 600, color: "#F5EFE6", margin: 0, overflowWrap: "anywhere" },
-  meta: { fontFamily: khmerSans, fontSize: "0.8rem", color: "#8A7F91", margin: "0.35rem 0 0" },
-  badge: { fontFamily: khmerSans, fontSize: "0.75rem", fontWeight: 700, border: "1px solid", borderRadius: 999, padding: "0.2rem 0.7rem", whiteSpace: "nowrap" },
-  note: { fontFamily: khmerSans, fontSize: "0.9rem", lineHeight: 1.6, color: "#BBAEBF", margin: "1rem 0 0", padding: "0.8rem 1rem", borderLeft: "2px solid #E0736A", whiteSpace: "pre-wrap", overflowWrap: "anywhere" },
-  noteLabel: { display: "block", fontWeight: 700, color: "#E0736A", marginBottom: "0.25rem" },
-  hint: { fontFamily: khmerSans, fontSize: "0.85rem", color: "#8A7F91", margin: "0.8rem 0 0" },
-  // The card's "View story" link and Edit button, side by side.
-  actions: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "1.25rem" },
-  link: { display: "inline-block", marginTop: "0.8rem", fontFamily: khmerSans, fontSize: "0.85rem", fontWeight: 700, color: "#C5A059", textDecoration: "none" },
+  title: { fontFamily: cinzel, fontSize: "1.3rem", fontWeight: 500, lineHeight: 1.25, color: "#F5EFE6", margin: 0, overflowWrap: "anywhere" },
+  // A telling's own title, under the story's (TellingCard.js). Whatever
+  // the sharer typed, English or Khmer.
+  subtitle: { fontFamily: khmerSans, fontSize: "0.95rem", color: "#D9D2C5", margin: "0.4rem 0 0", overflowWrap: "anywhere" },
+  // The status, as plain coloured small spaced capitals — no box, so it reads
+  // as information rather than something to click. color comes from the
+  // status.
+  badge: {
+    display: "inline-flex",
+    alignItems: "center",
+    paddingTop: "0.15rem",
+    fontFamily: khmerSans,
+    fontSize: "0.68rem",
+    fontWeight: 700,
+    letterSpacing: "0.16em",
+    textTransform: "uppercase",
+    whiteSpace: "nowrap",
+    flexShrink: 0,
+  },
+  // The curator's note: a dark panel, its label in small spaced capitals.
+  note: {
+    fontFamily: khmerSans,
+    fontSize: "0.92rem",
+    lineHeight: 1.6,
+    color: "#D9D2C5",
+    margin: "1.1rem 0 0",
+    padding: "0.9rem 1.1rem",
+    backgroundColor: "rgba(0, 0, 0, 0.22)",
+    border: "1px solid rgba(245, 239, 230, 0.06)",
+    whiteSpace: "pre-wrap",
+    overflowWrap: "anywhere",
+  },
+  noteLabel: {
+    display: "block",
+    fontFamily: khmerSans,
+    fontSize: "0.66rem",
+    fontWeight: 600,
+    letterSpacing: "0.2em",
+    textTransform: "uppercase",
+    color: "#C9A961",
+    marginBottom: "0.4rem",
+  },
+  // "The curator will read it…" under a waiting entry.
+  hint: { fontFamily: khmerSans, fontSize: "0.88rem", color: "#A89F91", margin: "0.9rem 0 0" },
+  // The row's "View story" link (left) and Edit button (bottom right).
+  actions: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "1.5rem" },
+  // Pushes the Edit button to the right end of `actions`, with or without
+  // a link before it.
+  editSlot: { marginLeft: "auto" },
+  link: {
+    display: "inline-block",
+    marginTop: "1.1rem",
+    fontFamily: khmerSans,
+    fontSize: "0.72rem",
+    fontWeight: 700,
+    letterSpacing: "0.18em",
+    textTransform: "uppercase",
+    color: "#C9A961",
+    textDecoration: "none",
+  },
+  // Letter-spacing pries apart Khmer glyph clusters — spread this in after
+  // the badge/link/label styles when the text is Khmer.
+  trackingNone: { letterSpacing: "normal" },
 };
 
 export default entryCardStyles;

@@ -24,47 +24,59 @@ export default function SubmissionCard({ submission }) {
   const { language } = useLanguage();
   const t = useTranslation();
   const status = STATUS[submission.status] ?? STATUS.pending;
-  const category = pickText(language, submission.categoryKhmer, submission.category);
   const date = submission.submittedAt ? formatTimestamp(submission.submittedAt, language) : "";
   const isPublished = submission.status === "published";
   // The story's first telling — its waiting edit, if any, is shown once the
   // story is published (before that, the story's own review covers it).
   const first = submission.firstTelling;
+  const tracking = language === "km" ? styles.trackingNone : null;
 
   return (
-    <div style={styles.card}>
+    <div style={submission.status === "rejected" ? { ...styles.card, ...styles.cardFlagged } : styles.card}>
       <div style={styles.top}>
         <div>
-          {submission.khmerTitle ? <p style={styles.khmerTitle}>{submission.khmerTitle}</p> : null}
-          <h3 style={styles.title}>{submission.title}</h3>
-          <p style={styles.meta}>{category} · {date}</p>
+          <p style={styles.meta}>{date}</p>
+          {/* In the chosen language — the Khmer name when Khmer is on and
+              the story has one, else the English. */}
+          <h3 style={styles.title}>{pickText(language, submission.khmerTitle, submission.title)}</h3>
         </div>
-        <span style={{ ...styles.badge, color: status.color, borderColor: status.color }}>{t(status.key)}</span>
+        <span style={{ ...styles.badge, ...tracking, color: status.color }}>
+          {t(status.key)}
+        </span>
       </div>
 
       {submission.status === "pending" ? <p style={styles.hint}>{t("submissionsPendingHint")}</p> : null}
       {submission.status === "rejected" && submission.rejectionNote ? (
         <p style={styles.note}>
-          <span style={styles.noteLabel}>{t("submissionsNoteLabel")}</span>
+          <span style={{ ...styles.noteLabel, ...tracking }}>{t("submissionsNoteLabel")}</span>
           {submission.rejectionNote}
         </p>
       ) : null}
       {/* A published story whose first telling has changes waiting for
           review (or returned): the story page still shows the published
-          version, so "View story" stays, with an Edit button beside it. */}
+          version until they're approved. */}
       {isPublished ? <EditStatus telling={first} /> : null}
-      {isPublished ? (
+      {/* Every story the user can still change has an Edit button — it edits
+          the story's first telling (the story itself): a waiting story's
+          directly, a published one's as changes for the curator to review.
+          Not a story that wasn't accepted: changing it wouldn't send it back
+          to review, so the curator's note points to sharing it anew. */}
+      {submission.status !== "rejected" ? (
         <div style={styles.actions}>
-          <Link href={`/${submission.id}`} style={styles.link} className="share-match-link">
-            {t("submissionsViewStory")} →
-          </Link>
-          {first?.edit ? (
-            <EditEntryButton
-              storyId={submission.id}
-              storyTitle={submission.title}
-              storyTitleKhmer={submission.khmerTitle}
-              telling={first}
-            />
+          {isPublished ? (
+            <Link href={`/${submission.id}`} style={{ ...styles.link, ...tracking }} className="share-match-link">
+              {t("submissionsViewStory")} →
+            </Link>
+          ) : null}
+          {first ? (
+            <div style={styles.editSlot}>
+              <EditEntryButton
+                storyId={submission.id}
+                storyTitle={submission.title}
+                storyTitleKhmer={submission.khmerTitle}
+                telling={first}
+              />
+            </div>
           ) : null}
         </div>
       ) : null}

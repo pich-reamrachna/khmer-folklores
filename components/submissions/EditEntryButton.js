@@ -34,10 +34,10 @@ export default function EditEntryButton({ storyId, storyTitle, storyTitleKhmer, 
       {/* Native <button>, so styled-jsx scoping works; base + hover together. */}
       <style jsx>{`
         .edit-entry-btn {
-          margin-top: 0.8rem;
-          padding: 0.4rem 1.1rem;
+          margin-top: 1.1rem;
+          padding: 0.45rem 1.2rem;
           border: 1px solid #c5a059;
-          border-radius: 999px;
+          border-radius: 2px;
           background: transparent;
           color: #e6c575;
           font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
@@ -47,7 +47,7 @@ export default function EditEntryButton({ storyId, storyTitle, storyTitleKhmer, 
         }
         .edit-entry-btn:hover {
           background-color: #c5a059;
-          color: #0c0a12;
+          color: #1a1817;
         }
       `}</style>
     </>

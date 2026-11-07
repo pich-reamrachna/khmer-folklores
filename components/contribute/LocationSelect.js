@@ -53,25 +53,25 @@ const styles = {
     listStyle: "none",
     maxHeight: 240,
     overflowY: "auto",
-    backgroundColor: "#120916",
-    border: "1px solid #2A172F",
-    borderRadius: 10,
+    backgroundColor: "#1A1817",
+    border: "1px solid rgba(201, 169, 97, 0.3)",
+    borderRadius: 2,
     boxShadow: "0 12px 30px rgba(0, 0, 0, 0.5)",
   },
   option: {
     padding: "0.55rem 0.8rem",
-    borderRadius: 8,
+    borderRadius: 2,
     cursor: "pointer",
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.95rem",
     color: "#F5EFE6",
   },
   // Highlight follows keyboard/mouse (JS-driven, so no CSS :hover needed).
-  optionActive: { backgroundColor: "#1D1024" },
+  optionActive: { backgroundColor: "rgba(201, 169, 97, 0.14)" },
   optionSelected: { color: "#E6C575", fontWeight: 700 },
   empty: {
     padding: "0.6rem 0.8rem",
-    color: "#8A7F91",
+    color: "#A89F91",
     fontSize: "0.9rem",
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
   },
@@ -238,23 +238,26 @@ export default function LocationSelect({ id, value, onChange }) {
       {/* Native <input>, so styled-jsx scoping works. All input styling (incl.
           focus + placeholder) lives here, none inline, per the no-split rule. */}
       <style jsx>{`
+        /* Underline-only, like the sign-in fields (and the rest of
+           ContributeForm.js). */
         .loc-input {
           width: 100%;
           box-sizing: border-box;
-          padding: 0.8rem 1rem;
-          background-color: #120916;
-          border: 1px solid #2a172f;
-          border-radius: 10px;
+          padding: 0.5rem 0 0.55rem;
+          background-color: transparent;
+          border: none;
+          border-bottom: 1px solid rgba(245, 239, 230, 0.22);
+          border-radius: 0;
           color: #f5efe6;
           font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
           font-size: 1rem;
         }
         .loc-input:focus {
           outline: none;
-          border-color: #c5a059;
+          box-shadow: 0 1px 0 0 rgba(197, 160, 89, 0.85);
         }
         .loc-input::placeholder {
-          color: #8a7f91;
+          color: #6f675c;
         }
       `}</style>
     </div>
