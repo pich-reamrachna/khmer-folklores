@@ -11,8 +11,9 @@ import styles from "./authStyles.js";
 // which side it opens on). Both forms sit side by side in it; an ink-splash
 // overlay (public/splash.jpg) — one of the archive's pictures, a heading, a line and a gold
 // button — covers one of them: Daun Penh's Curse beside the sign-in form,
-// Ahpt beside the sign-up form. Pressing that button slides the overlay across to the other
-// side and swaps the forms, and the address follows (/login ⇄ /signup)
+// Ahpt beside the sign-up form. The forms stay put (sign-in left, sign-up
+// right); pressing that button slides the overlay across to cover one and
+// reveal the other, and the address follows (/login ⇄ /signup)
 // without reloading, so a refresh or a shared link lands on the same form.
 //
 // Phone: no room for the slide — the box shows one form at a time with
@@ -143,12 +144,12 @@ export default function AuthCard({ initialMode }) {
           pointer-events: none;
         }
 
-        /* The two forms: both start in the left half. Signing up slides
-           both right — sign-in fades out, sign-up fades in and comes on top. */
+        /* The two forms stay put — sign-in in the left half, sign-up in the
+           right. Only the overlay moves: it covers sign-up while signing
+           in, and slides left over sign-in to reveal sign-up. */
         .auth-pane {
           position: absolute;
           top: 0;
-          left: 0;
           width: 50%;
           height: 100%;
           display: flex;
@@ -157,28 +158,21 @@ export default function AuthCard({ initialMode }) {
           padding: 2.5rem 3rem;
           box-sizing: border-box;
           overflow-y: auto;
-          transition: transform 0.6s ease-in-out, opacity 0.6s ease-in-out;
         }
         .auth-pane-signin {
-          z-index: 2;
+          left: 0;
         }
         .auth-pane-signup {
-          opacity: 0;
-          z-index: 1;
-        }
-        .auth-card.is-signup .auth-pane-signin {
-          transform: translateX(100%);
-          opacity: 0;
-        }
-        .auth-card.is-signup .auth-pane-signup {
-          transform: translateX(100%);
-          opacity: 1;
-          z-index: 5;
+          left: 50%;
         }
 
-        /* The overlay: a half-width window onto a double-width strip
-           holding both of its sides. The window slides left as the strip
-           slides right, so the other side comes into view. */
+        /* The overlay works as a mask: a half-width window (the wrap)
+           over a full-width layer holding both faces — sign-in's (Ahpt)
+           over the left half of the card, sign-up's (Daun Penh's Curse)
+           over the right. The window slides across while the layer inside
+           counter-slides, so the layer stays fixed to the card: the window
+           wipes off one face and uncovers the other, which was sitting
+           there all along. */
         .auth-overlay-wrap {
           position: absolute;
           top: 0;
@@ -198,7 +192,6 @@ export default function AuthCard({ initialMode }) {
           width: 200%;
           height: 100%;
           background-color: #0f0e0d;
-          transform: translateX(0);
           transition: transform 0.6s ease-in-out;
         }
         .auth-card.is-signup .auth-overlay {
@@ -216,7 +209,6 @@ export default function AuthCard({ initialMode }) {
           padding: 0 3rem 3.5rem;
           box-sizing: border-box;
           text-align: center;
-          transition: transform 0.6s ease-in-out;
         }
         /* Each side's background: the ink splash (public/splash.jpg) — a
            pale wash at the top bleeding down into black drips, so the
@@ -239,17 +231,9 @@ export default function AuthCard({ initialMode }) {
         }
         .auth-overlay-left {
           left: 0;
-          transform: translateX(-20%);
-        }
-        .auth-card.is-signup .auth-overlay-left {
-          transform: translateX(0);
         }
         .auth-overlay-right {
           right: 0;
-          transform: translateX(0);
-        }
-        .auth-card.is-signup .auth-overlay-right {
-          transform: translateX(20%);
         }
 
         /* The panel's picture, behind the words: faded at the top and
@@ -350,11 +334,9 @@ export default function AuthCard({ initialMode }) {
           }
           .auth-pane {
             position: relative;
+            left: 0;
             width: 100%;
             padding: 2rem 1.5rem;
-            transform: none !important;
-            opacity: 1 !important;
-            transition: none;
           }
           .auth-pane-signup,
           .auth-card.is-signup .auth-pane-signin {
@@ -369,10 +351,8 @@ export default function AuthCard({ initialMode }) {
         }
 
         @media (prefers-reduced-motion: reduce) {
-          .auth-pane,
           .auth-overlay-wrap,
-          .auth-overlay,
-          .auth-overlay-panel {
+          .auth-overlay {
             transition: none;
           }
         }
