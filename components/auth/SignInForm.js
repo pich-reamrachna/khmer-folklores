@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslation } from "../shared/uiText.js";
 import { useLanguage } from "../shared/LanguageContext.js";
@@ -35,6 +35,11 @@ export default function SignInForm({ tabs }) {
   const [password, setPassword] = useState("");
   const [touched, setTouched] = useState({ email: false, password: false });
   const [error, setError] = useState("");
+  // While the sign-in is on its way: the fields and button lock and the
+  // button shows it's working. The ref blocks a second submit before the
+  // locked state has re-rendered.
+  const [submitting, setSubmitting] = useState(false);
+  const submittingRef = useRef(false);
 
   const markTouched = (field) => setTouched((prev) => ({ ...prev, [field]: true }));
 
@@ -50,6 +55,9 @@ export default function SignInForm({ tabs }) {
     setTouched({ email: true, password: true });
 
     if (email.trim() === "" || password === "") return;
+    if (submittingRef.current) return;
+    submittingRef.current = true;
+    setSubmitting(true);
 
     const supabase = createClient();
     const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -62,9 +70,12 @@ export default function SignInForm({ tabs }) {
     // which accounts are registered.
     if (signInError) {
       setError(t("authLoginError"));
+      submittingRef.current = false;
+      setSubmitting(false);
       return;
     }
 
+    // Stays locked while the next page loads.
     router.push(safeNextPath());
   };
 
@@ -76,55 +87,64 @@ export default function SignInForm({ tabs }) {
       {tabs}
       <h1 style={styles.title}>{t("authLoginTitle")}</h1>
 
-      <div style={styles.field}>
-        <label style={{ ...styles.label, ...tracking }} htmlFor="login-email">
-          {t("authEmailLabel")}
-        </label>
-        <input
-          id="login-email"
-          type="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          onBlur={() => markTouched("email")}
-          style={{ ...styles.input, borderBottom: emailEmpty ? underline.invalid : underline.neutral }}
-          className="auth-input"
-          autoComplete="email"
-          required
-        />
-        <p style={{ ...styles.message, color: INVALID_COLOR }} aria-live="polite">
-          {emailEmpty ? t("fieldRequired") : ""}
+      <fieldset style={styles.lock} disabled={submitting} aria-busy={submitting}>
+        <div style={styles.field}>
+          <label style={{ ...styles.label, ...tracking }} htmlFor="login-email">
+            {t("authEmailLabel")}
+          </label>
+          <input
+            id="login-email"
+            type="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+            onBlur={() => markTouched("email")}
+            style={{ ...styles.input, borderBottom: emailEmpty ? underline.invalid : underline.neutral }}
+            className="auth-input"
+            autoComplete="email"
+            required
+          />
+          <p style={{ ...styles.message, color: INVALID_COLOR }} aria-live="polite">
+            {emailEmpty ? t("fieldRequired") : ""}
+          </p>
+        </div>
+
+        <div style={styles.field}>
+          <label style={{ ...styles.label, ...tracking }} htmlFor="login-password">
+            {t("authPasswordLabel")}
+          </label>
+          <input
+            id="login-password"
+            type="password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            onBlur={() => markTouched("password")}
+            style={{ ...styles.input, borderBottom: passwordEmpty ? underline.invalid : underline.neutral }}
+            className="auth-input"
+            autoComplete="current-password"
+            required
+          />
+          <p style={{ ...styles.message, color: INVALID_COLOR }} aria-live="polite">
+            {passwordEmpty ? t("fieldRequired") : ""}
+          </p>
+        </div>
+
+        {/* Reserved like the fields' slots, so a failed sign-in doesn't push
+            the button down. */}
+        <p style={{ ...styles.message, margin: "0 0 0.6rem" }} aria-live="polite">
+          {error}
         </p>
-      </div>
 
-      <div style={styles.field}>
-        <label style={{ ...styles.label, ...tracking }} htmlFor="login-password">
-          {t("authPasswordLabel")}
-        </label>
-        <input
-          id="login-password"
-          type="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          onBlur={() => markTouched("password")}
-          style={{ ...styles.input, borderBottom: passwordEmpty ? underline.invalid : underline.neutral }}
-          className="auth-input"
-          autoComplete="current-password"
-          required
-        />
-        <p style={{ ...styles.message, color: INVALID_COLOR }} aria-live="polite">
-          {passwordEmpty ? t("fieldRequired") : ""}
-        </p>
-      </div>
-
-      {/* Reserved like the fields' slots, so a failed sign-in doesn't push
-          the button down. */}
-      <p style={{ ...styles.message, margin: "0 0 0.6rem" }} aria-live="polite">
-        {error}
-      </p>
-
-      <button type="submit" style={{ ...styles.button, ...tracking }} className="auth-button">
-        {t("authLoginButton")}
-      </button>
+        <button type="submit" style={{ ...styles.button, ...tracking }} className="auth-button">
+          {submitting ? (
+            <>
+              <span className="btn-spinner" aria-hidden="true" />
+              {t("authSigningIn")}
+            </>
+          ) : (
+            t("authLoginButton")
+          )}
+        </button>
+      </fieldset>
     </form>
   );
 }

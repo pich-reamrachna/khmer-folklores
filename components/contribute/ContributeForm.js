@@ -295,6 +295,9 @@ const styles = {
     color: "#E58B8B",
     margin: "0 0 1.25rem",
   },
+  // Wraps the fields and button: disabled while sending, which locks them
+  // all at once. Reset to look like nothing.
+  lock: { border: "none", margin: 0, padding: 0, minWidth: 0 },
   // Khmer's stacked glyph clusters shouldn't be pried apart by Latin letter-
   // spacing — spread this in on the eyebrow/labels when the language is Khmer.
   trackingNone: { letterSpacing: "normal" },
@@ -548,104 +551,111 @@ export default function ContributeForm({
         <form onSubmit={handleSubmit} noValidate>
           {formError ? <p style={styles.formError}>{formError}</p> : null}
 
-          <div style={styles.field}>
-            <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="title">
-              {newStory ? t("newStoryTitleLabel") : t("contributeTitleLabel")}
-            </label>
-            <input
-              id="title"
-              className="contribute-input"
-              style={styles.input}
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              maxLength={TITLE_MAX}
-            />
-            <div style={styles.metaRow}>
-              {errors.title ? <p style={styles.fieldError}>{errors.title}</p> : null}
-              <p style={{ ...styles.counter, ...(len(title.trim()) < TITLE_MIN ? styles.counterOver : null) }}>
-                {len(title)} / {TITLE_MAX}
-                {len(title.trim()) < TITLE_MIN ? ` ${fill(t("contributeMinHint"), { n: TITLE_MIN })}` : ""}
-              </p>
+          {/* Locks every field (and the button) while it's being sent. */}
+          <fieldset style={styles.lock} disabled={submitting} aria-busy={submitting}>
+
+            <div style={styles.field}>
+              <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="title">
+                {newStory ? t("newStoryTitleLabel") : t("contributeTitleLabel")}
+              </label>
+              <input
+                id="title"
+                className="contribute-input"
+                style={styles.input}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                maxLength={TITLE_MAX}
+              />
+              <div style={styles.metaRow}>
+                {errors.title ? <p style={styles.fieldError}>{errors.title}</p> : null}
+                <p style={{ ...styles.counter, ...(len(title.trim()) < TITLE_MIN ? styles.counterOver : null) }}>
+                  {len(title)} / {TITLE_MAX}
+                  {len(title.trim()) < TITLE_MIN ? ` ${fill(t("contributeMinHint"), { n: TITLE_MIN })}` : ""}
+                </p>
+              </div>
             </div>
-          </div>
 
-          {newStory ? (
-            <NewStoryFields
-              khmerTitle={khmerTitle}
-              onKhmerTitleChange={setKhmerTitle}
-              category={category}
-              onCategoryChange={setCategory}
-              errors={errors}
-              styles={styles}
-            />
-          ) : null}
-
-          <div style={styles.field}>
-            <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="location">
-              {t("contributeLocationLabel")}
-            </label>
-            <LocationSelect id="location" value={place} onChange={setPlace} />
-            {errors.place ? <p style={styles.fieldError}>{errors.place}</p> : null}
-          </div>
-
-          <div style={styles.field}>
-            <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="description">
-              {t("contributeStoryLabel")}
-            </label>
-            <textarea
-              id="description"
-              className="archive-scroll contribute-input"
-              style={styles.textarea}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              maxLength={DESC_MAX}
-            />
-            <div style={styles.metaRow}>
-              {errors.description ? <p style={styles.fieldError}>{errors.description}</p> : null}
-              <p style={{ ...styles.counter, ...(len(description.trim()) < DESC_MIN ? styles.counterOver : null) }}>
-                {len(description)} / {DESC_MAX.toLocaleString()}
-                {len(description.trim()) < DESC_MIN ? ` ${fill(t("contributeMinHint"), { n: DESC_MIN })}` : ""}
-              </p>
-            </div>
-          </div>
-
-          <div style={styles.field}>
-            <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="photo">
-              {t("contributePhotoLabel")}
-            </label>
-            <input
-              id="photo"
-              type="file"
-              className="contribute-file"
-              style={styles.input}
-              accept="image/jpeg,image/png,image/webp"
-              onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
-            />
-            <p style={styles.hint}>{t("contributePhotoHint")}</p>
-            {isEditing ? (
-              <>
-                {entry.photoUrl && !photoFile ? (
-                  <img src={entry.photoUrl} alt={t("contributeCurrentPhoto")} style={styles.currentPhoto} />
-                ) : null}
-                <p style={styles.hint}>{t("contributePhotoKeep")}</p>
-              </>
+            {newStory ? (
+              <NewStoryFields
+                khmerTitle={khmerTitle}
+                onKhmerTitleChange={setKhmerTitle}
+                category={category}
+                onCategoryChange={setCategory}
+                errors={errors}
+                styles={styles}
+              />
             ) : null}
-            {errors.photo ? <p style={styles.fieldError}>{errors.photo}</p> : null}
-          </div>
 
-          <button
-            type="submit"
-            className={`contribute-submit${km ? " km" : ""}`}
-            disabled={submitting || !hasChanges}
-          >
-            {submitting
-              ? t("contributeSubmitting")
-              : isEditing
-              ? t("contributeSaveChanges")
-              : newStory
-              ? t("newStorySubmit")
-              : t("contributeSubmit")}
-          </button>
+            <div style={styles.field}>
+              <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="location">
+                {t("contributeLocationLabel")}
+              </label>
+              <LocationSelect id="location" value={place} onChange={setPlace} />
+              {errors.place ? <p style={styles.fieldError}>{errors.place}</p> : null}
+            </div>
+
+            <div style={styles.field}>
+              <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="description">
+                {t("contributeStoryLabel")}
+              </label>
+              <textarea
+                id="description"
+                className="archive-scroll contribute-input"
+                style={styles.textarea}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                maxLength={DESC_MAX}
+              />
+              <div style={styles.metaRow}>
+                {errors.description ? <p style={styles.fieldError}>{errors.description}</p> : null}
+                <p style={{ ...styles.counter, ...(len(description.trim()) < DESC_MIN ? styles.counterOver : null) }}>
+                  {len(description)} / {DESC_MAX.toLocaleString()}
+                  {len(description.trim()) < DESC_MIN ? ` ${fill(t("contributeMinHint"), { n: DESC_MIN })}` : ""}
+                </p>
+              </div>
+            </div>
+
+            <div style={styles.field}>
+              <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="photo">
+                {t("contributePhotoLabel")}
+              </label>
+              <input
+                id="photo"
+                type="file"
+                className="contribute-file"
+                style={styles.input}
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(e) => setPhotoFile(e.target.files?.[0] ?? null)}
+              />
+              <p style={styles.hint}>{t("contributePhotoHint")}</p>
+              {isEditing ? (
+                <>
+                  {entry.photoUrl && !photoFile ? (
+                    <img src={entry.photoUrl} alt={t("contributeCurrentPhoto")} style={styles.currentPhoto} />
+                  ) : null}
+                  <p style={styles.hint}>{t("contributePhotoKeep")}</p>
+                </>
+              ) : null}
+              {errors.photo ? <p style={styles.fieldError}>{errors.photo}</p> : null}
+            </div>
+
+            <button
+              type="submit"
+              className={`contribute-submit${km ? " km" : ""}`}
+              disabled={submitting || !hasChanges}
+            >
+              {submitting ? (
+                <>
+                  <span className="btn-spinner" aria-hidden="true" />
+                  {t("contributeSubmitting")}
+                </>
+              ) : isEditing
+                ? t("contributeSaveChanges")
+                : newStory
+                ? t("newStorySubmit")
+                : t("contributeSubmit")}
+            </button>
+          </fieldset>
         </form>
       </div>
 

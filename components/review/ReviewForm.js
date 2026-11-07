@@ -27,18 +27,20 @@ export default function ReviewForm({ submission }) {
   const [summaryKhmer, setSummaryKhmer] = useState("");
   const [note, setNote] = useState("");
   const [errors, setErrors] = useState({});
-  const [busy, setBusy] = useState(false);
+  // null, or which decision is being saved ("approve" / "reject") — the
+  // fields and buttons lock, and that button shows it's working.
+  const [busy, setBusy] = useState(null);
 
   // Saves `changes` to this story. RLS lets only the curator update stories,
   // so an empty result means it wasn't saved. On success the page re-fetches
   // and this story drops out of the pending queue.
-  async function save(changes) {
-    setBusy(true);
+  async function save(changes, action) {
+    setBusy(action);
     const { data, error } = await createClient().from("stories").update(changes).eq("id", submission.id).select();
     if (error || !data?.length) {
       console.error("Review save failed:", submission.id, error);
       setErrors({ form: t("reviewSaveError") });
-      setBusy(false);
+      setBusy(null);
       return;
     }
     router.refresh();
@@ -61,7 +63,7 @@ export default function ReviewForm({ submission }) {
       summary_khmer: summaryKhmer.trim() || null,
       status: "published",
       rejection_note: null,
-    });
+    }, "approve");
   }
 
   function reject() {
@@ -70,7 +72,7 @@ export default function ReviewForm({ submission }) {
       return;
     }
     setErrors({});
-    save({ status: "rejected", rejection_note: note.trim() });
+    save({ status: "rejected", rejection_note: note.trim() }, "reject");
   }
 
   const label = { ...s.label, ...(language === "km" ? s.trackingNone : null) };
@@ -88,7 +90,7 @@ export default function ReviewForm({ submission }) {
   );
 
   return (
-    <div>
+    <fieldset style={s.lock} disabled={!!busy} aria-busy={!!busy}>
       {field("title", "newStoryTitleLabel", title, setTitle)}
       {field("khmerTitle", "newStoryKhmerTitleLabel", khmerTitle, setKhmerTitle)}
       <div style={s.field}>
@@ -107,6 +109,6 @@ export default function ReviewForm({ submission }) {
 
       {errors.form ? <p style={s.error}>{errors.form}</p> : null}
       <ReviewActions busy={busy} onApprove={approve} onReject={reject} />
-    </div>
+    </fieldset>
   );
 }

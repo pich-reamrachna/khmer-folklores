@@ -643,3 +643,36 @@ select:-webkit-autofill {
     border-top: 1px solid rgba(245, 239, 230, 0.08);
   }
 }
+
+/* A small spinning ring inside a button while its form is sending
+   (SignInForm.js, SignUpForm.js, ContributeForm.js). It takes the button's
+   own text colour. */
+.btn-spinner {
+  display: inline-block;
+  width: 0.9em;
+  height: 0.9em;
+  margin-right: 0.6em;
+  vertical-align: -0.12em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.7s linear infinite;
+}
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .btn-spinner {
+    animation-duration: 2s;
+  }
+}
+/* Fields in a form that's sending (its <fieldset> is disabled): dimmed, so
+   they read as locked. */
+fieldset:disabled input,
+fieldset:disabled textarea,
+fieldset:disabled select {
+  opacity: 0.55;
+  cursor: default;
+}

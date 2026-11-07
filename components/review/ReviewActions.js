@@ -2,9 +2,11 @@
 
 import { useTranslation } from "../shared/uiText.js";
 
-// Approve / Reject buttons under a /review form. Both are disabled while a
-// save is in flight so a double-click can't send it twice. The labels are
-// uiText keys — a telling is "returned", not rejected (TellingDecision.js).
+// Approve / Reject buttons under a /review form. `busy` is null, or which
+// one is being saved ("approve" / "reject"): both are disabled then, so a
+// double-click can't send it twice, and that one shows a spinner and
+// "Saving…". The labels are uiText keys — a telling is "returned", not
+// rejected (TellingDecision.js).
 
 export default function ReviewActions({
   busy,
@@ -14,14 +16,24 @@ export default function ReviewActions({
   rejectLabel = "reviewReject",
 }) {
   const t = useTranslation();
+  // The button's label, or a spinner and "Saving…" while it's the one saving.
+  const label = (action, key) =>
+    busy === action ? (
+      <>
+        <span className="btn-spinner" aria-hidden="true" />
+        {t("contributeSubmitting")}
+      </>
+    ) : (
+      t(key)
+    );
 
   return (
     <div className="review-actions">
-      <button type="button" className="review-btn approve" disabled={busy} onClick={onApprove}>
-        {t(approveLabel)}
+      <button type="button" className="review-btn approve" disabled={!!busy} onClick={onApprove}>
+        {label("approve", approveLabel)}
       </button>
-      <button type="button" className="review-btn reject" disabled={busy} onClick={onReject}>
-        {t(rejectLabel)}
+      <button type="button" className="review-btn reject" disabled={!!busy} onClick={onReject}>
+        {label("reject", rejectLabel)}
       </button>
 
       {/* Native <button>s, so styled-jsx scoping works; base + hover +

@@ -78,6 +78,10 @@ const uiText = {
   authConfirmPasswordLabel: { en: "Confirm password", km: "បញ្ជាក់ពាក្យសម្ងាត់" },
   authLoginTitle: { en: "Welcome Back!", km: "សូមស្វាគមន៍!" },
   authLoginButton: { en: "Sign In", km: "ចូលគណនី" },
+  // The sign-in / sign-up buttons while the request is on its way.
+  // AI-drafted Khmer — flag for the curator to review.
+  authSigningIn: { en: "Signing in…", km: "កំពុងចូលគណនី…" },
+  authSigningUp: { en: "Creating account…", km: "កំពុងបង្កើតគណនី…" },
   // The sign-in / sign-up box's sliding overlay (auth/AuthCard.js).
   // AI-drafted Khmer — flag for the curator to review.
   authOverlaySignupTitle: { en: "New to the archive?", km: "ទើបមកដល់បណ្ណសារលើកដំបូងមែនទេ?" },

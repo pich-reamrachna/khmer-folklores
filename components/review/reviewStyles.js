@@ -128,6 +128,9 @@ const reviewStyles = {
     resize: "vertical",
   },
   error: { fontFamily: khmerSans, fontSize: "0.8rem", color: "#E58B8B", margin: 0 },
+  // Wraps a form's fields and buttons: disabled while a decision is being
+  // saved, which locks them all at once. Reset to look like nothing.
+  lock: { border: "none", margin: 0, padding: 0, minWidth: 0 },
   // Khmer's stacked glyph clusters shouldn't be pried apart by Latin letter-
   // spacing — spread this in on labels when the language is Khmer.
   trackingNone: { letterSpacing: "normal" },

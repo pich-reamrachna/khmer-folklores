@@ -24,7 +24,9 @@ export default function TellingDecision({ id, rpc, idKey }) {
   const t = useTranslation();
   const [note, setNote] = useState("");
   const [error, setError] = useState("");
-  const [busy, setBusy] = useState(false);
+  // null, or which decision is being saved ("approve" / "reject") — the
+  // note and buttons lock, and that button shows it's working.
+  const [busy, setBusy] = useState(null);
 
   // On success the page re-fetches, and this card drops out of the queue.
   async function decide(decision) {
@@ -33,7 +35,7 @@ export default function TellingDecision({ id, rpc, idKey }) {
       return;
     }
     setError("");
-    setBusy(true);
+    setBusy(decision === "published" ? "approve" : "reject");
     const { data, error: rpcError } = await createClient().rpc(rpc, {
       [idKey]: id,
       decision,
@@ -42,7 +44,7 @@ export default function TellingDecision({ id, rpc, idKey }) {
     if (rpcError || data !== true) {
       console.error("Review decision failed:", rpc, id, rpcError);
       setError(t("reviewSaveError"));
-      setBusy(false);
+      setBusy(null);
       return;
     }
     router.refresh();
@@ -50,7 +52,7 @@ export default function TellingDecision({ id, rpc, idKey }) {
 
   const fieldId = `${id}-note`;
   return (
-    <div>
+    <fieldset style={s.lock} disabled={!!busy} aria-busy={!!busy}>
       <div style={s.field}>
         <label style={{ ...s.label, ...(language === "km" ? s.trackingNone : null) }} htmlFor={fieldId}>
           {t("reviewReturnNoteLabel")}
@@ -70,6 +72,6 @@ export default function TellingDecision({ id, rpc, idKey }) {
         onReject={() => decide("returned")}
         rejectLabel="reviewReturn"
       />
-    </div>
+    </fieldset>
   );
 }

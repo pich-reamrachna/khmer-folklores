@@ -204,48 +204,59 @@ export default function SignUpForm({ tabs, onGoToLogin }) {
       {tabs}
       <h1 style={styles.title}>{t("authSignupTitle")}</h1>
 
-      {field("signup-username", "authUsernameLabel", uStatus, {
-        type: "text",
-        value: username,
-        onChange: (event) => {
-          setUsername(event.target.value);
-          setUsernameAvailable(null);
-        },
-        onBlur: checkUsernameAvailability,
-        maxLength: 20,
-        autoComplete: "username",
-      }, true)}
-      {field("signup-email", "authEmailLabel", eStatus, {
-        type: "email",
-        value: email,
-        onChange: (event) => setEmail(event.target.value),
-        onBlur: () => markTouched("email"),
-        autoComplete: "email",
-      })}
-      {field("signup-password", "authPasswordLabel", pStatus, {
-        type: "password",
-        value: password,
-        onChange: (event) => setPassword(event.target.value),
-        onBlur: () => markTouched("password"),
-        autoComplete: "new-password",
-      })}
-      {field("signup-confirm-password", "authConfirmPasswordLabel", cStatus, {
-        type: "password",
-        value: confirmPassword,
-        onChange: (event) => setConfirmPassword(event.target.value),
-        onBlur: () => markTouched("confirmPassword"),
-        autoComplete: "new-password",
-      })}
+      {/* Locks every field and the button while the sign-up is on its way. */}
+      <fieldset style={styles.lock} disabled={submitting} aria-busy={submitting}>
 
-      {/* Reserved like the fields' slots, so a failed sign-up doesn't push
-          the button down. */}
-      <p style={{ ...styles.message, margin: "0 0 0.6rem" }} aria-live="polite">
-        {error}
-      </p>
+        {field("signup-username", "authUsernameLabel", uStatus, {
+          type: "text",
+          value: username,
+          onChange: (event) => {
+            setUsername(event.target.value);
+            setUsernameAvailable(null);
+          },
+          onBlur: checkUsernameAvailability,
+          maxLength: 20,
+          autoComplete: "username",
+        }, true)}
+        {field("signup-email", "authEmailLabel", eStatus, {
+          type: "email",
+          value: email,
+          onChange: (event) => setEmail(event.target.value),
+          onBlur: () => markTouched("email"),
+          autoComplete: "email",
+        })}
+        {field("signup-password", "authPasswordLabel", pStatus, {
+          type: "password",
+          value: password,
+          onChange: (event) => setPassword(event.target.value),
+          onBlur: () => markTouched("password"),
+          autoComplete: "new-password",
+        })}
+        {field("signup-confirm-password", "authConfirmPasswordLabel", cStatus, {
+          type: "password",
+          value: confirmPassword,
+          onChange: (event) => setConfirmPassword(event.target.value),
+          onBlur: () => markTouched("confirmPassword"),
+          autoComplete: "new-password",
+        })}
 
-      <button type="submit" style={{ ...styles.button, ...tracking }} className="auth-button" disabled={submitting}>
-        {t("authSignupButton")}
-      </button>
+        {/* Reserved like the fields' slots, so a failed sign-up doesn't push
+            the button down. */}
+        <p style={{ ...styles.message, margin: "0 0 0.6rem" }} aria-live="polite">
+          {error}
+        </p>
+
+        <button type="submit" style={{ ...styles.button, ...tracking }} className="auth-button">
+          {submitting ? (
+            <>
+              <span className="btn-spinner" aria-hidden="true" />
+              {t("authSigningUp")}
+            </>
+          ) : (
+            t("authSignupButton")
+          )}
+        </button>
+      </fieldset>
     </form>
   );
 }

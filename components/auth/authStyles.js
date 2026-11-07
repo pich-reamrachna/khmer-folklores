@@ -125,6 +125,14 @@ const authStyles = {
   trackingNone: {
     letterSpacing: "normal",
   },
+  // Wraps a form's fields and button: disabled while it's sending, which
+  // locks every field and the button at once. Reset to look like nothing.
+  lock: {
+    border: "none",
+    margin: 0,
+    padding: 0,
+    minWidth: 0,
+  },
 };
 
 // The fields' underline colours: resting, invalid, valid.
