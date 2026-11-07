@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import useHorizontalWheel from "../../utils/useHorizontalWheel.js";
 
 // StoryHero — the home page's first screen: the selected story's category,
 // title, summary and "Read the Story" button over a charcoal-and-gold-brush
@@ -290,16 +291,32 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
   // picture's) enter/exit animation (.hero-section.is-in-view in the <style> below):
   // the text slides in from the left as the page arrives here (including on
   // first load) and back out as it leaves. Watched against <main>, the
-  // page's scroll container, and counted as "in view" once most of it shows.
+  // page's scroll container, by how much of the screen the hero fills —
+  // measured against the screen rather than the section, so a hero taller
+  // than the screen still counts. Which way it's moving decides the line:
+  // arriving, it counts once it fills half the screen, so the slide starts
+  // mid-scroll (no wait) and finishes as the page settles; leaving, it stops
+  // counting the moment it no longer fills the screen, so the slide-out
+  // starts as soon as the page moves.
   const sectionRef = useRef(null);
   const [inView, setInView] = useState(false);
   useEffect(() => {
     const section = sectionRef.current;
     if (!section) return;
-    const observer = new IntersectionObserver(([e]) => setInView(e.isIntersecting), {
-      root: section.closest("main"),
-      threshold: 0.6,
-    });
+    let lastShown = 0;
+    const observer = new IntersectionObserver(
+      ([e]) => {
+        if (!e.rootBounds) return;
+        const shown = e.intersectionRect.height / e.rootBounds.height;
+        const arriving = shown >= lastShown;
+        lastShown = shown;
+        setInView(shown >= (arriving ? 0.5 : 0.95));
+      },
+      {
+        root: section.closest("main"),
+        threshold: Array.from({ length: 21 }, (_, i) => i / 20),
+      }
+    );
     observer.observe(section);
     return () => observer.disconnect();
   }, []);
@@ -319,6 +336,13 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
   // after the last comes the first.
   const prevIndex = (index - 1 + total) % total;
   const nextIndex = (index + 1) % total;
+
+  // Scrolling sideways over the hero (trackpad swipe, Shift + wheel) steps
+  // through the stories like the arrows: right for the next, left for the
+  // previous.
+  useHorizontalWheel(sectionRef, (step) => {
+    if (total > 1) onSelect(step > 0 ? nextIndex : prevIndex);
+  });
 
   return (
     <section ref={sectionRef} style={styles.section} className={inView ? "hero-section is-in-view" : "hero-section"}>
@@ -444,11 +468,12 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
         /* Enter/exit, after the reference site's text panels: away from the
            hero, the text block rests faded and shifted 5rem left; arriving,
            it slides into place and fades up, and leaving reverses it. On
-           the wrapper, not .hero-text, whose own fade replays per story. */
+           the wrapper, not .hero-text, whose own fade replays per story.
+           0.9s: arriving, it starts mid-scroll and runs on past the landing. */
         .hero-main-grid {
           opacity: 0.2;
           transform: translateX(-5rem);
-          transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .hero-section.is-in-view .hero-main-grid {
           opacity: 1;
@@ -459,7 +484,7 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
         .hero-picture-motion {
           opacity: 0.2;
           transform: translateX(5rem);
-          transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+          transition: opacity 0.9s ease, transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
         }
         .hero-section.is-in-view .hero-picture-motion {
           opacity: 1;
