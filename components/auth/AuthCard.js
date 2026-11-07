@@ -60,13 +60,13 @@ export default function AuthCard({ initialMode }) {
 
   // One side of the overlay: its picture behind (artClass places it — a
   // single figure and a wide scene need different framing), then heading,
-  // line and button.
+  // line (when textKey is given) and button.
   const overlayPanel = (side, picture, artClass, titleKey, textKey, buttonKey, target, hidden) => (
     <div className={`auth-overlay-panel auth-overlay-${side}`} inert={hidden}>
       <img src={picture} alt="" className={`auth-overlay-art ${artClass}`} aria-hidden="true" />
       <div className="auth-overlay-copy">
         <h2 className="auth-overlay-title">{t(titleKey)}</h2>
-        <p className="auth-overlay-text">{t(textKey)}</p>
+        {textKey && <p className="auth-overlay-text">{t(textKey)}</p>}
         <button type="button" className="auth-overlay-btn" style={tracking ?? undefined} onClick={() => switchTo(target)}>
           {t(buttonKey)}
         </button>
@@ -91,7 +91,7 @@ export default function AuthCard({ initialMode }) {
             "/featured_pictures/ahpt.webp",
             "auth-overlay-art-figure",
             "authOverlaySigninTitle",
-            "authOverlaySigninText",
+            null,
             "authLoginButton",
             "signin",
             !signup
@@ -312,6 +312,11 @@ export default function AuthCard({ initialMode }) {
           text-transform: uppercase;
           cursor: pointer;
           transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        /* No line between heading and button: keep the same gap the line's
+           bottom margin would have given. */
+        .auth-overlay-title + .auth-overlay-btn {
+          margin-top: 0.85rem;
         }
         .auth-overlay-btn:hover {
           background-color: #c9a961;
