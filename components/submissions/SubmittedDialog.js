@@ -12,13 +12,13 @@ import { useTranslation } from "../shared/uiText.js";
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
 const styles = {
-  overlay: { position: "fixed", inset: 0, zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem", backgroundColor: "rgba(8, 4, 10, 0.6)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" },
-  box: { width: "100%", maxWidth: 460, boxSizing: "border-box", padding: "2.5rem 2rem 2rem", textAlign: "center", backgroundColor: "#0c0a12", border: "1px solid #2a172f", borderRadius: 16, boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6)", color: "#F5EFE6" },
+  overlay: { position: "fixed", inset: 0, zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem", backgroundColor: "rgba(10, 9, 8, 0.6)", backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)" },
+  box: { width: "100%", maxWidth: 460, boxSizing: "border-box", padding: "2.5rem 2rem 2rem", textAlign: "center", backgroundColor: "#1a1817", border: "1px solid rgba(245, 239, 230, 0.12)", borderRadius: 16, boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6)", color: "#F5EFE6" },
   title: { fontFamily: "var(--font-khmer), var(--font-cinzel), serif", fontSize: "1.6rem", fontWeight: 600, margin: "0 0 1rem" },
-  body: { fontFamily: khmerSans, fontSize: "1rem", lineHeight: 1.7, color: "#BBAEBF", margin: "0 0 2rem" },
+  body: { fontFamily: khmerSans, fontSize: "1rem", lineHeight: 1.7, color: "#CFC6B8", margin: "0 0 2rem" },
   actions: { display: "flex", flexWrap: "wrap", gap: "0.75rem", justifyContent: "center" },
-  share: { padding: "0.75rem 1.4rem", borderRadius: 999, textDecoration: "none", fontFamily: khmerSans, fontSize: "0.95rem", fontWeight: 700, color: "#0c0a12" },
-  close: { padding: "0.75rem 1.4rem", borderRadius: 999, border: "1px solid #2a172f", background: "transparent", color: "#F5EFE6", fontFamily: khmerSans, fontSize: "0.95rem", fontWeight: 700, cursor: "pointer" },
+  share: { padding: "0.75rem 1.4rem", borderRadius: 999, textDecoration: "none", fontFamily: khmerSans, fontSize: "0.95rem", fontWeight: 700, color: "#1a1817" },
+  close: { padding: "0.75rem 1.4rem", borderRadius: 999, border: "1px solid rgba(245, 239, 230, 0.12)", background: "transparent", color: "#F5EFE6", fontFamily: khmerSans, fontSize: "0.95rem", fontWeight: 700, cursor: "pointer" },
 };
 
 // Title + message (uiText keys) for each kind of submission.

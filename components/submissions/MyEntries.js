@@ -70,6 +70,8 @@ const styles = {
   },
   // The count beside each tab's label (dims with the label: opacity).
   count: { fontWeight: 600, opacity: 0.6, letterSpacing: "normal" },
+  // Space between the tabs and the list under them.
+  panel: { marginTop: "1.75rem" },
   error: { fontFamily: khmerSans, fontSize: "1rem", color: "#A89F91", margin: "1.25rem 0 0" },
   // Letter-spacing pries apart Khmer glyph clusters.
   trackingNone: { letterSpacing: "normal" },
@@ -146,7 +148,7 @@ export default function MyEntries({ submissions, tellings, storiesFailed, tellin
         {/* Each tab stands alone: a list that failed to load shows the error
             in its own place — never its empty state, which would tell the
             owner they have nothing when they do. */}
-        <div role="tabpanel" id={`my-entries-panel-${tab}`} aria-labelledby={`my-entries-tab-${tab}`}>
+        <div role="tabpanel" style={styles.panel} id={`my-entries-panel-${tab}`} aria-labelledby={`my-entries-tab-${tab}`}>
           {tab === "stories" ? (
             storiesFailed ? (
               <p style={styles.error}>{t("myEntriesListLoadError")}</p>

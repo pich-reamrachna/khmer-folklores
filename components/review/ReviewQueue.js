@@ -13,7 +13,7 @@ import { useTranslation } from "../shared/uiText.js";
 const styles = {
   // Same top/side padding as /share — clears the fixed 90px NavBar.
   section: {
-    backgroundColor: "#0D0812",
+    backgroundColor: "#1A1817",
     minHeight: "100vh",
     padding: "130px 2rem 4rem",
     boxSizing: "border-box",
@@ -41,7 +41,7 @@ const styles = {
   count: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1rem",
-    color: "#BBAEBF",
+    color: "#CFC6B8",
     margin: "0 0 2rem",
   },
   heading: {

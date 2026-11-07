@@ -15,9 +15,9 @@ const styles = {
   label: { ...s.label, display: "block", margin: "1.25rem 0 0.4rem" },
   // Before and after side by side, wrapping to stacked on a narrow screen.
   pair: { display: "flex", flexWrap: "wrap", gap: "0.75rem" },
-  side: { flex: "1 1 240px", minWidth: 0, padding: "0.75rem 0.9rem", borderRadius: 10, backgroundColor: "#0C0A12", border: "1px solid #2A172F" },
+  side: { flex: "1 1 240px", minWidth: 0, padding: "0.75rem 0.9rem", borderRadius: 10, backgroundColor: "#1A1817", border: "1px solid rgba(245, 239, 230, 0.12)" },
   sideNew: { borderColor: "rgba(197, 160, 89, 0.6)" },
-  sideLabel: { fontSize: "0.7rem", fontWeight: 700, color: "#8A7F91", margin: "0 0 0.35rem" },
+  sideLabel: { fontSize: "0.7rem", fontWeight: 700, color: "#A89F91", margin: "0 0 0.35rem" },
   value: { ...s.body, margin: 0 },
   photo: { ...s.photo, marginTop: 0 },
 };

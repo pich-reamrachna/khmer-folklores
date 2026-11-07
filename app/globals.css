@@ -89,7 +89,7 @@ main {
    brightens with it. */
 .nav-tab {
   position: relative;
-  color: #bbaebf;
+  color: #cfc6b8;
   transition: color 0.2s ease;
 }
 .nav-tab::after {
@@ -471,10 +471,10 @@ textarea.contribute-input:focus {
 
 /* ArchiveSearch.js's search pill. */
 .archive-search-input::placeholder {
-  color: #8a7f91;
+  color: #a89f91;
 }
 .archive-search-bar {
-  border: 1px solid #2a172f;
+  border: 1px solid rgba(245, 239, 230, 0.12);
   flex: 0 1 290px;
   max-width: 520px;
 }

@@ -40,7 +40,7 @@ export default function StoryPageShell({ children }) {
       <main
         ref={mainRef}
         style={{
-          backgroundColor: "#0C0A12",
+          backgroundColor: "#1A1817",
           height: "100vh",
           overflowY: "auto",
           scrollBehavior: "smooth",

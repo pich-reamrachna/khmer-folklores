@@ -47,7 +47,7 @@ const styles = {
     fontWeight: 500,
     lineHeight: 1.1,
     textTransform: "uppercase",
-    textShadow: "0 0 8px rgba(8, 4, 10, 0.95), 0 0 2px rgba(8, 4, 10, 0.9)",
+    textShadow: "0 0 8px rgba(10, 9, 8, 0.95), 0 0 2px rgba(10, 9, 8, 0.9)",
   },
   // The hairline and the diamond sitting on it.
   rule: {
@@ -78,7 +78,7 @@ const styles = {
     color: "#CFC6B8",
     letterSpacing: "0.2em",
     textTransform: "uppercase",
-    textShadow: "0 0 8px rgba(8, 4, 10, 0.95), 0 0 2px rgba(8, 4, 10, 0.9)",
+    textShadow: "0 0 8px rgba(10, 9, 8, 0.95), 0 0 2px rgba(10, 9, 8, 0.9)",
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",

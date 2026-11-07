@@ -20,7 +20,7 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const BORDER = underline;
 
 const INVALID_COLOR = "#E58B8B";
-const CHECKING_COLOR = "#8A7F91";
+const CHECKING_COLOR = "#A89F91";
 const VALID_COLOR = "#C5A059";
 
 export default function SignUpForm({ tabs, onGoToLogin }) {

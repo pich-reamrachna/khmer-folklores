@@ -45,7 +45,7 @@ export default function ReviewActions({
         .review-btn.approve {
           border: none;
           background-color: #c5a059;
-          color: #0c0a12;
+          color: #1a1817;
         }
         .review-btn.reject {
           border: 1px solid #e0736a;

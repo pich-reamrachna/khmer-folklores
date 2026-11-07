@@ -61,8 +61,8 @@ export default function RootLayout({ children }) {
           margin: 0,
           // Same near-black as the pages, so nothing of a different colour
           // flashes between one page leaving and the next fading in.
-          backgroundColor: "#08040A",
-          color: "#E8EDF2",
+          backgroundColor: "#1A1817",
+          color: "#F5EFE6",
           fontFamily:
             "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
           minHeight: "100vh",

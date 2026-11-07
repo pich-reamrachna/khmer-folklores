@@ -75,7 +75,7 @@ const statusStyles = {
     padding: "130px 2rem 3rem",
     boxSizing: "border-box",
     textAlign: "center",
-    color: "#BBAEBF",
+    color: "#CFC6B8",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1.05rem",
     fontWeight: 300,
@@ -159,7 +159,7 @@ export default function Home() {
 
   if (flattenedStories === null) {
     return (
-      <main ref={mainRef} style={{ backgroundColor: "#0C0A12" }}>
+      <main ref={mainRef} style={{ backgroundColor: "#1A1817" }}>
         <NavBar />
         <div style={statusStyles.screen}>Loading the archive…</div>
       </main>
@@ -168,7 +168,7 @@ export default function Home() {
 
   if (flattenedStories.length === 0) {
     return (
-      <main ref={mainRef} style={{ backgroundColor: "#0C0A12" }}>
+      <main ref={mainRef} style={{ backgroundColor: "#1A1817" }}>
         <NavBar />
         <div style={statusStyles.screen}>No stories in the archive yet.</div>
         <Footer
@@ -191,7 +191,7 @@ export default function Home() {
     <main
       ref={mainRef}
       style={{
-        backgroundColor: "#0C0A12",
+        backgroundColor: "#1A1817",
         // <main> is the scroll container, but hidden overflow: visitors
         // can't scroll it freely — useSectionPager above moves it one
         // section at a time instead. (Code can still scroll a hidden-

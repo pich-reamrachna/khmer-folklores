@@ -11,7 +11,7 @@ const styles = {
   line: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.95rem",
-    color: "#BBAEBF",
+    color: "#CFC6B8",
     margin: 0,
   },
   // light: dark ink for the home archive's parchment background.
