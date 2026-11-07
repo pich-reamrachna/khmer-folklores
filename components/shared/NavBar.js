@@ -169,20 +169,21 @@ const styles = {
   trackingNone: {
     letterSpacing: "normal",
   },
+  // The current language's flag and a chevron, in a gold-outlined pill
+  // matching the Sign In / Sign Up button beside it.
+  // Border, background and text colour live in app/globals.css's
+  // .nav-round-btn rule — it fills gold on hover and while open, and inline
+  // values would beat that.
   langPill: {
     display: "inline-flex",
     alignItems: "center",
     justifyContent: "center",
-    gap: 6,
-    // Fixed width, not padding-driven — "EN" and "ខ្មែរ" render at
-    // different widths, and without this the pill (and the mobile
-    // toggle after it) would nudge sideways on every switch.
+    gap: 8,
     width: 70,
-    padding: "0.45rem 0",
-    border: "1px solid #2A172F",
+    height: 36,
+    padding: 0,
+    boxSizing: "border-box",
     borderRadius: 999,
-    backgroundColor: "transparent",
-    color: "#E6C575",
     // Khmer first, not "inherit" — this label alternates between "EN"
     // and "ខ្មែរ", and --font-khmer has no Latin glyphs (subsets:
     // ["khmer"] in layout.js), so "EN" still falls through to
@@ -204,13 +205,13 @@ const styles = {
     marginRight: 8,
   },
   // Recolored via mask-image, same technique as every other icon in this
-  // project (BackButton.js, StoryHero.js's arrows). Rotates 180deg
-  // open, same base+open merge pattern as langDropdown below.
+  // project (BackButton.js, StoryHero.js's arrows); its colour is in
+  // app/globals.css (.nav-round-btn-icon), so it can flip with the hover.
+  // Rotates 180deg open, same base+open merge pattern as langDropdown below.
   langPillIcon: {
     display: "inline-block",
-    width: 10,
-    height: 10,
-    backgroundColor: "#E6C575",
+    width: 9,
+    height: 9,
     WebkitMaskImage: "url(/icons/arrow-down-sign-to-navigate.png)",
     maskImage: "url(/icons/arrow-down-sign-to-navigate.png)",
     WebkitMaskSize: "contain",
@@ -219,7 +220,6 @@ const styles = {
     maskRepeat: "no-repeat",
     WebkitMaskPosition: "center",
     maskPosition: "center",
-    transition: "transform 0.2s ease",
   },
   langPillIconOpen: {
     transform: "rotate(180deg)",
@@ -236,8 +236,8 @@ const styles = {
     // sits beneath the nav, so a see-through background let that content
     // show through it.
     backgroundColor: "#1A1817",
-    border: "1px solid #2A172F",
-    borderRadius: 14,
+    border: "1px solid rgba(201, 169, 97, 0.35)",
+    borderRadius: 4,
     padding: 6,
     boxSizing: "border-box",
     opacity: 0,
@@ -250,19 +250,17 @@ const styles = {
     transform: "translateY(0)",
     pointerEvents: "auto",
   },
-  // backgroundColor (not the background shorthand) since langOptionSelected
-  // below overrides only that — same shorthand/longhand reasoning as
-  // mobileLangChip.
+  // Resting background/colour and the hover live in app/globals.css's
+  // .nav-menu-item rule (an inline value would beat the hover);
+  // langOptionSelected below sets both inline, so the chosen one stays lit.
   langOption: {
     display: "flex",
     alignItems: "center",
     width: "100%",
     textAlign: "left",
-    backgroundColor: "transparent",
     border: "none",
-    borderRadius: 9,
+    borderRadius: 2,
     padding: "0.6rem 0.7rem",
-    color: "#F5EFE6",
     // Khmer first — same reasoning as langPill above (one option reads
     // "English", the other "ខ្មែរ").
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
@@ -272,14 +270,14 @@ const styles = {
   },
   // Golden background instead of a checkmark to mark the selected option.
   langOptionSelected: {
-    backgroundColor: "#3A2C12",
+    backgroundColor: "rgba(201, 169, 97, 0.16)",
     color: "#E6C575",
   },
   mobileLangRow: {
     display: "flex",
     gap: "0.6rem",
     paddingTop: "0.5rem",
-    borderTop: "1px solid #2A172F",
+    borderTop: "1px solid rgba(245, 239, 230, 0.12)",
   },
   // borderWidth/Style/Color kept separate, not the border shorthand — the
   // selected variant below overrides only borderColor, and mixing a
@@ -292,7 +290,7 @@ const styles = {
     borderRadius: 10,
     borderWidth: 1,
     borderStyle: "solid",
-    borderColor: "#2A172F",
+    borderColor: "rgba(245, 239, 230, 0.12)",
     backgroundColor: "transparent",
     color: "#BBAEBF",
     // Khmer first — same reasoning as langPill above.
@@ -306,7 +304,7 @@ const styles = {
   mobileLangChipSelected: {
     borderColor: "#C5A059",
     color: "#E6C575",
-    backgroundColor: "#1D1024",
+    backgroundColor: "rgba(201, 169, 97, 0.12)",
   },
   // Sign In / Sign Up: one filled gold pill for both, leading to the sign-in
   // page, whose tabs switch to sign-up. backgroundColor lives in
@@ -330,12 +328,13 @@ const styles = {
   userMenu: {
     position: "relative",
   },
+  // Same gold-outlined look as the language pill (.nav-round-btn in
+  // app/globals.css holds the border, background and hover).
   userIconButton: {
     width: 36,
     height: 36,
+    boxSizing: "border-box",
     borderRadius: "50%",
-    border: "1px solid #2A172F",
-    backgroundColor: "transparent",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -343,12 +342,11 @@ const styles = {
     cursor: "pointer",
   },
   // Recolored via mask-image, same technique as every other icon in this
-  // project.
+  // project; colour in app/globals.css (.nav-round-btn-icon).
   userIcon: {
     display: "inline-block",
-    width: 18,
-    height: 18,
-    backgroundColor: "#C5A059",
+    width: 16,
+    height: 16,
     WebkitMaskImage: "url(/icons/user.png)",
     maskImage: "url(/icons/user.png)",
     WebkitMaskSize: "contain",
@@ -367,8 +365,8 @@ const styles = {
     right: 0,
     minWidth: 220,
     backgroundColor: "#1A1817",
-    border: "1px solid #2A172F",
-    borderRadius: 14,
+    border: "1px solid rgba(201, 169, 97, 0.35)",
+    borderRadius: 4,
     padding: "0.85rem",
     boxSizing: "border-box",
     opacity: 0,
@@ -386,7 +384,7 @@ const styles = {
   userIdentity: {
     margin: "0 0 0.75rem",
     paddingBottom: "0.75rem",
-    borderBottom: "1px solid #2A172F",
+    borderBottom: "1px solid rgba(245, 239, 230, 0.12)",
   },
   // Primary identity line. Khmer font stack — usernames may be Khmer.
   userName: {
@@ -401,7 +399,7 @@ const styles = {
   // owner's own menu; never on a telling/other public surface.
   userEmail: {
     fontSize: "0.78rem",
-    color: "#8A7F91",
+    color: "#A89F91",
     wordBreak: "break-all",
     margin: 0,
   },
@@ -409,23 +407,27 @@ const styles = {
   // typography as Log Out below so the menu reads as one list. Khmer
   // first, same reasoning as langPill: "My Entries" can be Khmer, and
   // Latin text still falls through to --font-jakarta.
+  // Padded like the language options so the hover highlight
+  // (.nav-menu-item in app/globals.css, with the colour) has room; the
+  // negative side margins keep the text lined up with the name above.
   userMenuLink: {
     display: "block",
-    padding: "0.4rem 0",
-    color: "#F5EFE6",
+    padding: "0.45rem 0.6rem",
+    margin: "0 -0.6rem",
+    borderRadius: 2,
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.85rem",
     fontWeight: 600,
     textDecoration: "none",
   },
   userLogoutBtn: {
-    width: "100%",
+    display: "block",
+    width: "calc(100% + 1.2rem)",
     textAlign: "left",
-    backgroundColor: "transparent",
     border: "none",
-    borderRadius: 9,
-    padding: "0.4rem 0",
-    color: "#F5EFE6",
+    borderRadius: 2,
+    padding: "0.45rem 0.6rem",
+    margin: "0 -0.6rem",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.85rem",
     fontWeight: 600,
@@ -436,7 +438,7 @@ const styles = {
     flexDirection: "column",
     gap: "0.75rem",
     paddingTop: "0.5rem",
-    borderTop: "1px solid #2A172F",
+    borderTop: "1px solid rgba(245, 239, 230, 0.12)",
   },
   // The phone menu's Sign In / Sign Up button. backgroundColor lives in
   // app/globals.css (.auth-primary-btn), same as authPrimaryBtn above.
@@ -465,7 +467,7 @@ const styles = {
   },
   mobileUserEmail: {
     fontSize: "0.78rem",
-    color: "#8A7F91",
+    color: "#A89F91",
     wordBreak: "break-all",
     margin: 0,
   },
@@ -473,7 +475,7 @@ const styles = {
     textAlign: "center",
     padding: "0.6rem",
     borderRadius: 10,
-    border: "1px solid #2A172F",
+    border: "1px solid rgba(245, 239, 230, 0.12)",
     backgroundColor: "transparent",
     color: "#F5EFE6",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
@@ -628,12 +630,13 @@ export default function NavBar() {
               <button
                 type="button"
                 style={styles.userIconButton}
+                className="nav-round-btn"
                 onClick={() => setUserMenuOpen((open) => !open)}
                 aria-expanded={userMenuOpen}
                 aria-haspopup="true"
                 aria-label="Account menu"
               >
-                <span style={styles.userIcon} aria-hidden="true" />
+                <span style={styles.userIcon} className="nav-round-btn-icon" aria-hidden="true" />
               </button>
 
               <div
@@ -644,15 +647,15 @@ export default function NavBar() {
                   <p style={styles.userName}>{username ?? t("navAccount")}</p>
                   <p style={styles.userEmail}>{user.email}</p>
                 </div>
-                <Link href="/my-entries" style={styles.userMenuLink} onClick={() => setUserMenuOpen(false)}>
+                <Link href="/my-entries" style={styles.userMenuLink} className="nav-menu-item" onClick={() => setUserMenuOpen(false)}>
                   {t("navMyEntries")}
                 </Link>
                 {isCurator ? (
-                  <Link href="/review" style={styles.userMenuLink} onClick={() => setUserMenuOpen(false)}>
+                  <Link href="/review" style={styles.userMenuLink} className="nav-menu-item" onClick={() => setUserMenuOpen(false)}>
                     Review Submissions
                   </Link>
                 ) : null}
-                <button type="button" style={styles.userLogoutBtn} onClick={handleLogout}>
+                <button type="button" style={styles.userLogoutBtn} className="nav-menu-item" onClick={handleLogout}>
                   Log Out
                 </button>
               </div>
@@ -672,6 +675,7 @@ export default function NavBar() {
             <button
               type="button"
               style={styles.langPill}
+              className="nav-round-btn"
               onClick={() => setLangMenuOpen((open) => !open)}
               aria-expanded={langMenuOpen}
               aria-haspopup="listbox"
@@ -683,8 +687,9 @@ export default function NavBar() {
                 aria-hidden="true"
                 style={{ ...styles.langFlag, marginRight: 0 }}
               />
-  <span
+              <span
                 aria-hidden="true"
+                className="nav-round-btn-icon"
                 style={{ ...styles.langPillIcon, ...(langMenuOpen ? styles.langPillIconOpen : null) }}
               />
             </button>
@@ -697,6 +702,7 @@ export default function NavBar() {
               <button
                 type="button"
                 style={{ ...styles.langOption, ...(language === "en" ? styles.langOptionSelected : null) }}
+                className="nav-menu-item"
                 role="option"
                 aria-selected={language === "en"}
                 onClick={() => {
@@ -710,6 +716,7 @@ export default function NavBar() {
               <button
                 type="button"
                 style={{ ...styles.langOption, ...(language === "km" ? styles.langOptionSelected : null) }}
+                className="nav-menu-item"
                 role="option"
                 aria-selected={language === "km"}
                 onClick={() => {

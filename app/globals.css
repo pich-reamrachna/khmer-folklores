@@ -322,6 +322,44 @@ main {
   background-color: #f5efe6;
 }
 
+/* NavBar.js's account button and language pill: gold-outlined pills
+   matching the Sign In / Sign Up button, filling gold on hover and while
+   their menu is open (aria-expanded), with the icon and label turning dark.
+   Here rather than inline, since inline values would beat the hover. */
+.nav-round-btn {
+  border: 1px solid rgba(201, 169, 97, 0.6);
+  background-color: transparent;
+  color: #e6c575;
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+.nav-round-btn:hover,
+.nav-round-btn[aria-expanded="true"] {
+  background-color: #c9a961;
+  border-color: #c9a961;
+  color: #1a1817;
+}
+.nav-round-btn-icon {
+  background-color: #e6c575;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+.nav-round-btn:hover .nav-round-btn-icon,
+.nav-round-btn[aria-expanded="true"] .nav-round-btn-icon {
+  background-color: #1a1817;
+}
+
+/* The rows in those two menus (language options; My Entries, Review,
+   Log Out): a faint gold wash and gold text on hover. The language menu's
+   chosen option sets its own colours inline, so it stays highlighted. */
+.nav-menu-item {
+  background-color: transparent;
+  color: #f5efe6;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.nav-menu-item:hover {
+  background-color: rgba(201, 169, 97, 0.12);
+  color: #e6c575;
+}
+
 /* StoryMemories.js's "Share Your Version" button. Base styles are inline on
    the element; only :hover lives here, since styled-jsx can't scope through
    next/link's Link (same reason as the rules above). */
