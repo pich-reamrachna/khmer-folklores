@@ -27,33 +27,42 @@ export default function ReviewActions({
       {/* Native <button>s, so styled-jsx scoping works; base + hover +
           disabled all live together, none set inline. */}
       <style jsx>{`
+        /* Square buttons in small spaced capitals: Approve fills the row
+           in gold, Reject / Return sits beside it, outlined. */
         .review-actions {
           display: flex;
           flex-wrap: wrap;
-          gap: 0.75rem;
-          margin-top: 0.5rem;
+          gap: 0.6rem;
+          margin-top: 0.6rem;
         }
         .review-btn {
-          padding: 0.75rem 1.4rem;
-          border-radius: 10px;
+          padding: 0.95rem 1.4rem;
+          border-radius: 2px;
           font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
-          font-size: 0.95rem;
+          font-size: 0.7rem;
           font-weight: 700;
+          letter-spacing: 0.18em;
+          text-transform: uppercase;
           cursor: pointer;
-          transition: opacity 0.2s ease;
+          transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
         }
         .review-btn.approve {
+          flex: 1;
           border: none;
           background-color: #c5a059;
           color: #1a1817;
         }
         .review-btn.reject {
-          border: 1px solid #e0736a;
+          border: 1px solid rgba(245, 239, 230, 0.18);
           background: transparent;
-          color: #e0736a;
+          color: #e58b8b;
         }
-        .review-btn:hover {
+        .review-btn.approve:hover {
           opacity: 0.85;
+        }
+        .review-btn.reject:hover {
+          border-color: #e58b8b;
+          background-color: rgba(229, 139, 139, 0.08);
         }
         .review-btn:disabled {
           opacity: 0.5;

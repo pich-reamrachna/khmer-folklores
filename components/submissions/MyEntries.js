@@ -20,7 +20,7 @@ const styles = {
   // charcoal texture and gold bamboo on both sides are in app/globals.css
   // (.my-entries-section — pseudo-element layers can't be inline).
   section: { backgroundColor: "#1A1817", minHeight: "100vh", padding: "130px 2rem 4rem", boxSizing: "border-box", fontFamily: "var(--font-jakarta), system-ui, sans-serif", color: "#F5EFE6" },
-  container: { maxWidth: 1100, margin: "0 auto" },
+  container: { maxWidth: 1300, margin: "0 auto" },
   // Deliberately not translated — decorative label, like the site's other
   // eyebrows. Quiet spaced capitals, then the title in gold Cinzel, as on
   // the home hero.
@@ -29,7 +29,7 @@ const styles = {
   // The two tabs in a dark pill, only as wide as they are. A gold pill
   // (`thumb`) sits behind the chosen one and slides across when the other
   // is picked. The tabs' text colours and hover live in app/globals.css's
-  // .my-entries-tab rules (inline values would beat the hover; and
+  // .pill-tab rules (inline values would beat the hover; and
   // styled-jsx doesn't reach JSX built in the tabButton helper below).
   tabs: {
     position: "relative",
@@ -119,7 +119,7 @@ export default function MyEntries({ submissions, tellings, storiesFailed, tellin
       id={`my-entries-tab-${id}`}
       aria-selected={tab === id}
       aria-controls={`my-entries-panel-${id}`}
-      className={tab === id ? "my-entries-tab is-active" : "my-entries-tab"}
+      className={tab === id ? "pill-tab is-active" : "pill-tab"}
       style={{ ...styles.tab, ...tracking }}
       onClick={() => setTab(id)}
     >

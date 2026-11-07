@@ -558,23 +558,24 @@ select:-webkit-autofill {
   }
 }
 
-/* MyEntries.js's two tabs. The gold pill behind the chosen one is its own
-   sliding element (inline in MyEntries.js), so the tabs themselves stay
-   transparent and only their text changes: dark on the gold, light off it. */
-.my-entries-tab {
+/* The pill tabs on My Entries (MyEntries.js) and Review (ReviewQueue.js).
+   The gold pill behind the chosen one is its own sliding element (inline in
+   those files), so the tabs themselves stay transparent and only their text
+   changes: dark on the gold, light off it. */
+.pill-tab {
   background-color: transparent;
   color: #d9d2c5;
   transition: background-color 0.2s ease, color 0.3s ease;
 }
-.my-entries-tab:not(.is-active):hover {
+.pill-tab:not(.is-active):hover {
   background-color: rgba(201, 169, 97, 0.12);
   color: #e6c575;
 }
-.my-entries-tab.is-active {
+.pill-tab.is-active {
   color: #1a1817;
 }
 
-/* MyEntries.js's page: the hero's worn charcoal texture
+/* MyEntries.js's page (and ReviewQueue.js's, which reuses it): the hero's worn charcoal texture
    (public/rustic-charcoal.webp), toned down under a wash of the charcoal
    colour so the rows stay easy to read, with the gold ink-wash bamboo of the
    story page's tellings (StoryMemories.js) hanging down both sides — the
@@ -623,4 +624,21 @@ select:-webkit-autofill {
 .my-entries-content {
   position: relative;
   z-index: 1;
+}
+
+/* A /review card (reviewStyles.js): the submission on the left, the
+   curator's form on the right; stacked on a narrow screen, where the form's
+   panel trades its left rule for a top one. */
+.review-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+}
+@media (max-width: 860px) {
+  .review-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .review-card > div + div {
+    border-left: none !important;
+    border-top: 1px solid rgba(245, 239, 230, 0.08);
+  }
 }

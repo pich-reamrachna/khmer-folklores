@@ -1,17 +1,22 @@
 "use client";
 
+import { useLayoutEffect, useRef, useState } from "react";
 import ReviewCard from "./ReviewCard.js";
 import TellingReviewCard from "./TellingReviewCard.js";
 import EditReviewCard from "./EditReviewCard.js";
 import { useTranslation } from "../shared/uiText.js";
+import { useLanguage } from "../shared/LanguageContext.js";
 
-// /review's queue, in three sections — new stories, new tellings on
-// published stories, and waiting changes to published tellings — each oldest
-// first. A section only shows when it has something in it.
+// /review's queue, in three tabs — new stories, new tellings on published
+// stories, and waiting changes to published tellings — each with its count,
+// and each list oldest first. The header carries the total on the right.
 // app/review/page.js does the fetching and the curator-only check.
 
+const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
 const styles = {
-  // Same top/side padding as /share — clears the fixed 90px NavBar.
+  // Same top/side padding as /share — clears the fixed 90px NavBar. The
+  // charcoal texture and bamboo are My Entries' (.my-entries-section in
+  // app/globals.css).
   section: {
     backgroundColor: "#1A1817",
     minHeight: "100vh",
@@ -20,77 +25,147 @@ const styles = {
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
   },
-  container: { maxWidth: 860, margin: "0 auto" },
+  container: { maxWidth: 1300, margin: "0 auto" },
+  // Eyebrow and title on the left, the total on the right, on one baseline.
+  header: { display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap", margin: "0 0 1.75rem" },
   // Deliberately not translated — decorative label, like the site's other
   // eyebrows.
-  eyebrow: {
-    fontSize: "0.75rem",
-    fontWeight: 600,
-    color: "#E6C575",
-    letterSpacing: "0.25em",
-    textTransform: "uppercase",
-    margin: "0 0 1rem",
+  eyebrow: { fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 1rem" },
+  title: { fontFamily: "var(--font-cinzel), var(--font-khmer), serif", fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 500, color: "#C9A961", lineHeight: 1.15, margin: 0 },
+  count: { fontFamily: khmerSans, fontSize: "0.9rem", color: "#A89F91", margin: "0 0 0.4rem" },
+  // The tabs: same dark pill with a sliding gold one behind the chosen tab
+  // as My Entries (MyEntries.js); colours and hover in app/globals.css's
+  // .pill-tab rules.
+  tabs: {
+    position: "relative",
+    display: "inline-flex",
+    flexWrap: "wrap",
+    gap: 4,
+    padding: 4,
+    backgroundColor: "rgba(0, 0, 0, 0.28)",
+    border: "1px solid rgba(201, 169, 97, 0.25)",
+    borderRadius: 999,
   },
-  title: {
-    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "2.5rem",
-    fontWeight: 600,
-    lineHeight: 1.15,
-    margin: "0 0 0.75rem",
+  thumb: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    borderRadius: 999,
+    backgroundColor: "#C9A961",
+    transition: "transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), width 0.35s cubic-bezier(0.4, 0, 0.2, 1)",
+    pointerEvents: "none",
   },
-  count: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "1rem",
-    color: "#CFC6B8",
-    margin: "0 0 2rem",
-  },
-  heading: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-    fontSize: "1.1rem",
+  tab: {
+    position: "relative",
+    display: "inline-flex",
+    alignItems: "baseline",
+    gap: "0.7rem",
+    padding: "0.7rem 1.4rem",
+    border: "none",
+    borderRadius: 999,
+    fontFamily: khmerSans,
+    fontSize: "0.72rem",
     fontWeight: 700,
-    color: "#E6C575",
-    margin: "0 0 1rem",
+    letterSpacing: "0.2em",
+    textTransform: "uppercase",
+    cursor: "pointer",
   },
-  part: { marginBottom: "3rem" },
-  list: { listStyle: "none", margin: 0, padding: 0, display: "flex", flexDirection: "column", gap: 24 },
+  tabCount: { fontWeight: 600, opacity: 0.6, letterSpacing: "normal" },
+  list: { listStyle: "none", margin: "1.75rem 0 0", padding: 0, display: "flex", flexDirection: "column", gap: "1.5rem" },
+  empty: { fontFamily: khmerSans, fontSize: "1rem", color: "#A89F91", margin: "1.75rem 0 0" },
+  trackingNone: { letterSpacing: "normal" },
 };
 
 export default function ReviewQueue({ submissions, tellings, edits, loadFailed }) {
   const t = useTranslation();
+  const { language } = useLanguage();
   const total = submissions.length + tellings.length + edits.length;
+  const tracking = language === "km" ? styles.trackingNone : null;
 
   let status = `${total} ${t("reviewPendingCount")}`;
   if (loadFailed) status = t("reviewLoadError");
   else if (total === 0) status = t("reviewEmpty");
 
-  // [heading key, items, card for one item]
+  // [id, label key, items, card for one item]
   const sections = [
-    ["reviewStoriesHeading", submissions, (x) => <ReviewCard submission={x} />],
-    ["reviewTellingsHeading", tellings, (x) => <TellingReviewCard telling={x} />],
-    ["reviewEditsHeading", edits, (x) => <EditReviewCard edit={x} />],
+    ["stories", "reviewStoriesHeading", submissions, (x) => <ReviewCard submission={x} />],
+    ["tellings", "reviewTellingsHeading", tellings, (x) => <TellingReviewCard telling={x} />],
+    ["edits", "reviewEditsHeading", edits, (x) => <EditReviewCard edit={x} />],
   ];
+  // Opens on the first tab with something waiting.
+  const [tab, setTab] = useState(() => (sections.find(([, , items]) => items.length > 0) ?? sections[0])[0]);
+  const current = sections.find(([id]) => id === tab);
+
+  // The gold pill's place: the chosen tab's box, measured from the tab
+  // itself (the labels differ in width, and in Khmer; the tabs can wrap onto
+  // two rows on a phone). Before paint, and again on resize / language.
+  const tabRefs = useRef({});
+  const [thumb, setThumb] = useState(null);
+  useLayoutEffect(() => {
+    const measure = () => {
+      const el = tabRefs.current[tab];
+      if (el) setThumb({ left: el.offsetLeft, top: el.offsetTop, width: el.offsetWidth, height: el.offsetHeight });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [tab, language]);
 
   return (
-    <section style={styles.section}>
-      <div style={styles.container}>
-        <p style={styles.eyebrow}>Curator Review</p>
-        <h1 style={styles.title}>{t("reviewTitle")}</h1>
-        <p style={styles.count}>{status}</p>
+    <section style={styles.section} className="my-entries-section">
+      <div style={styles.container} className="my-entries-content">
+        <div style={styles.header}>
+          <div>
+            <p style={styles.eyebrow}>Curator Review</p>
+            <h1 style={styles.title}>{t("reviewTitle")}</h1>
+          </div>
+          <p style={styles.count}>{status}</p>
+        </div>
 
-        {sections.map(([headingKey, items, card]) =>
-          items.length > 0 ? (
-            <div key={headingKey} style={styles.part}>
-              <h2 style={styles.heading}>
-                {t(headingKey)} ({items.length})
-              </h2>
-              <ul style={styles.list}>
-                {items.map((item) => (
-                  <li key={item.id}>{card(item)}</li>
-                ))}
-              </ul>
-            </div>
-          ) : null
-        )}
+        <div role="tablist" style={styles.tabs}>
+          {thumb ? (
+            <span
+              aria-hidden="true"
+              style={{
+                ...styles.thumb,
+                width: thumb.width,
+                height: thumb.height,
+                transform: `translate(${thumb.left}px, ${thumb.top}px)`,
+              }}
+            />
+          ) : null}
+          {sections.map(([id, labelKey, items]) => (
+            <button
+              key={id}
+              ref={(el) => {
+                tabRefs.current[id] = el;
+              }}
+              type="button"
+              role="tab"
+              id={`review-tab-${id}`}
+              aria-selected={tab === id}
+              aria-controls={`review-panel-${id}`}
+              className={tab === id ? "pill-tab is-active" : "pill-tab"}
+              style={{ ...styles.tab, ...tracking }}
+              onClick={() => setTab(id)}
+            >
+              {t(labelKey)}
+              <span style={styles.tabCount}>{items.length}</span>
+            </button>
+          ))}
+        </div>
+
+        <div role="tabpanel" id={`review-panel-${tab}`} aria-labelledby={`review-tab-${tab}`}>
+          {current[2].length > 0 ? (
+            <ul style={styles.list}>
+              {current[2].map((item) => (
+                <li key={item.id}>{current[3](item)}</li>
+              ))}
+            </ul>
+          ) : loadFailed ? null : (
+            <p style={styles.empty}>{t("reviewEmpty")}</p>
+          )}
+        </div>
       </div>
     </section>
   );
