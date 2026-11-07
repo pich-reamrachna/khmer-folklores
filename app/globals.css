@@ -457,8 +457,8 @@ textarea.contribute-input:focus {
 .archive-row:hover {
   background-image: linear-gradient(
     90deg,
-    rgba(255, 255, 255, 0.7) 0%,
-    rgba(255, 255, 255, 0.35) 45%,
+    rgba(255, 255, 255, 0.38) 0%,
+    rgba(255, 255, 255, 0.18) 45%,
     rgba(255, 255, 255, 0) 100%
   );
 }

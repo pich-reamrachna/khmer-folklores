@@ -14,6 +14,9 @@ import { useSectionPager } from "../utils/useSectionPager.js";
 // How many stories the hero carousel features (the archive list below shows
 // them all). Shared by the image preload and the carousel itself.
 const FEATURED_COUNT = 5;
+// The featured story the hero opens on, by id — Daun Penh's Curse. Falls
+// back to the first featured story if it isn't among them.
+const OPENING_STORY_ID = "daun-penhs-curse";
 // The hero's charcoal texture and gold brush strokes (StoryHero.js) —
 // preloaded with the featured pictures so the whole hero appears at once.
 const HERO_BACKDROPS = [
@@ -86,8 +89,10 @@ export default function Home() {
   // <main> is the scroll container; the footer's "Back to top" button
   // scrolls it back to the start.
   const mainRef = useRef(null);
-  // Selected index drives the hero. Default to the first entry.
-  const [selectedIndex, setSelectedIndex] = useState(0);
+  // Selected index drives the hero. null until the visitor picks a story:
+  // until then the hero shows OPENING_STORY_ID (worked out below, once the
+  // stories have loaded).
+  const [chosenIndex, setChosenIndex] = useState(null);
   // null = still loading; [] = loaded but empty. Distinguishing the two lets
   // each show its own sensible state instead of a broken page. Starts from
   // the in-memory copy (utils/archiveCache.js) when this tab has already
@@ -181,11 +186,13 @@ export default function Home() {
   // Flatten the selected story into a single object so StoryHero and
   // EntryCard can keep reading entry.title, entry.summary, entry.place,
   // entry.category — no component changes.
-  const selectedEntry = flattenedStories[selectedIndex] ?? flattenedStories[0];
   // Carousel only features the first 5 stories — ArchiveBrowser below still
   // searches/lists all of them, so the rest stay fully reachable, just not
   // in the featured row.
   const featuredStories = flattenedStories.slice(0, FEATURED_COUNT);
+  const openingIndex = Math.max(0, featuredStories.findIndex((s) => s.id === OPENING_STORY_ID));
+  const selectedIndex = chosenIndex ?? openingIndex;
+  const selectedEntry = flattenedStories[selectedIndex] ?? flattenedStories[0];
 
   return (
     <main
@@ -206,12 +213,12 @@ export default function Home() {
         entry={selectedEntry}
         index={selectedIndex}
         total={featuredStories.length}
-        onSelect={setSelectedIndex}
+        onSelect={setChosenIndex}
       >
         <EntryCardRow
           entries={featuredStories}
           selectedIndex={selectedIndex}
-          onSelect={setSelectedIndex}
+          onSelect={setChosenIndex}
         />
       </StoryHero>
 
