@@ -17,17 +17,22 @@ import { useTranslation } from "../shared/uiText.js";
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
 const styles = {
-  wrap: { marginTop: "2.5rem", maxWidth: 760, paddingTop: "2rem", borderTop: "1px solid #2A172F" },
-  heading: { fontFamily: khmerSans, fontSize: "0.8rem", fontWeight: 700, color: "#E6C575", letterSpacing: "0.18em", textTransform: "uppercase", margin: "0 0 0.75rem" },
-  title: { fontFamily: "var(--font-khmer), var(--font-cinzel), serif", fontSize: "1.5rem", fontWeight: 600, color: "#F5EFE6", margin: "0 0 0.4rem", overflowWrap: "anywhere" },
-  byline: { fontFamily: khmerSans, fontSize: "0.85rem", color: "#8A7F91", margin: "0 0 1.25rem", display: "flex", flexWrap: "wrap", gap: "0.4rem" },
-  name: { color: "#E6C575", fontWeight: 700 },
+  // Opens the band under the story's header (StoryDetails.js), whose
+  // hairline already sits above it — so no rule or gap of its own.
+  wrap: { maxWidth: 760 },
+  // Heading and title follow the home hero (StoryHero.js): quiet spaced
+  // capitals, then Cinzel — first, so English stays in Cinzel and Khmer
+  // (which Cinzel has no letters for) falls through to the Khmer font.
+  heading: { fontFamily: khmerSans, fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 0.75rem" },
+  title: { fontFamily: "var(--font-cinzel), var(--font-khmer), serif", fontSize: "1.6rem", fontWeight: 500, color: "#C9A961", margin: "0 0 0.4rem", overflowWrap: "anywhere" },
+  byline: { fontFamily: khmerSans, fontSize: "0.85rem", color: "#A89F91", margin: "0 0 1.25rem", display: "flex", flexWrap: "wrap", gap: "0.4rem" },
+  name: { color: "#C9A961", fontWeight: 600 },
   edited: { fontStyle: "italic" },
   // pre-wrap keeps the sharer's line breaks; anywhere breaks a long run.
-  body: { fontFamily: khmerSans, fontSize: "1.05rem", lineHeight: 1.8, color: "#D8CFDC", whiteSpace: "pre-wrap", overflowWrap: "anywhere", margin: 0 },
+  body: { fontFamily: khmerSans, fontSize: "1.05rem", lineHeight: 1.8, color: "#D9D2C5", whiteSpace: "pre-wrap", overflowWrap: "anywhere", margin: 0 },
   photo: { display: "block", maxWidth: "100%", maxHeight: 420, borderRadius: 12, marginTop: "1.5rem", objectFit: "cover" },
   owner: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "1rem", marginTop: "1.25rem" },
-  note: { fontFamily: khmerSans, fontSize: "0.78rem", color: "#8A7F91", margin: 0 },
+  note: { fontFamily: khmerSans, fontSize: "0.78rem", color: "#A89F91", margin: 0 },
   // Letter-spacing pries apart Khmer glyph clusters.
   trackingNone: { letterSpacing: "normal" },
 };
@@ -99,7 +104,7 @@ export default function FirstTelling({ telling, storyId, storyTitle, storyTitleK
         .first-telling-edit {
           padding: 0.5rem 1.2rem;
           border: 1px solid #c5a059;
-          border-radius: 999px;
+          border-radius: 2px;
           background: transparent;
           color: #e6c575;
           font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
@@ -109,7 +114,7 @@ export default function FirstTelling({ telling, storyId, storyTitle, storyTitleK
         }
         .first-telling-edit:hover {
           background-color: #c5a059;
-          color: #0c0a12;
+          color: #1a1817;
         }
       `}</style>
     </article>

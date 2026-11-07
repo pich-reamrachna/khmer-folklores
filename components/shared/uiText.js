@@ -299,6 +299,9 @@ const uiText = {
     km: "មិនទាន់មាននរណាម្នាក់ទៀតចែករំលែកកំណែរបស់ខ្លួននៅឡើយទេ — សូមក្លាយជាអ្នកដំបូង។",
   },
   detailsFirstSharedBy: { en: "First shared by", km: "ចែករំលែកដំបូងដោយ" },
+  // StoryDetails.js's details table (with detailsFirstSharedBy above).
+  detailsKind: { en: "Kind", km: "ប្រភេទ" },
+  detailsToldIn: { en: "Told in", km: "និទាននៅ" },
   memoriesEdited: { en: "Edited", km: "បានកែ" },
   menuDeleteLocked: {
     en: "The first telling of a published story can't be deleted — you can still edit it.",

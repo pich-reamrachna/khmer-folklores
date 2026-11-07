@@ -94,6 +94,9 @@ export default async function StoryPage({ params }) {
     // Re-assert the story's title last: the spread telling carries its own
     // title, which must not override the summary header's story title.
     title: story.title,
+    // The story's own picture (the one its home hero slide shows), for the
+    // header — not the first telling's photo, which FirstTelling shows.
+    storyPhotoUrl: story.photo_url,
   };
 
   return (

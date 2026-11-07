@@ -10,10 +10,11 @@ import { useTranslation } from "../shared/uiText.js";
 import { formatDate } from "../../utils/formatDate.js";
 import { formEntry } from "../../utils/editableEntry.js";
 
-// "What people remember" — other people's tellings on a story's page, shown as a flat
-// Reddit-style comment thread (one entry per contributor's telling). Each
-// telling shows its title + byline collapsed, expands on click to reveal the
-// body/photo, and — for the owner — has a three-dots menu to edit or delete.
+// "What people remember" — other people's tellings on a story's page, laid
+// out as a grid of ruled columns, newest first (one per contributor's
+// telling). Each shows its title, byline and the start of its text; clicking
+// it opens the rest (full text and photo), and — for the owner — it has a
+// three-dots menu to edit or delete.
 // The story's first telling isn't here: it's the story itself, shown in full
 // under the title (FirstTelling.js). These are the replies to it.
 
@@ -29,7 +30,7 @@ const styles = {
     scrollMarginTop: 90,
     display: "flex",
     flexDirection: "column",
-    backgroundColor: "#08040A",
+    backgroundColor: "#1A1817",
     fontFamily: "var(--font-jakarta), system-ui, sans-serif",
     color: "#F5EFE6",
   },
@@ -38,39 +39,33 @@ const styles = {
     width: "100%",
     margin: "0 auto",
   },
-  eyebrow: {
-    display: "flex",
-    alignItems: "center",
-    gap: "0.75rem",
-    margin: "0 0 1rem",
-  },
-  eyebrowLine: {
-    height: 1,
-    width: 32,
-    backgroundColor: "rgba(197, 160, 89, 0.65)",
-  },
-  // eyebrowText: deliberately not translated — a decorative label, kept
+  // Eyebrow, title and subtitle follow the home hero (StoryHero.js) and the
+  // story's own header above (StoryDetails.js): quiet spaced capitals, then
+  // gold Cinzel. Deliberately not translated — a decorative label, kept
   // English like the site's other stylistic branding text.
-  eyebrowText: {
+  eyebrow: {
     fontSize: "0.75rem",
     fontWeight: 600,
-    color: "#E6C575",
-    letterSpacing: "0.25em",
+    color: "#A89F91",
+    letterSpacing: "0.3em",
     textTransform: "uppercase",
+    margin: "0 0 1rem",
   },
+  // Cinzel first: it has no Khmer letters, so Khmer text falls through to
+  // the Khmer font, while English stays in Cinzel.
   title: {
-    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "clamp(2rem, 6vw, 2.75rem)",
-    fontWeight: 600,
-    color: "#F5EFE6",
+    fontFamily: "var(--font-cinzel), var(--font-khmer), serif",
+    fontSize: "clamp(2rem, 4vw, 3rem)",
+    fontWeight: 500,
+    color: "#C9A961",
     lineHeight: 1.15,
     margin: "0 0 1rem",
   },
   subtitle: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1.05rem",
-    color: "#BBAEBF",
-    fontWeight: 300,
+    color: "#D9D2C5",
+    fontWeight: 400,
     lineHeight: 1.6,
     maxWidth: 640,
     margin: "0 0 2.5rem",
@@ -80,8 +75,6 @@ const styles = {
     alignItems: "center",
     justifyContent: "space-between",
     gap: "1rem",
-    borderBottom: "1px solid #2A172F",
-    paddingBottom: "0.85rem",
     marginBottom: "0.5rem",
   },
   // Translated ("Tellings" label) — needs var(--font-khmer).
@@ -89,7 +82,7 @@ const styles = {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 700,
-    color: "#8A7F91",
+    color: "#A89F91",
     letterSpacing: "0.15em",
     textTransform: "uppercase",
     margin: 0,
@@ -98,12 +91,18 @@ const styles = {
   empty: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.95rem",
-    color: "#8A7F91",
+    color: "#A89F91",
     margin: "1.5rem 0 0",
   },
-  // The thread fills the container width (same as the header above it).
+  // The tellings fill the container width (same as the header above it);
+  // its columns live in the <style jsx> below (.telling-grid), since they
+  // change with the screen width.
   thread: {
     width: "100%",
+    display: "grid",
+    columnGap: "2.5rem",
+    rowGap: "2.5rem",
+    marginTop: "1.5rem",
   },
   // The clickable summary (title + byline). Clicking/Enter/Space toggles the
   // body open or closed.
@@ -113,9 +112,9 @@ const styles = {
   // The telling's own title (single field, English or Khmer) — needs the
   // Khmer font stack explicitly.
   tellingTitle: {
-    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "1.15rem",
-    fontWeight: 700,
+    fontFamily: "var(--font-cinzel), var(--font-khmer), serif",
+    fontSize: "1.35rem",
+    fontWeight: 500,
     color: "#F5EFE6",
     lineHeight: 1.3,
     margin: 0,
@@ -127,7 +126,7 @@ const styles = {
   byline: {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.8rem",
-    color: "#8A7F91",
+    color: "#A89F91",
     display: "flex",
     flexWrap: "wrap",
     alignItems: "center",
@@ -147,10 +146,17 @@ const styles = {
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1rem",
     lineHeight: 1.7,
-    color: "#D8CFE0",
+    color: "#D9D2C5",
     whiteSpace: "pre-wrap",
     overflowWrap: "anywhere",
-    margin: "0.75rem 0 0",
+    margin: "1rem 0 0",
+  },
+  // Closed, a telling shows just the start of its text: five lines.
+  bodyClamped: {
+    display: "-webkit-box",
+    WebkitBoxOrient: "vertical",
+    WebkitLineClamp: 5,
+    overflow: "hidden",
   },
   photo: {
     width: "100%",
@@ -186,7 +192,7 @@ const styles = {
     display: "inline-block",
     width: 18,
     height: 18,
-    backgroundColor: "#8A7F91",
+    backgroundColor: "#A89F91",
     WebkitMaskImage: "url(/icons/icons8-three-dots-30.png)",
     maskImage: "url(/icons/icons8-three-dots-30.png)",
     WebkitMaskSize: "contain",
@@ -202,8 +208,8 @@ const styles = {
     right: 0,
     zIndex: 10,
     minWidth: 150,
-    backgroundColor: "#120916",
-    border: "1px solid #2A172F",
+    backgroundColor: "#1A1817",
+    border: "1px solid rgba(245, 239, 230, 0.12)",
     borderRadius: 10,
     padding: "0.3rem",
     boxShadow: "0 12px 30px rgba(0, 0, 0, 0.5)",
@@ -243,9 +249,9 @@ const styles = {
     display: "inline-block",
     padding: "0.55rem 1.2rem",
     border: "none",
-    borderRadius: 10,
+    borderRadius: 2,
     backgroundColor: "#C5A059",
-    color: "#0C0A12",
+    color: "#1A1817",
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.78rem",
     fontWeight: 700,
@@ -261,7 +267,7 @@ const styles = {
     bottom: "2rem",
     left: "50%",
     zIndex: 1000,
-    backgroundColor: "#1D1024",
+    backgroundColor: "#1A1817",
     border: "1px solid #C5A059",
     color: "#F5EFE6",
     padding: "0.8rem 1.4rem",
@@ -282,15 +288,15 @@ const styles = {
     justifyContent: "center",
     padding: "1.5rem",
     boxSizing: "border-box",
-    backgroundColor: "rgba(8, 4, 10, 0.6)",
+    backgroundColor: "rgba(10, 9, 8, 0.6)",
     WebkitBackdropFilter: "blur(6px)",
     backdropFilter: "blur(6px)",
   },
   confirmDialog: {
     width: "100%",
     maxWidth: 420,
-    backgroundColor: "#120916",
-    border: "1px solid #2A172F",
+    backgroundColor: "#1A1817",
+    border: "1px solid rgba(245, 239, 230, 0.12)",
     borderRadius: 16,
     padding: "1.75rem",
     boxShadow: "0 20px 60px rgba(0, 0, 0, 0.6)",
@@ -310,7 +316,7 @@ const styles = {
   confirmCancel: {
     padding: "0.6rem 1.2rem",
     borderRadius: 10,
-    border: "1px solid #2A172F",
+    border: "1px solid rgba(245, 239, 230, 0.12)",
     backgroundColor: "transparent",
     color: "#F5EFE6",
     fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
@@ -446,8 +452,7 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
     <section id="tellings" style={styles.section}>
       <div style={styles.container}>
         <p style={styles.eyebrow}>
-          <span style={styles.eyebrowLine} />
-          <span style={styles.eyebrowText}>Voices from the Community</span>
+          Voices from the Community
         </p>
 
         <h2 style={styles.title}>{t("memoriesTitle")}</h2>
@@ -473,7 +478,7 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
 
         {thread.length === 0 ? <p style={styles.empty}>{t("memoriesNoneYet")}</p> : null}
 
-        <div style={styles.thread}>
+        <div style={styles.thread} className="telling-grid">
           {thread.map((version, index) => {
             // contributor is never translated (it's a name); description,
             // place, and the telling's title swap/display by language.
@@ -578,12 +583,12 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
                       </span>
                     ) : null}
                   </p>
-                </div>
 
-                {isExpanded ? (
+                  {/* The start of the text while closed; all of it, and the
+                      photo, once opened. */}
                   <div id={bodyId}>
-                    <p style={styles.body}>{description}</p>
-                    {version.photoUrl ? (
+                    <p style={isExpanded ? styles.body : { ...styles.body, ...styles.bodyClamped }}>{description}</p>
+                    {isExpanded && version.photoUrl ? (
                       <img
                         src={version.photoUrl}
                         alt={place ? `Photo shared from ${place}` : "Photo shared with this telling"}
@@ -591,7 +596,7 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
                       />
                     ) : null}
                   </div>
-                ) : null}
+                </div>
               </div>
             );
           })}
@@ -630,18 +635,59 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
         </div>
       ) : null}
 
-      {/* Thread rail + hover live here, not inline — a stylesheet rule can't
-          override an inline border, and hover needs a rule. Native <div>, so
+      {/* Grid columns, each telling's rule + hover live here, not inline —
+          the columns change with the screen width, a stylesheet rule can't
+          override an inline border, and hover needs a rule. Native <div>s, so
           styled-jsx scoping applies. position:relative anchors the owner menu;
           the right padding keeps the title clear of it. The confirm buttons'
           hover uses opacity (a different property from their inline bg, so no
           inline-vs-stylesheet clash). */}
       <style jsx>{`
+        .telling-grid {
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+        @media (max-width: 1000px) {
+          .telling-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+        @media (max-width: 640px) {
+          .telling-grid {
+            grid-template-columns: minmax(0, 1fr);
+          }
+        }
         .thread-item {
           position: relative;
-          border-left: 2px solid #2a172f;
-          padding: 1.1rem 2.75rem 1.1rem 1.25rem;
+          border-top: 1px solid rgba(245, 239, 230, 0.12);
+          padding: 1.5rem 2.75rem 1.75rem 1.5rem;
           transition: border-color 0.15s ease;
+        }
+        /* Each telling's background: the Khmer ornament pattern, tiled
+           small and kept faint — it's pale gold, and the text over it is
+           light. Its own layer, so it can be faded without fading the text;
+           the content sits above it.
+           public/pattern-tile.jpg, not Pattern.jpg itself: the original's
+           980px isn't a whole number of its ~153px repeats, so its copies met
+           mid-motif in a visible seam. The tile is cut from it at exactly six
+           repeats each way (916 × 922px — the repeat is a touch taller than
+           it is wide), so copies join seamlessly. */
+        .thread-item::before {
+          content: "";
+          position: absolute;
+          inset: 0;
+          background-image: url(/pattern-tile.jpg);
+          background-size: 206px 207px;
+          background-repeat: repeat;
+          opacity: 0.07;
+          pointer-events: none;
+          transition: opacity 0.3s ease;
+        }
+        /* Hovering a telling lights its pattern up. */
+        .thread-item:hover::before {
+          opacity: 0.18;
+        }
+        .thread-item > div {
+          position: relative;
         }
         .thread-item:hover {
           border-color: #c5a059;
