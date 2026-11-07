@@ -117,6 +117,11 @@ const styles = {
     WebkitMaskImage: "linear-gradient(to bottom, transparent 0%, #000 10%, #000 70%, transparent 100%)",
     maskImage: "linear-gradient(to bottom, transparent 0%, #000 10%, #000 70%, transparent 100%)",
   },
+  // Fills the frame; carries the picture's enter/exit slide.
+  pictureMotion: {
+    width: "100%",
+    height: "100%",
+  },
   // contain (not cover) so a portrait illustration is never cropped.
   // objectPosition lives in this file's <style> tag below (class
   // .hero-picture-img) — top centre on landscape screens, lower on tall
@@ -281,8 +286,8 @@ const RULE_WIDTHS = [108, 216, 72];
 export default function StoryHero({ entry, index, total, onSelect, children }) {
   const { language } = useLanguage();
 
-  // Whether the hero is the section in view — drives the text block's
-  // enter/exit animation (.hero-section.is-in-view in the <style> below):
+  // Whether the hero is the section in view — drives the text block's (and
+  // picture's) enter/exit animation (.hero-section.is-in-view in the <style> below):
   // the text slides in from the left as the page arrives here (including on
   // first load) and back out as it leaves. Watched against <main>, the
   // page's scroll container, and counted as "in view" once most of it shows.
@@ -326,13 +331,18 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
             {/* key + hero-fade: fades in with the text when the selected
                 story changes. Decorative here (the title says what it is),
                 and this whole backdrop is aria-hidden. */}
-            <img
-              key={entry.id}
-              src={entry.photoUrl}
-              alt=""
-              style={styles.picture}
-              className="hero-fade hero-picture-img"
-            />
+            {/* hero-picture-motion: the enter/exit slide (in the <style>
+                below), on its own wrapper so it doesn't clash with the
+                frame's own transform on tall screens or the img's fade. */}
+            <div style={styles.pictureMotion} className="hero-picture-motion">
+              <img
+                key={entry.id}
+                src={entry.photoUrl}
+                alt=""
+                style={styles.picture}
+                className="hero-fade hero-picture-img"
+              />
+            </div>
           </div>
         ) : null}
         <div style={styles.rowBand} />
@@ -444,7 +454,22 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
           opacity: 1;
           transform: none;
         }
+        /* The picture does the same, mirrored: it rests shifted 5rem right
+           and slides in from the right as the text comes in from the left. */
+        .hero-picture-motion {
+          opacity: 0.2;
+          transform: translateX(5rem);
+          transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hero-section.is-in-view .hero-picture-motion {
+          opacity: 1;
+          transform: none;
+        }
         @media (prefers-reduced-motion: reduce) {
+          .hero-picture-motion {
+            transform: none;
+            transition: opacity 0.3s ease;
+          }
           .hero-main-grid {
             transform: none;
             transition: opacity 0.3s ease;
