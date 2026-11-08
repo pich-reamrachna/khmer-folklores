@@ -311,11 +311,15 @@ export function useSectionPager(mainRef, enabled) {
 
     // Touch: one swipe, one move. A swipe that starts on the inner list is
     // the list's alone, same as the wheel — the browser scrolls it, and the
-    // page never moves from it.
+    // page never moves from it. A mostly sideways swipe isn't a page move
+    // either: the hero uses those to step through its stories
+    // (useHorizontalWheel.js).
     let touchY = null;
+    let touchX = null;
     let touchInside = false;
     const onTouchStart = (e) => {
       touchY = e.touches.length === 1 ? e.touches[0].clientY : null;
+      touchX = e.touches.length === 1 ? e.touches[0].clientX : null;
       touchInside = !!innerScroller(e.target, main);
     };
     const onTouchMove = (e) => {
@@ -325,7 +329,9 @@ export function useSectionPager(mainRef, enabled) {
     const onTouchEnd = (e) => {
       if (touchY === null || touchInside) return;
       const dy = touchY - e.changedTouches[0].clientY;
+      const dx = touchX - e.changedTouches[0].clientX;
       touchY = null;
+      if (Math.abs(dx) > Math.abs(dy)) return;
       if (Math.abs(dy) >= SWIPE_PX) page(Math.sign(dy));
     };
 

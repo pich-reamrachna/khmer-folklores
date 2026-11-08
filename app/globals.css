@@ -209,12 +209,13 @@ main {
   background-color: #c9a961;
   border-color: #c9a961;
 }
+/* Phone: three stories share the row, so the titles are small. */
 @media (max-width: 640px) {
   .entry-card-title {
-    font-size: 1.1rem;
+    font-size: 0.72rem;
   }
   .entry-card.is-active .entry-card-title {
-    font-size: 1.35rem;
+    font-size: 0.85rem;
   }
 }
 /* StoryHero.js's "Read the Story" button — a Link, so its hover can't

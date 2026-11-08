@@ -2,11 +2,16 @@
 
 import { useEffect, useRef } from "react";
 
-// Sideways scrolling over an element — a trackpad swipe left or right, or
-// Shift + mouse wheel — as one step per gesture: onStep(1) for scrolling
-// right (fingers pushing the content left, the way a carousel moves on to
-// the next one), onStep(-1) for left. Used by the home hero (StoryHero.js)
-// to move its story carousel.
+// Sideways gestures over an element — a trackpad swipe left or right,
+// Shift + mouse wheel, or a finger swiped across a touch screen — as one
+// step per gesture: onStep(1) for moving on (scrolling right, or a finger
+// swiped to the left, the way a carousel moves on to the next one),
+// onStep(-1) for going back. Used by the home hero (StoryHero.js) to move
+// its story carousel.
+//
+// A finger swipe counts once it has travelled SWIPE_PX sideways, more
+// sideways than up or down; anything else is left to the page
+// (useSectionPager.js ignores mostly sideways swipes in turn).
 //
 // Mostly-vertical scrolling is left alone — useSectionPager.js already
 // ignores mostly-sideways wheels, so the two never both act on one gesture.
@@ -26,6 +31,7 @@ const STEP_PX = 30;
 const COOLDOWN_MS = 450;
 const RISE_MIN_PX = 6;
 const RISE_FACTOR = 2.5;
+const SWIPE_PX = 40;
 
 export default function useHorizontalWheel(ref, onStep) {
   // The latest onStep, without re-attaching the listener every render.
@@ -71,7 +77,28 @@ export default function useHorizontalWheel(ref, onStep) {
       }
     }
 
+    let touchX = null;
+    let touchY = null;
+    function onTouchStart(e) {
+      const one = e.touches.length === 1 ? e.touches[0] : null;
+      touchX = one ? one.clientX : null;
+      touchY = one ? one.clientY : null;
+    }
+    function onTouchEnd(e) {
+      if (touchX === null) return;
+      const dx = touchX - e.changedTouches[0].clientX;
+      const dy = touchY - e.changedTouches[0].clientY;
+      touchX = null;
+      if (Math.abs(dx) >= SWIPE_PX && Math.abs(dx) > Math.abs(dy)) onStepRef.current(Math.sign(dx));
+    }
+
     el.addEventListener("wheel", onWheel, { passive: false });
-    return () => el.removeEventListener("wheel", onWheel);
+    el.addEventListener("touchstart", onTouchStart, { passive: true });
+    el.addEventListener("touchend", onTouchEnd);
+    return () => {
+      el.removeEventListener("wheel", onWheel);
+      el.removeEventListener("touchstart", onTouchStart);
+      el.removeEventListener("touchend", onTouchEnd);
+    };
   }, [ref]);
 }

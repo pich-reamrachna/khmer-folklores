@@ -253,11 +253,12 @@ const styles = {
   // The previous/next arrows at the hero's left and right edges.
   // left/right/top live in this file's <style> tag below (.hero-arrow-prev/-next) — they tighten on
   // phone, and a media query can't beat inline styles.
+  // display lives in this file's <style> tag below (.hero-arrow) — phone
+  // hides the arrows, and a media query can't beat an inline style.
   arrow: {
     position: "absolute",
     zIndex: 3,
     transform: "translateY(-50%)",
-    display: "flex",
     padding: "0.5rem",
     background: "transparent",
     border: "none",
@@ -337,9 +338,9 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
   const prevIndex = (index - 1 + total) % total;
   const nextIndex = (index + 1) % total;
 
-  // Scrolling sideways over the hero (trackpad swipe, Shift + wheel) steps
-  // through the stories like the arrows: right for the next, left for the
-  // previous.
+  // Scrolling sideways over the hero (trackpad swipe, Shift + wheel, or a
+  // finger swiped across it on a phone) steps through the stories like the
+  // arrows: on to the next, or back to the previous.
   useHorizontalWheel(sectionRef, (step) => {
     if (total > 1) onSelect(step > 0 ? nextIndex : prevIndex);
   });
@@ -454,6 +455,7 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
           box-sizing: border-box;
         }
         .hero-arrow {
+          display: flex;
           top: 42%;
         }
         .hero-arrow-prev {
@@ -572,35 +574,73 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
           -webkit-line-clamp: 3;
           margin-bottom: 2rem;
         }
+        /* Phone: stacked, like a poster — the story's picture large across
+           the top with the gold brush stroke behind it, fading down into the
+           dark; the text under it; the story row at the bottom (it replaces
+           the edge arrows here). */
         @media (max-width: 640px) {
-          /* Phone: the text spans the full width, so a picture behind it
-             would fight the title and summary — hidden here. */
-          .hero-picture-layer {
-            display: none;
+          .hero-section {
+            justify-content: flex-start;
+            padding-top: calc(42svh + 1.25rem);
+            padding-bottom: 1.25rem;
           }
-          /* The text runs across the brush on phone — faded right down so
-             the title and summary stay readable over it. */
+          /* The picture's frame: the screen's full width, from under the
+             NavBar down to about half the screen. */
+          .hero-picture-layer {
+            display: block;
+            top: 70px;
+            right: 0;
+            bottom: auto;
+            left: 0;
+            width: 100%;
+            height: calc(42svh - 50px);
+            aspect-ratio: auto;
+            transform: none;
+          }
+          /* The whole picture, centred in that frame, fading out at its
+             bottom into the text. !important: the left-edge fade it uses on
+             wider screens is an inline style, which only this can beat. */
+          .hero-picture-img {
+            object-position: center center;
+            -webkit-mask-image: linear-gradient(to bottom, #000 72%, transparent 100%) !important;
+            mask-image: linear-gradient(to bottom, #000 72%, transparent 100%) !important;
+          }
+          /* The brush stroke behind the picture, stronger than on wider
+             screens since the text no longer runs across it. */
           .hero-brush-main {
-            width: 120%;
-            opacity: 0.18;
+            top: 85px;
+            bottom: auto;
+            right: 2%;
+            width: 125%;
+            height: calc(42svh - 40px);
+            opacity: 0.85;
+            /* Fades out at the bottom instead of stopping on a straight line
+               above the text. */
+            -webkit-mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
+            mask-image: linear-gradient(to bottom, #000 60%, transparent 100%);
           }
           .hero-brush-accent {
             display: none;
           }
-          /* No picture on phone, so the text uses the full width again. */
+          /* The text uses the full width, under the picture. min-width: 0
+             lets it wrap inside the screen instead of running off its edge. */
+          .hero-main-grid {
+            min-height: 0;
+          }
           .hero-text {
             max-width: none;
+            min-width: 0;
+            flex: 1;
           }
-          /* Phone: a slimmer gutter, with the arrows tucked into it. */
+          /* The section's own 2rem is the side margin on phone. */
           .hero-container {
-            padding-left: 1.25rem;
-            padding-right: 1.25rem;
+            gap: 1rem;
+            padding-left: 0;
+            padding-right: 0;
           }
-          .hero-arrow-prev {
-            left: -0.75rem;
-          }
-          .hero-arrow-next {
-            right: -0.75rem;
+          /* The story row does the stepping on phone. */
+          .hero-arrow {
+            display: none;
           }
         }
         /* minHeight:100vh above lets this section grow taller than a short
@@ -632,8 +672,17 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
            in this block so it also wins over the short-screen rule above
            (a short phone matches both). */
         @media (max-width: 640px) {
+          /* Only as tall as the title is: the two lines it keeps on wider
+             screens (so switching stories never moves the text) left a gap
+             under a one-line title here. !important: that fixed height is
+             an inline style. */
           .hero-title {
             font-size: clamp(1.8rem, 7.4vw, 2.8rem);
+            height: auto !important;
+          }
+          .hero-summary {
+            font-size: 0.95rem;
+            margin-bottom: 1.25rem;
           }
         }
       `}</style>

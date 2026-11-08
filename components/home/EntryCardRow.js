@@ -26,8 +26,9 @@ function ringOffset(index, selectedIndex, count) {
 }
 
 const styles = {
+  // paddingTop lives in the <style> tag below (.entry-ring) — it's smaller
+  // on phone.
   wrapper: {
-    paddingTop: "5rem",
     width: "100%",
     boxSizing: "border-box",
   },
@@ -89,6 +90,7 @@ export default function EntryCardRow({ entries, selectedIndex, onSelect }) {
            would push the text up too — a transform moves only the row.
            Not on short screens, where it would run off the hero's bottom. */
         .entry-ring {
+          padding-top: 5rem;
           transform: translateY(3rem);
         }
         @media (max-height: 700px) {
@@ -100,9 +102,19 @@ export default function EntryCardRow({ entries, selectedIndex, onSelect }) {
           width: calc((100% - ${GAP * 2}px) / 3);
           transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease;
         }
+        /* Phone: the selected story and its two neighbours share one line,
+           like tabs along a rule — small titles, no place names, right under
+           the text instead of nudged down. */
         @media (max-width: 640px) {
+          .entry-ring {
+            padding-top: 0.5rem;
+            transform: none;
+          }
           .entry-ring-slot {
-            width: 100%;
+            width: calc((100% - ${GAP * 2}px) / 3);
+          }
+          .entry-card-meta {
+            display: none;
           }
         }
         @media (prefers-reduced-motion: reduce) {

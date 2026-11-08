@@ -115,7 +115,7 @@ export default function EntryCard({ entry, index, isActive, onSelect }) {
       </div>
 
       {place ? (
-        <p style={{ ...styles.meta, ...(language === "km" ? styles.trackingNone : null) }}>{place}</p>
+        <p style={{ ...styles.meta, ...(language === "km" ? styles.trackingNone : null) }} className="entry-card-meta">{place}</p>
       ) : null}
     </button>
   );
