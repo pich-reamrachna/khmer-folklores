@@ -25,6 +25,9 @@ const ROW_HEIGHT = 104;
 // Rows sit edge to edge, divided by a ruled line (globals.css .archive-row).
 const ROW_GAP = 0;
 const VISIBLE_ROWS = 4;
+// On phone a row stacks its title, snippet and place, so it's taller; the
+// list still shows VISIBLE_ROWS of them before scrolling.
+const PHONE_ROW_HEIGHT = 149;
 const SNIPPET_WORD_LIMIT = 16;
 
 // Truncates by word count rather than relying only on CSS overflow —
@@ -460,9 +463,8 @@ export default function ArchiveBrowser({ stories }) {
           background-color: #8a7354;
         }
         @media (max-width: 640px) {
-          /* Top-aligned instead of centered — centering left space unused
-             above the content while the dropdown ran out of room below the
-             search bar and got clipped by the viewport edge. */
+          /* Top-aligned instead of centered, so the list gets the room
+             under the search bar. */
           .archive-section {
             justify-content: flex-start;
           }
@@ -471,38 +473,16 @@ export default function ArchiveBrowser({ stories }) {
             align-items: stretch;
             justify-content: flex-start;
           }
+          /* The list sits under the search bar and is always there, like
+             on wide screens (it used to be a dropdown that only opened once
+             something was typed, so the list was hidden). It shows four
+             stories, then scrolls on its own. */
           .archive-results {
-            position: absolute;
-            top: calc(100% + 10px);
-            left: 0;
-            right: 0;
-            z-index: 20;
-            background: #e6e1d8;
-            border: 1px solid rgba(60, 50, 40, 0.25);
-            border-radius: 4px;
-            padding: 1rem;
-            box-sizing: border-box;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(-4px);
-            transition: opacity 0.18s ease, transform 0.18s ease;
-            overflow-x: hidden;
-            /* Fixed px, not vh — the section centers its content, so a
-               taller screen mostly adds space above the search bar, not
-               below it; vh wouldn't track available space. */
-            max-height: 240px;
+            margin-top: 1.25rem;
           }
-          .archive-search-panel.has-query .archive-results {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0);
-          }
-          /* .archive-scroll (not .archive-results) is the one that scrolls
-             — keeps the header a plain, un-scrolled block above it, since
-             rows (119px) are taller than the header (~30px) and a sticky
-             header could otherwise rest mid-row. */
           .archive-scroll {
-            max-height: 156px;
+            /* +1 so the fourth row's ruled line shows too. */
+            max-height: ${VISIBLE_ROWS * PHONE_ROW_HEIGHT + 1}px;
             overflow-y: auto;
             overflow-x: hidden;
           }
