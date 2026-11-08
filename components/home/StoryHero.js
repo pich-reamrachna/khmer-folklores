@@ -225,14 +225,14 @@ const styles = {
   // The filled gold button. backgroundColor/color live in app/globals.css's
   // .hero-read-btn rule — it's a Link, and its :hover can only be styled
   // from there (see CLAUDE.md on <style jsx> and Link).
+  // padding and fontSize live there too: the button is smaller on phone,
+  // and a media query can't beat an inline style.
   readButton: {
     display: "inline-flex",
     alignItems: "center",
     gap: "0.9rem",
-    padding: "1.05rem 1.5rem",
     textDecoration: "none",
     fontFamily: "var(--font-khmer), var(--font-cinzel), serif",
-    fontSize: "0.85rem",
     fontWeight: 700,
     letterSpacing: "0.2em",
     textTransform: "uppercase",
