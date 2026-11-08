@@ -651,6 +651,9 @@ select:-webkit-autofill {
   display: grid;
   grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
 }
+.review-card > div {
+  padding: 2rem 2.25rem;
+}
 @media (max-width: 860px) {
   .review-card {
     grid-template-columns: minmax(0, 1fr);
@@ -659,6 +662,121 @@ select:-webkit-autofill {
     border-left: none !important;
     border-top: 1px solid rgba(245, 239, 230, 0.08);
   }
+}
+/* Phone: tighter card padding, so the text gets the width. */
+@media (max-width: 640px) {
+  .review-card > div {
+    padding: 1.4rem 1.25rem;
+  }
+}
+/* ReviewQueue.js's queue picker. Wide screens: the pill tabs. Phone: the
+   tabs don't fit on one line, so a dropdown shows instead — a gold pill with
+   the current queue and its count, opening a list of all three. */
+.review-select {
+  display: none;
+  position: relative;
+}
+@media (max-width: 640px) {
+  .review-tabs {
+    display: none !important;
+  }
+  .review-select {
+    display: block;
+  }
+}
+.review-select-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 1.2rem;
+  border: none;
+  border-radius: 999px;
+  background-color: #c9a961;
+  color: #1a1817;
+  font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+.review-select-count {
+  font-weight: 600;
+  opacity: 0.6;
+  letter-spacing: normal;
+}
+/* The chevron, pushed to the right end; turns over while open. */
+.review-select-chevron {
+  margin-left: auto;
+  width: 10px;
+  height: 10px;
+  background-color: currentColor;
+  -webkit-mask-image: url(/icons/arrow-down-sign-to-navigate.png);
+  mask-image: url(/icons/arrow-down-sign-to-navigate.png);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  transition: transform 0.2s ease;
+}
+.review-select-chevron.is-open {
+  transform: rotate(180deg);
+}
+/* The list: floats under the pill over the cards, fading and dropping in. */
+.review-select-list {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 20;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background-color: #1a1817;
+  border: 1px solid rgba(201, 169, 97, 0.35);
+  border-radius: 14px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+.review-select-list.is-open {
+  opacity: 1;
+  transform: none;
+  pointer-events: auto;
+}
+.review-select-option {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  padding: 0.85rem 0.9rem;
+  border: none;
+  border-radius: 10px;
+  background-color: transparent;
+  color: #d9d2c5;
+  font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+.review-select-option .review-select-count {
+  margin-left: auto;
+}
+.review-select-option:hover {
+  background-color: rgba(201, 169, 97, 0.12);
+  color: #e6c575;
+}
+.review-select-option.is-active {
+  color: #e6c575;
 }
 
 /* A small spinning ring inside a button while its form is sending

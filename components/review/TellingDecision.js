@@ -77,7 +77,8 @@ export default function TellingDecision({ id, rpc, idKey }) {
           />
         </div>
       ) : null}
-      {error ? <p style={s.error}>{error}</p> : null}
+      {/* Reserved, so a message doesn't push the button down. */}
+      {choice ? <p style={{ ...s.errorSlot, ...s.errorSlotTwoLines }} aria-live="polite">{error}</p> : null}
       {choice ? (
         <ReviewActions
           choice={choice}

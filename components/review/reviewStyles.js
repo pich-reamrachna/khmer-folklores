@@ -23,10 +23,11 @@ const reviewStyles = {
     backgroundColor: "rgba(26, 24, 23, 0.6)",
   },
   // Left: the submission.
-  read: { padding: "2rem 2.25rem", minWidth: 0 },
+  // Their padding lives in app/globals.css (.review-card > div): it's
+  // tighter on phone, and a media query can't beat an inline style.
+  read: { minWidth: 0 },
   // Right: the curator's form, on a darker panel.
   decide: {
-    padding: "2rem 2.25rem",
     minWidth: 0,
     backgroundColor: "rgba(0, 0, 0, 0.22)",
     borderLeft: "1px solid rgba(245, 239, 230, 0.08)",
@@ -90,7 +91,9 @@ const reviewStyles = {
     margin: 0,
   },
   photo: { maxWidth: 220, maxHeight: 220, objectFit: "cover", borderRadius: 2, display: "block", marginTop: "1rem" },
-  field: { display: "flex", flexDirection: "column", gap: "0.4rem", marginBottom: "1.4rem" },
+  // Tighter than it looks: each field ends in a message slot (below), which
+  // adds its own reserved line.
+  field: { display: "flex", flexDirection: "column", gap: "0.4rem", marginBottom: "0.8rem" },
   label: {
     fontFamily: khmerSans,
     fontSize: "0.66rem",
@@ -128,6 +131,14 @@ const reviewStyles = {
     resize: "vertical",
   },
   error: { fontFamily: khmerSans, fontSize: "0.8rem", color: "#E58B8B", margin: 0 },
+  // An error's place under a field (or above the confirm button): always
+  // there, empty until there's something to say, one line tall — so a
+  // message appearing never pushes the fields or buttons below it down.
+  errorSlot: { fontFamily: khmerSans, fontSize: "0.8rem", lineHeight: 1.4, minHeight: "1.4em", color: "#E58B8B", margin: 0 },
+  // The slot above the confirm button: two lines, since its longest
+  // messages ("Write a note saying what to change before returning.")
+  // wrap on a phone. Spread in after errorSlot.
+  errorSlotTwoLines: { minHeight: "2.8em" },
   // Wraps a form's fields and buttons: disabled while a decision is being
   // saved, which locks them all at once. Reset to look like nothing.
   lock: { border: "none", margin: 0, padding: 0, minWidth: 0 },

@@ -90,7 +90,7 @@ export default function ReviewForm({ submission }) {
       ) : (
         <input id={`${submission.id}-${id}`} style={s.input} value={value} maxLength={100} onChange={(e) => onChange(e.target.value)} />
       )}
-      {errors[id] ? <p style={s.error}>{errors[id]}</p> : null}
+      <p style={s.errorSlot} aria-live="polite">{errors[id] ?? ""}</p>
     </div>
   );
 
@@ -116,7 +116,7 @@ export default function ReviewForm({ submission }) {
                 <option key={c.en} value={c.en}>{language === "km" ? c.km : c.en}</option>
               ))}
             </select>
-            {errors.category ? <p style={s.error}>{errors.category}</p> : null}
+            <p style={s.errorSlot} aria-live="polite">{errors.category ?? ""}</p>
           </div>
           {field("summary", "reviewSummaryLabel", summary, setSummary, true)}
           {field("summaryKhmer", "reviewSummaryKhmerLabel", summaryKhmer, setSummaryKhmer, true)}
@@ -124,7 +124,7 @@ export default function ReviewForm({ submission }) {
       ) : null}
       {choice === "reject" ? field("note", "reviewNoteLabel", note, setNote, true) : null}
 
-      {errors.form ? <p style={s.error}>{errors.form}</p> : null}
+      {choice ? <p style={{ ...s.errorSlot, ...s.errorSlotTwoLines }} aria-live="polite">{errors.form ?? ""}</p> : null}
       {choice ? (
         <ReviewActions choice={choice} busy={busy} onConfirm={choice === "approve" ? approve : reject} />
       ) : null}

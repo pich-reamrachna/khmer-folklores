@@ -1,12 +1,17 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import ReviewCard from "./ReviewCard.js";
 import TellingReviewCard from "./TellingReviewCard.js";
 import EditReviewCard from "./EditReviewCard.js";
 import { useTranslation } from "../shared/uiText.js";
 import { useLanguage } from "../shared/LanguageContext.js";
 
+// On phone the tabs don't fit on one line, so they become a dropdown
+// instead: a gold pill showing the current queue and its count, opening a
+// list of all three (the .review-select rules in app/globals.css swap which
+// one shows).
+//
 // /review's queue, in three tabs — new stories, new tellings on published
 // stories, and waiting changes to published tellings — each with its count,
 // and each list oldest first. The header carries the total on the right.
@@ -36,10 +41,14 @@ const styles = {
   // The tabs: same dark pill with a sliding gold one behind the chosen tab
   // as My Entries (MyEntries.js); colours and hover in app/globals.css's
   // .pill-tab rules.
+  // One line that never wraps. On phone, where the three don't fit, it's
+  // hidden and the dropdown shows instead (app/globals.css's .review-tabs /
+  // .review-select rules).
   tabs: {
     position: "relative",
     display: "inline-flex",
-    flexWrap: "wrap",
+    maxWidth: "100%",
+    boxSizing: "border-box",
     gap: 4,
     padding: 4,
     backgroundColor: "rgba(0, 0, 0, 0.28)",
@@ -57,6 +66,8 @@ const styles = {
   },
   tab: {
     position: "relative",
+    flexShrink: 0,
+    whiteSpace: "nowrap",
     display: "inline-flex",
     alignItems: "baseline",
     gap: "0.7rem",
@@ -111,6 +122,28 @@ export default function ReviewQueue({ submissions, tellings, edits, loadFailed }
     return () => window.removeEventListener("resize", measure);
   }, [tab, language]);
 
+  // The phone dropdown: open or closed. Closes on picking a queue, on a tap
+  // anywhere outside it, and on Escape.
+  const selectRef = useRef(null);
+  const [selectOpen, setSelectOpen] = useState(false);
+  useEffect(() => {
+    if (!selectOpen) return;
+    const onDown = (e) => {
+      if (selectRef.current && !selectRef.current.contains(e.target)) setSelectOpen(false);
+    };
+    const onKey = (e) => {
+      if (e.key === "Escape") setSelectOpen(false);
+    };
+    document.addEventListener("mousedown", onDown);
+    document.addEventListener("touchstart", onDown);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDown);
+      document.removeEventListener("touchstart", onDown);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [selectOpen]);
+
   return (
     <section style={styles.section} className="my-entries-section">
       <div style={styles.container} className="my-entries-content">
@@ -122,7 +155,43 @@ export default function ReviewQueue({ submissions, tellings, edits, loadFailed }
           <p style={styles.count}>{status}</p>
         </div>
 
-        <div role="tablist" style={styles.tabs}>
+        {/* Phone: the queues as a dropdown. */}
+        <div className="review-select" ref={selectRef}>
+          <button
+            type="button"
+            className="review-select-btn"
+            style={tracking ?? undefined}
+            aria-haspopup="listbox"
+            aria-expanded={selectOpen}
+            onClick={() => setSelectOpen((open) => !open)}
+          >
+            <span>{t(current[1])}</span>
+            <span className="review-select-count">{current[2].length}</span>
+            <span className={selectOpen ? "review-select-chevron is-open" : "review-select-chevron"} aria-hidden="true" />
+          </button>
+          <ul className={selectOpen ? "review-select-list is-open" : "review-select-list"} role="listbox" aria-hidden={!selectOpen}>
+            {sections.map(([id, labelKey, items]) => (
+              <li key={id}>
+                <button
+                  type="button"
+                  role="option"
+                  aria-selected={tab === id}
+                  className={tab === id ? "review-select-option is-active" : "review-select-option"}
+                  style={tracking ?? undefined}
+                  onClick={() => {
+                    setTab(id);
+                    setSelectOpen(false);
+                  }}
+                >
+                  <span>{t(labelKey)}</span>
+                  <span className="review-select-count">{items.length}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div role="tablist" style={styles.tabs} className="review-tabs">
           {thumb ? (
             <span
               aria-hidden="true"
