@@ -26,6 +26,11 @@ const styles = {
     // Top padding clears the fixed 90px NavBar, matching StoryHero/ArchiveBrowser.
     padding: "130px 2rem 3rem",
     boxSizing: "border-box",
+    // The header picture is enlarged with a scale transform, which pokes past
+    // the screen's right edge; without this the page could be swiped sideways
+    // into that overhang. clip (not hidden) cuts it off without making the
+    // section its own scroll box.
+    overflowX: "clip",
     // The home hero's warm charcoal (StoryHero.js), shown until the texture
     // below loads.
     backgroundColor: "#1A1817",
