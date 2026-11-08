@@ -883,3 +883,36 @@ fieldset:disabled select {
     transition: none;
   }
 }
+
+/* PageLoadingBar.js: a thin gold bar along the NavBar's bottom edge (90px)
+   while the next page loads. Its length is the inline scaleX; here it grows
+   smoothly while loading, then fades once the page is in. Hidden, it has no
+   transition, so it resets to empty without being seen. */
+.page-loading-bar {
+  position: fixed;
+  top: 90px;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 110;
+  background: linear-gradient(90deg, #c9a961, #e6c575);
+  box-shadow: 0 0 8px rgba(230, 197, 117, 0.7);
+  transform-origin: left center;
+  opacity: 0;
+  pointer-events: none;
+}
+.page-loading-bar.is-active {
+  opacity: 1;
+  transition: transform 0.4s ease, opacity 0.2s ease;
+}
+.page-loading-bar.is-finishing {
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.3s ease 0.2s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .page-loading-bar.is-active,
+  .page-loading-bar.is-finishing {
+    transition: opacity 0.2s ease;
+  }
+}
+
