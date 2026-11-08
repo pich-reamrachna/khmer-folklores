@@ -647,8 +647,8 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
            side, in gold, faint behind the tellings. The file
            (public/bamboo-hq-transparent.png) is pale grey leaves on a
            transparent ground, so it's used as a mask over a gold fill — the
-           leaves show gold, same recolouring trick as the site's icons. A
-           second mask fades in its top edge, which cuts through leaves.
+           leaves show gold, same recolouring trick as the site's icons. The
+           gold fill fades in at the top, where the file cuts through leaves.
            Its own layer, clipped to the section; the content sits above it. */
         /* The section's ground: the hero's worn charcoal texture
            (public/rustic-charcoal.webp — soft smudges, specks and fine
@@ -708,18 +708,18 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
           right: 0;
           bottom: 0;
           width: min(560px, 45%);
-          background-color: #c9a961;
-          -webkit-mask-image: url(/bamboo-hq-transparent.png),
-            linear-gradient(to bottom, transparent 0%, #000 22%);
-          mask-image: url(/bamboo-hq-transparent.png), linear-gradient(to bottom, transparent 0%, #000 22%);
-          -webkit-mask-size: contain, 100% 100%;
-          mask-size: contain, 100% 100%;
-          -webkit-mask-position: right top, 0 0;
-          mask-position: right top, 0 0;
+          /* The fade-in at the top is in the fill, not a second mask: two
+             masks need mask-composite to combine, which some phone browsers
+             don't apply, and the fade mask then showed as a solid box. */
+          background-image: linear-gradient(to bottom, rgba(201, 169, 97, 0) 0%, #c9a961 22%);
+          -webkit-mask-image: url(/bamboo-hq-transparent.png);
+          mask-image: url(/bamboo-hq-transparent.png);
+          -webkit-mask-size: contain;
+          mask-size: contain;
+          -webkit-mask-position: right top;
+          mask-position: right top;
           -webkit-mask-repeat: no-repeat;
           mask-repeat: no-repeat;
-          -webkit-mask-composite: source-in;
-          mask-composite: intersect;
           opacity: 0.16;
           pointer-events: none;
         }

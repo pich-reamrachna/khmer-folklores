@@ -602,17 +602,18 @@ select:-webkit-autofill {
   top: 90px;
   bottom: 0;
   width: min(420px, 28%);
-  background-color: #c9a961;
-  -webkit-mask-image: url(/bamboo-hq-transparent.png), linear-gradient(to bottom, transparent 0%, #000 20%);
-  mask-image: url(/bamboo-hq-transparent.png), linear-gradient(to bottom, transparent 0%, #000 20%);
-  -webkit-mask-size: contain, 100% 100%;
-  mask-size: contain, 100% 100%;
-  -webkit-mask-position: right top, 0 0;
-  mask-position: right top, 0 0;
+  /* One mask only, with the top fade in the fill — combining two masks
+     needs mask-composite, which some phone browsers don't apply (the fade
+     mask then showed as a solid gold box). */
+  background-image: linear-gradient(to bottom, rgba(201, 169, 97, 0) 0%, #c9a961 20%);
+  -webkit-mask-image: url(/bamboo-hq-transparent.png);
+  mask-image: url(/bamboo-hq-transparent.png);
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: right top;
+  mask-position: right top;
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
-  -webkit-mask-composite: source-in;
-  mask-composite: intersect;
   opacity: 0.14;
   pointer-events: none;
 }

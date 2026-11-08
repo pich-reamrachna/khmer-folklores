@@ -70,18 +70,18 @@ const styles = {
     right: 0,
     bottom: 0,
     width: "58%",
-    backgroundImage: "url(/splash.jpg)",
-    backgroundSize: "cover",
+    // The bottom fade is a charcoal gradient laid over the splash, and the
+    // left fade the only mask: two masks would need mask-composite to
+    // combine, which some phone browsers don't apply (the fades then went
+    // missing and the splash showed as a hard-edged box).
+    backgroundImage: "linear-gradient(to bottom, rgba(26, 24, 23, 0) 55%, #1A1817 100%), url(/splash.jpg)",
+    backgroundSize: "100% 100%, cover",
     backgroundPosition: "center top",
     backgroundRepeat: "no-repeat",
     filter: "sepia(0.35) brightness(0.7)",
     opacity: 0.55,
-    WebkitMaskImage:
-      "linear-gradient(to right, transparent 0%, #000 45%), linear-gradient(to bottom, #000 55%, transparent 100%)",
-    maskImage:
-      "linear-gradient(to right, transparent 0%, #000 45%), linear-gradient(to bottom, #000 55%, transparent 100%)",
-    WebkitMaskComposite: "source-in",
-    maskComposite: "intersect",
+    WebkitMaskImage: "linear-gradient(to right, transparent 0%, #000 45%)",
+    maskImage: "linear-gradient(to right, transparent 0%, #000 45%)",
   },
   container: {
     position: "relative",
