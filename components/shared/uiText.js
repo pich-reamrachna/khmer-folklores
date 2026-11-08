@@ -225,7 +225,6 @@ const uiText = {
   reviewStoriesHeading: { en: "New stories", km: "រឿងថ្មី" },
   reviewTellingsHeading: { en: "New tellings", km: "ការនិទានថ្មី" },
   reviewEditsHeading: { en: "Changes to published tellings", km: "ការកែប្រែលើការនិទានដែលបានផ្សព្វផ្សាយ" },
-  reviewReturn: { en: "Return with note", km: "បញ្ជូនត្រឡប់ជាមួយកំណត់ចំណាំ" },
   reviewReturnNoteLabel: { en: "Note to the owner (needed to return)", km: "កំណត់ចំណាំទៅម្ចាស់ (ត្រូវការដើម្បីបញ្ជូនត្រឡប់)" },
   reviewReturnNoteError: { en: "Write a note saying what to change before returning.", km: "សូមសរសេរកំណត់ចំណាំថាត្រូវកែអ្វី មុននឹងបញ្ជូនត្រឡប់។" },
   reviewBefore: { en: "Now on the story", km: "បច្ចុប្បន្ននៅលើរឿង" },
@@ -241,7 +240,13 @@ const uiText = {
   reviewSummaryKhmerLabel: { en: "Summary in Khmer (optional)", km: "សេចក្ដីសង្ខេបជាភាសាខ្មែរ (ស្រេចចិត្ត)" },
   reviewNoteLabel: { en: "Note to the submitter (needed to reject)", km: "កំណត់ចំណាំទៅអ្នកដាក់ស្នើ (ត្រូវការដើម្បីបដិសេធ)" },
   reviewApprove: { en: "Approve & publish", km: "អនុម័ត និងផ្សព្វផ្សាយ" },
-  reviewReject: { en: "Reject", km: "បដិសេធ" },
+  // The decision buttons at the top of each /review form (DecisionPicker.js).
+  // AI-drafted Khmer — flag for the curator to review.
+  reviewChooseApprove: { en: "Approve", km: "អនុម័ត" },
+  reviewChooseReject: { en: "Reject", km: "បដិសេធ" },
+  reviewChooseReturn: { en: "Return", km: "បញ្ជូនត្រឡប់" },
+  // The confirm button once Reject / Return is chosen (ReviewActions.js).
+  reviewRejectReturn: { en: "Reject & Return", km: "បដិសេធ និងបញ្ជូនត្រឡប់" },
   reviewTitleError: { en: "Story name must be at least 3 characters.", km: "ឈ្មោះរឿងត្រូវមានយ៉ាងតិច 3 តួអក្សរ។" },
   reviewSummaryError: { en: "Write a summary before approving.", km: "សូមសរសេរសេចក្ដីសង្ខេបមុននឹងអនុម័ត។" },
   reviewNoteError: { en: "Write a note explaining why before rejecting.", km: "សូមសរសេរកំណត់ចំណាំពន្យល់ពីមូលហេតុ មុននឹងបដិសេធ។" },

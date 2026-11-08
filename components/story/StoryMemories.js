@@ -662,9 +662,12 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
           background-image: linear-gradient(to bottom, #1a1817 0, rgba(26, 24, 23, 0) 220px),
             linear-gradient(rgba(26, 24, 23, 0.6), rgba(26, 24, 23, 0.6)),
             url(/rustic-charcoal.webp);
-          background-size: 100% 100%, 100% 100%, cover;
-          background-position: center;
-          background-repeat: no-repeat;
+          /* At its own size (2400 × 1400), anchored to the top: with
+             "cover" it rescaled and shifted whenever a telling was opened
+             and the section grew. */
+          background-size: 100% 100%, 100% 100%, 2400px 1400px;
+          background-position: center top;
+          background-repeat: no-repeat, no-repeat, repeat;
         }
         /* Embers: a few small warm glows (public/candle-glow-core.png)
            scattered across the section, drifting slowly upward and back.
@@ -711,11 +714,11 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
           /* The fade-in at the top is in the fill, not a second mask: two
              masks need mask-composite to combine, which some phone browsers
              don't apply, and the fade mask then showed as a solid box. */
-          background-image: linear-gradient(to bottom, rgba(201, 169, 97, 0) 0%, #c9a961 22%);
+          background-image: linear-gradient(to bottom, rgba(201, 169, 97, 0) 0, #c9a961 200px);
           -webkit-mask-image: url(/bamboo-hq-transparent.png);
           mask-image: url(/bamboo-hq-transparent.png);
-          -webkit-mask-size: contain;
-          mask-size: contain;
+          -webkit-mask-size: 100% auto;
+          mask-size: 100% auto;
           -webkit-mask-position: right top;
           mask-position: right top;
           -webkit-mask-repeat: no-repeat;

@@ -2,52 +2,46 @@
 
 import { useTranslation } from "../shared/uiText.js";
 
-// Approve / Reject buttons under a /review form. `busy` is null, or which
-// one is being saved ("approve" / "reject"): both are disabled then, so a
-// double-click can't send it twice, and that one shows a spinner and
-// "Saving…". The labels are uiText keys — a telling is "returned", not
-// rejected (TellingDecision.js).
+// The confirm button under a /review form, for the decision chosen above it
+// (DecisionPicker.js): green "Approve & publish" or red "Reject & Return",
+// matching the Approve / Reject pill. The labels are uiText keys. `busy` is null, or the
+// decision being saved: the button is disabled then, so a double-click can't
+// send it twice, and it shows a spinner and "Saving…".
 
 export default function ReviewActions({
+  choice,
   busy,
-  onApprove,
-  onReject,
+  onConfirm,
   approveLabel = "reviewApprove",
-  rejectLabel = "reviewReject",
+  rejectLabel = "reviewRejectReturn",
 }) {
   const t = useTranslation();
-  // The button's label, or a spinner and "Saving…" while it's the one saving.
-  const label = (action, key) =>
-    busy === action ? (
-      <>
-        <span className="btn-spinner" aria-hidden="true" />
-        {t("contributeSubmitting")}
-      </>
-    ) : (
-      t(key)
-    );
+  const approving = choice === "approve";
 
   return (
     <div className="review-actions">
-      <button type="button" className="review-btn approve" disabled={!!busy} onClick={onApprove}>
-        {label("approve", approveLabel)}
-      </button>
-      <button type="button" className="review-btn reject" disabled={!!busy} onClick={onReject}>
-        {label("reject", rejectLabel)}
+      <button type="button" className={`review-btn ${approving ? "approve" : "reject"}`} disabled={!!busy} onClick={onConfirm}>
+        {busy ? (
+          <>
+            <span className="btn-spinner" aria-hidden="true" />
+            {t("contributeSubmitting")}
+          </>
+        ) : (
+          t(approving ? approveLabel : rejectLabel)
+        )}
       </button>
 
-      {/* Native <button>s, so styled-jsx scoping works; base + hover +
+      {/* Native <button>, so styled-jsx scoping works; base + hover +
           disabled all live together, none set inline. */}
       <style jsx>{`
-        /* Square buttons in small spaced capitals: Approve fills the row
-           in gold, Reject / Return sits beside it, outlined. */
+        /* One full-width square button in small spaced capitals: green to
+           approve, red to reject or return — the same colours as the
+           Approve / Reject pill above it. */
         .review-actions {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.6rem;
           margin-top: 0.6rem;
         }
         .review-btn {
+          width: 100%;
           padding: 0.95rem 1.4rem;
           border-radius: 2px;
           font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
@@ -59,22 +53,17 @@ export default function ReviewActions({
           transition: opacity 0.2s ease, background-color 0.2s ease, color 0.2s ease;
         }
         .review-btn.approve {
-          flex: 1;
           border: none;
-          background-color: #c5a059;
+          background-color: #5cb87a;
           color: #1a1817;
         }
         .review-btn.reject {
-          border: 1px solid rgba(245, 239, 230, 0.18);
-          background: transparent;
-          color: #e58b8b;
+          border: none;
+          background-color: #e58b8b;
+          color: #1a1817;
         }
-        .review-btn.approve:hover {
+        .review-btn:hover {
           opacity: 0.85;
-        }
-        .review-btn.reject:hover {
-          border-color: #e58b8b;
-          background-color: rgba(229, 139, 139, 0.08);
         }
         .review-btn:disabled {
           opacity: 0.5;

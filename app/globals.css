@@ -600,10 +600,13 @@ select:-webkit-autofill {
   overflow: hidden;
   background-image: linear-gradient(rgba(26, 24, 23, 0.45), rgba(26, 24, 23, 0.45)),
     url(/rustic-charcoal.webp);
-  background-size: 100% 100%, cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: scroll;
+  /* At its own size (2400 × 1400), anchored to the top, and repeated only
+     past that: with "cover" the texture rescaled and shifted whenever the
+     page grew or shrank (switching Approve / Reject on /review shows a
+     different number of fields), which looked like the background changing. */
+  background-size: 100% 100%, 2400px 1400px;
+  background-position: center top;
+  background-repeat: no-repeat, repeat;
 }
 .my-entries-section::before,
 .my-entries-section::after {
@@ -615,11 +618,13 @@ select:-webkit-autofill {
   /* One mask only, with the top fade in the fill — combining two masks
      needs mask-composite, which some phone browsers don't apply (the fade
      mask then showed as a solid gold box). */
-  background-image: linear-gradient(to bottom, rgba(201, 169, 97, 0) 0%, #c9a961 20%);
+  /* Fade and bamboo sized by fixed lengths and the layer's width, not the
+     page's height, so they stay put when the page grows or shrinks. */
+  background-image: linear-gradient(to bottom, rgba(201, 169, 97, 0) 0, #c9a961 200px);
   -webkit-mask-image: url(/bamboo-hq-transparent.png);
   mask-image: url(/bamboo-hq-transparent.png);
-  -webkit-mask-size: contain;
-  mask-size: contain;
+  -webkit-mask-size: 100% auto;
+  mask-size: 100% auto;
   -webkit-mask-position: right top;
   mask-position: right top;
   -webkit-mask-repeat: no-repeat;
@@ -687,4 +692,76 @@ fieldset:disabled textarea,
 fieldset:disabled select {
   opacity: 0.55;
   cursor: default;
+}
+
+/* DecisionPicker.js's Approve / Reject (or Return) choice at the top of each
+   /review form: a pill split in two halves, with a highlight that slides
+   under the chosen half — green for Approve, red for Reject. Hidden until
+   something is chosen. */
+.decision-picker {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  margin-bottom: 1.6rem;
+  background-color: rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(245, 239, 230, 0.16);
+  border-radius: 999px;
+}
+.decision-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 4px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  opacity: 0;
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.35s ease, opacity 0.2s ease;
+  pointer-events: none;
+}
+.decision-thumb.is-approve {
+  opacity: 1;
+  transform: translateX(0);
+  background-color: #5cb87a;
+}
+.decision-thumb.is-reject {
+  opacity: 1;
+  transform: translateX(100%);
+  background-color: #e58b8b;
+}
+.decision-option {
+  position: relative;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: #d9d2c5;
+  font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.decision-option.km {
+  letter-spacing: normal;
+}
+.decision-option.approve:not(.is-chosen):hover {
+  color: #5cb87a;
+}
+.decision-option.reject:not(.is-chosen):hover {
+  color: #e58b8b;
+}
+.decision-option.is-chosen {
+  color: #1a1817;
+}
+.decision-option:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+@media (prefers-reduced-motion: reduce) {
+  .decision-thumb {
+    transition: none;
+  }
 }

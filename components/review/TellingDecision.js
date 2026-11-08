@@ -6,11 +6,13 @@ import { createClient } from "../../utils/supabase/client.js";
 import { useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import ReviewActions from "./ReviewActions.js";
+import DecisionPicker from "./DecisionPicker.js";
 import s from "./reviewStyles.js";
 
-// The curator's half of a /review card for a new telling or a waiting edit:
-// an optional note, then Approve or Return. Returning needs a note, so the
-// owner knows what to fix (it shows on their My Entries card).
+// The curator's half of a /review card for a new telling or a waiting edit.
+// First choose Approve or Return (DecisionPicker.js): approving needs nothing
+// more, returning shows the note — which it needs, so the owner knows what to
+// fix (it shows on their My Entries card).
 // rpc is the database function that decides — review_entry for a new telling,
 // review_entry_edit for an edit — and idKey its id argument's name. Both
 // check the caller is a reviewer themselves and return false if nothing was
@@ -27,6 +29,12 @@ export default function TellingDecision({ id, rpc, idKey }) {
   // null, or which decision is being saved ("approve" / "reject") — the
   // note and buttons lock, and that button shows it's working.
   const [busy, setBusy] = useState(null);
+  // null until a decision is chosen, then "approve" or "reject" (return).
+  const [choice, setChoice] = useState(null);
+  const choose = (next) => {
+    setChoice(next);
+    setError("");
+  };
 
   // On success the page re-fetches, and this card drops out of the queue.
   async function decide(decision) {
@@ -53,25 +61,30 @@ export default function TellingDecision({ id, rpc, idKey }) {
   const fieldId = `${id}-note`;
   return (
     <fieldset style={s.lock} disabled={!!busy} aria-busy={!!busy}>
-      <div style={s.field}>
-        <label style={{ ...s.label, ...(language === "km" ? s.trackingNone : null) }} htmlFor={fieldId}>
-          {t("reviewReturnNoteLabel")}
-        </label>
-        <textarea
-          id={fieldId}
-          style={{ ...s.input, ...s.textarea }}
-          value={note}
-          maxLength={MAX}
-          onChange={(e) => setNote(e.target.value)}
-        />
-      </div>
+      <DecisionPicker choice={choice} onChoose={choose} rejectKey="reviewChooseReturn" />
+
+      {choice === "reject" ? (
+        <div style={s.field}>
+          <label style={{ ...s.label, ...(language === "km" ? s.trackingNone : null) }} htmlFor={fieldId}>
+            {t("reviewReturnNoteLabel")}
+          </label>
+          <textarea
+            id={fieldId}
+            style={{ ...s.input, ...s.textarea }}
+            value={note}
+            maxLength={MAX}
+            onChange={(e) => setNote(e.target.value)}
+          />
+        </div>
+      ) : null}
       {error ? <p style={s.error}>{error}</p> : null}
-      <ReviewActions
-        busy={busy}
-        onApprove={() => decide("published")}
-        onReject={() => decide("returned")}
-        rejectLabel="reviewReturn"
-      />
+      {choice ? (
+        <ReviewActions
+          choice={choice}
+          busy={busy}
+          onConfirm={() => decide(choice === "approve" ? "published" : "returned")}
+        />
+      ) : null}
     </fieldset>
   );
 }

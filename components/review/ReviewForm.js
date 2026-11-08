@@ -7,11 +7,14 @@ import categories from "../../data/categories.js";
 import { useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import ReviewActions from "./ReviewActions.js";
+import DecisionPicker from "./DecisionPicker.js";
 import s from "./reviewStyles.js";
 
-// The curator's half of a /review card: tidy the story's name/category, write
-// its summary, then approve (publish) or reject (with a note the submitter
-// will see). Approving needs a summary, rejecting needs a note — the database
+// The curator's half of a /review card. First choose Approve or Reject
+// (DecisionPicker.js); only that decision's fields show: approving shows the
+// story's name, Khmer name and category to tidy and its summary to write,
+// rejecting shows the note the submitter will see. Typed values are kept if
+// the choice is switched. Approving needs a summary, rejecting needs a note — the database
 // enforces the summary rule too (stories_published_needs_summary).
 
 const MAX = 1000;
@@ -26,6 +29,8 @@ export default function ReviewForm({ submission }) {
   const [summary, setSummary] = useState("");
   const [summaryKhmer, setSummaryKhmer] = useState("");
   const [note, setNote] = useState("");
+  // null until a decision is chosen, then "approve" or "reject".
+  const [choice, setChoice] = useState(null);
   const [errors, setErrors] = useState({});
   // null, or which decision is being saved ("approve" / "reject") — the
   // fields and buttons lock, and that button shows it's working.
@@ -89,26 +94,40 @@ export default function ReviewForm({ submission }) {
     </div>
   );
 
+  // Switching the decision clears the other decision's error messages.
+  const choose = (next) => {
+    setChoice(next);
+    setErrors({});
+  };
+
   return (
     <fieldset style={s.lock} disabled={!!busy} aria-busy={!!busy}>
-      {field("title", "newStoryTitleLabel", title, setTitle)}
-      {field("khmerTitle", "newStoryKhmerTitleLabel", khmerTitle, setKhmerTitle)}
-      <div style={s.field}>
-        <label style={label} htmlFor={`${submission.id}-category`}>{t("newStoryCategoryLabel")}</label>
-        <select id={`${submission.id}-category`} style={s.input} value={category} onChange={(e) => setCategory(e.target.value)}>
-          <option value="">{t("newStoryCategoryPlaceholder")}</option>
-          {categories.map((c) => (
-            <option key={c.en} value={c.en}>{language === "km" ? c.km : c.en}</option>
-          ))}
-        </select>
-        {errors.category ? <p style={s.error}>{errors.category}</p> : null}
-      </div>
-      {field("summary", "reviewSummaryLabel", summary, setSummary, true)}
-      {field("summaryKhmer", "reviewSummaryKhmerLabel", summaryKhmer, setSummaryKhmer, true)}
-      {field("note", "reviewNoteLabel", note, setNote, true)}
+      <DecisionPicker choice={choice} onChoose={choose} />
+
+      {choice === "approve" ? (
+        <>
+          {field("title", "newStoryTitleLabel", title, setTitle)}
+          {field("khmerTitle", "newStoryKhmerTitleLabel", khmerTitle, setKhmerTitle)}
+          <div style={s.field}>
+            <label style={label} htmlFor={`${submission.id}-category`}>{t("newStoryCategoryLabel")}</label>
+            <select id={`${submission.id}-category`} style={s.input} value={category} onChange={(e) => setCategory(e.target.value)}>
+              <option value="">{t("newStoryCategoryPlaceholder")}</option>
+              {categories.map((c) => (
+                <option key={c.en} value={c.en}>{language === "km" ? c.km : c.en}</option>
+              ))}
+            </select>
+            {errors.category ? <p style={s.error}>{errors.category}</p> : null}
+          </div>
+          {field("summary", "reviewSummaryLabel", summary, setSummary, true)}
+          {field("summaryKhmer", "reviewSummaryKhmerLabel", summaryKhmer, setSummaryKhmer, true)}
+        </>
+      ) : null}
+      {choice === "reject" ? field("note", "reviewNoteLabel", note, setNote, true) : null}
 
       {errors.form ? <p style={s.error}>{errors.form}</p> : null}
-      <ReviewActions busy={busy} onApprove={approve} onReject={reject} />
+      {choice ? (
+        <ReviewActions choice={choice} busy={busy} onConfirm={choice === "approve" ? approve : reject} />
+      ) : null}
     </fieldset>
   );
 }
