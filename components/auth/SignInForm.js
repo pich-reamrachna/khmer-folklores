@@ -6,6 +6,7 @@ import { useTranslation } from "../shared/uiText.js";
 import { useLanguage } from "../shared/LanguageContext.js";
 import { createClient } from "../../utils/supabase/client.js";
 import styles, { underline } from "./authStyles.js";
+import { startPageLoading } from "../../utils/pageLoading.js";
 
 // The sign-in form, inside the sign-in / sign-up box (AuthCard.js).
 // `tabs` is the box's phone-only Sign In / Sign Up switch, shown above it.
@@ -76,7 +77,9 @@ export default function SignInForm({ tabs }) {
     }
 
     // Stays locked while the next page loads.
-    router.push(safeNextPath());
+    const next = safeNextPath();
+    startPageLoading(next);
+    router.push(next);
   };
 
   // Small spaced capitals — off for Khmer text.

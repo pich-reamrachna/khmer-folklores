@@ -3,6 +3,7 @@
 import { useEffect, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import ContributeForm from "./ContributeForm.js";
+import { startPageLoading } from "../../utils/pageLoading.js";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
@@ -92,7 +93,9 @@ export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, 
   const handleSuccess = ({ sentToReview } = {}) => {
     if (!entry || sentToReview) {
       navStarted.current = true;
-      startNavigation(() => router.push(`/my-entries?submitted=${entry ? "edit" : "telling"}`));
+      const next = `/my-entries?submitted=${entry ? "edit" : "telling"}`;
+      startPageLoading(next);
+      startNavigation(() => router.push(next));
       return;
     }
     onClose();

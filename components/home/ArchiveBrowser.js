@@ -7,6 +7,7 @@ import DidYouMean from "../share/DidYouMean.js";
 import { closestStory } from "../../utils/storyMatch.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import { startPageLoading } from "../../utils/pageLoading.js";
 
 // The "browse the archive" section beneath the hero. This implements the
 // eyebrow, title, subtitle, a search bar, and the stacked list of stories
@@ -375,7 +376,10 @@ export default function ArchiveBrowser({ stories }) {
                     <li key={entry.id}>
                       <button
                         type="button"
-                        onClick={() => router.push(`/${entry.id}`)}
+                        onClick={() => {
+                          startPageLoading(`/${entry.id}`);
+                          router.push(`/${entry.id}`);
+                        }}
                         style={styles.row}
                         className="archive-row"
                       >

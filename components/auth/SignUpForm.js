@@ -7,6 +7,7 @@ import { useLanguage } from "../shared/LanguageContext.js";
 import { createClient } from "../../utils/supabase/client.js";
 import { normalizeUsername, validateUsername } from "../../utils/username.js";
 import styles, { underline } from "./authStyles.js";
+import { startPageLoading } from "../../utils/pageLoading.js";
 
 // The sign-up form, inside the sign-in / sign-up box (AuthCard.js).
 // `tabs` is the box's phone-only Sign In / Sign Up switch, shown above it;
@@ -145,6 +146,7 @@ export default function SignUpForm({ tabs, onGoToLogin }) {
         setSignedUp(true);
         return;
       }
+      startPageLoading("/");
       router.push("/");
     } finally {
       submittingRef.current = false;

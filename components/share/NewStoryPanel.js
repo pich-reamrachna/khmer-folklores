@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import ContributeForm from "../contribute/ContributeForm.js";
 import { useTranslation } from "../shared/uiText.js";
+import { startPageLoading } from "../../utils/pageLoading.js";
 
 // /share's second step: the new-story form. Replaces the search view
 // (ShareSearch swaps it in) so the form has the page to itself. Once it's
@@ -63,7 +64,10 @@ export default function NewStoryPanel({ query, onBack }) {
           embedded
           initialTitle={isKhmer ? "" : query}
           initialKhmerTitle={isKhmer ? query : ""}
-          onSuccess={() => router.push("/my-entries?submitted=story")}
+          onSuccess={() => {
+            startPageLoading("/my-entries?submitted=story");
+            router.push("/my-entries?submitted=story");
+          }}
         />
       </div>
     </div>

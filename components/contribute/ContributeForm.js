@@ -11,6 +11,7 @@ import NewStoryFields from "./NewStoryFields.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import { findKhmerOrderProblems } from "../../utils/khmerOrder.js";
+import { startPageLoading } from "../../utils/pageLoading.js";
 
 // Fills {min}/{max}/{n} placeholders in a translated template string.
 const fill = (str, vars) => str.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? "");
@@ -519,7 +520,10 @@ export default function ContributeForm({
       // told whether an edit went back to review); on the standalone page
       // (no callback) fall back to navigating to the story.
       if (onSuccess) onSuccess({ sentToReview });
-      else router.push(`/${storyId}`);
+      else {
+        startPageLoading(`/${storyId}`);
+        router.push(`/${storyId}`);
+      }
     } catch (err) {
       // Real error for the developer; a generic, actionable line for the user.
       console.error("Contribute submit failed:", err);

@@ -2,17 +2,22 @@
 
 import { useEffect, useRef, useState } from "react";
 import { usePathname } from "next/navigation";
+import { PAGE_LOADING_EVENT } from "../../utils/pageLoading.js";
 
 // A thin gold bar along the bottom edge of the fixed NavBar (90px tall)
 // while the next page loads. No package for this — the dependency list is
 // fixed — so it watches for the start of a page change itself:
 //   - a click on a link to another page of this site (left click, no
 //     modifier keys, not opening a new tab), or
-//   - the browser's Back / Forward buttons;
+//   - the browser's Back / Forward buttons, or
+//   - a page change started from code (router.push from a list row or a
+//     form), which calls startPageLoading() in utils/pageLoading.js;
 // and it finishes when the address (usePathname) changes, i.e. the new page
 // is on screen. While waiting it creeps towards 90% and never gets there, so
 // a slow page still shows it's working; finishing jumps it to 100% and fades
-// it out. A click on a link to the page you're already on does nothing.
+// it out. A click on a link to the page you're already on does nothing, and
+// if a page somehow never arrives the bar finishes by itself after
+// GIVE_UP_MS rather than hanging there.
 //
 // Mounted once in app/layout.js, so it survives the page change it's
 // reporting on (app/template.js is rebuilt on every navigation).
@@ -20,6 +25,7 @@ import { usePathname } from "next/navigation";
 // How far it has got: null = hidden.
 const START = 0.12;
 const CREEP_TO = 0.9;
+const GIVE_UP_MS = 15000;
 
 export default function PageLoadingBar() {
   const pathname = usePathname();
@@ -48,6 +54,7 @@ export default function PageLoadingBar() {
         );
       };
       step(START, 180);
+      timers.current.push(setTimeout(finish, GIVE_UP_MS));
     };
 
     const onClick = (e) => {
@@ -64,18 +71,19 @@ export default function PageLoadingBar() {
 
     document.addEventListener("click", onClick, true);
     window.addEventListener("popstate", onPop);
+    window.addEventListener(PAGE_LOADING_EVENT, start);
     return () => {
       document.removeEventListener("click", onClick, true);
       window.removeEventListener("popstate", onPop);
+      window.removeEventListener(PAGE_LOADING_EVENT, start);
       clearTimers();
     };
   }, []);
 
-  // The new page is here: run to the end, then fade out and hide.
-  useEffect(() => {
-    if (progress === null) return;
+  // Run to the end, then fade out and hide.
+  function finish() {
     clearTimers();
-    setProgress(1);
+    setProgress((p) => (p === null ? null : 1));
     setFinishing(true);
     timers.current.push(
       setTimeout(() => {
@@ -83,6 +91,12 @@ export default function PageLoadingBar() {
         setFinishing(false);
       }, 450)
     );
+  }
+
+  // The new page is here.
+  useEffect(() => {
+    if (progress === null) return;
+    finish();
     // Only the address changing should finish it, not progress itself.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname]);
