@@ -27,7 +27,7 @@ const ROW_GAP = 0;
 const VISIBLE_ROWS = 4;
 // On phone a row stacks its title, snippet and place, so it's taller; the
 // list still shows VISIBLE_ROWS of them before scrolling.
-const PHONE_ROW_HEIGHT = 149;
+const PHONE_ROW_HEIGHT = 100;
 const SNIPPET_WORD_LIMIT = 16;
 
 // Truncates by word count rather than relying only on CSS overflow —
@@ -349,10 +349,10 @@ export default function ArchiveBrowser({ stories }) {
       <div style={styles.container}>
         <p style={styles.eyebrow}>Open the Ledger</p>
 
-        <h2 style={{ ...styles.title, ...(language === "km" ? styles.trackingNone : null) }}>
+        <h2 style={{ ...styles.title, ...(language === "km" ? styles.trackingNone : null) }} className="archive-title">
           {t("archiveTitle")}
         </h2>
-        <p style={styles.subtitle}>{t("archiveSubtitle")}</p>
+        <p style={styles.subtitle} className="archive-subtitle">{t("archiveSubtitle")}</p>
 
         <div className={`archive-search-panel${query ? " has-query" : ""}`}>
           <div style={styles.searchRow}>
@@ -388,17 +388,17 @@ export default function ArchiveBrowser({ stories }) {
                       >
                         <div style={styles.textCol}>
                           {entry.khmerTitle ? (
-                            <p style={styles.khmerTitle}>{entry.khmerTitle}</p>
+                            <p style={styles.khmerTitle} className="archive-row-khmer">{entry.khmerTitle}</p>
                           ) : null}
-                          <h3 style={styles.rowTitle}>{entry.title}</h3>
+                          <h3 style={styles.rowTitle} className="archive-row-title">{entry.title}</h3>
                           <p style={styles.snippet} className="archive-snippet">
                             {truncateSnippet(summary)}
                           </p>
                         </div>
 
                         {place ? (
-                          <span style={styles.placeGroup}>
-                            <span style={{ ...styles.place, ...(language === "km" ? styles.trackingNone : null) }}>
+                          <span style={styles.placeGroup} className="archive-row-place-group">
+                            <span style={{ ...styles.place, ...(language === "km" ? styles.trackingNone : null) }} className="archive-row-place">
                               {place}
                             </span>
                             <span
@@ -472,6 +472,37 @@ export default function ArchiveBrowser({ stories }) {
             flex-direction: column;
             align-items: stretch;
             justify-content: flex-start;
+            padding: 0.7rem 1rem !important;
+            gap: 0.45rem !important;
+            min-height: 0 !important;
+          }
+          /* Smaller type on phone, so the heading, search and four rows fit
+             one screen. !important: these sizes are inline styles. */
+          .archive-title {
+            font-size: 1.6rem !important;
+            margin-bottom: 0.6rem !important;
+          }
+          .archive-subtitle {
+            font-size: 0.9rem !important;
+            margin-bottom: 1rem !important;
+          }
+          .archive-row-khmer {
+            font-size: 0.8rem !important;
+            margin-bottom: 0.1rem !important;
+          }
+          .archive-row-title {
+            font-size: 1.05rem !important;
+          }
+          .archive-snippet {
+            font-size: 0.82rem !important;
+            margin-top: 0.15rem !important;
+          }
+          .archive-row-place {
+            font-size: 0.66rem !important;
+          }
+          /* The place (and its arrow) sits at the row's right edge. */
+          .archive-row-place-group {
+            align-self: flex-end;
           }
           /* The list sits under the search bar and is always there, like
              on wide screens (it used to be a dropdown that only opened once
