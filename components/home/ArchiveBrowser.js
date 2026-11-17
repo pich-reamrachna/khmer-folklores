@@ -346,7 +346,7 @@ export default function ArchiveBrowser({ stories }) {
 
   return (
     <section style={styles.section} className="archive-section">
-      <div style={styles.container}>
+      <div style={styles.container} className="archive-container">
         <p style={styles.eyebrow}>Open the Ledger</p>
 
         <h2 style={{ ...styles.title, ...(language === "km" ? styles.trackingNone : null) }} className="archive-title">
@@ -463,10 +463,24 @@ export default function ArchiveBrowser({ stories }) {
           background-color: #8a7354;
         }
         @media (max-width: 640px) {
-          /* Top-aligned instead of centered, so the list gets the room
-             under the search bar. */
+          /* Phone: the whole section fits one screen, whatever the phone.
+             It's exactly as tall as the screen with the browser's bars
+             showing (100svh), and the list takes whatever room is left
+             under the search bar — up to four rows, fewer on a short phone,
+             scrolling for the rest. !important: minHeight is inline. */
           .archive-section {
             justify-content: flex-start;
+            height: 100svh;
+            min-height: 0 !important;
+            padding-bottom: 1rem !important;
+          }
+          .archive-container,
+          .archive-search-panel,
+          .archive-results {
+            display: flex;
+            flex-direction: column;
+            flex: 1 1 auto;
+            min-height: 0;
           }
           .archive-row {
             flex-direction: column;
@@ -509,9 +523,11 @@ export default function ArchiveBrowser({ stories }) {
              something was typed, so the list was hidden). It shows four
              stories, then scrolls on its own. */
           .archive-results {
-            margin-top: 1.25rem;
+            margin-top: 0;
           }
           .archive-scroll {
+            flex: 0 1 auto;
+            min-height: 0;
             /* +1 so the fourth row's ruled line shows too. */
             max-height: ${VISIBLE_ROWS * PHONE_ROW_HEIGHT + 1}px;
             overflow-y: auto;
