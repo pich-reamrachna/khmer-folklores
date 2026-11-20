@@ -11,8 +11,18 @@ import { preloadImages } from "../utils/preloadImages.js";
 import { getCachedStories, setCachedStories } from "../utils/archiveCache.js";
 import { useSectionPager } from "../utils/useSectionPager.js";
 
-// How many stories the hero carousel features (the archive list below shows
-// them all). Shared by the image preload and the carousel itself.
+// The stories the hero carousel features, by id, in carousel order — each
+// has its picture in public/featured_pictures/. A fixed list rather than
+// "the newest five", so a newly published story or telling can't push one of
+// these out of the carousel (the archive list below still shows every
+// story, newest first). Capped at FEATURED_COUNT even if more ids are added.
+const FEATURED_STORY_IDS = [
+  "pous-keng-kang",
+  "ahpt",
+  "bramat-promong",
+  "crocodile-reincarnation",
+  "daun-penhs-curse",
+];
 const FEATURED_COUNT = 5;
 // The featured story the hero opens on, by id — Daun Penh's Curse. Falls
 // back to the first featured story if it isn't among them.
@@ -67,6 +77,17 @@ function groupEntries(rows) {
     bySlug.get(story.id).tellings.push(row);
   }
   return [...bySlug.values()].map(({ story, tellings }) => flattenStory(story, tellings));
+}
+
+// The featured stories out of the full list, in FEATURED_STORY_IDS order.
+// A featured story that isn't published is skipped, not replaced. If none of
+// them are published, falls back to the first few so the hero isn't empty.
+// Shared by the image preload and the carousel itself.
+function pickFeatured(stories) {
+  const featured = FEATURED_STORY_IDS.map((id) => stories.find((s) => s.id === id))
+    .filter(Boolean)
+    .slice(0, FEATURED_COUNT);
+  return featured.length > 0 ? featured : stories.slice(0, FEATURED_COUNT);
 }
 
 const statusStyles = {
@@ -136,7 +157,7 @@ export default function Home() {
           if (JSON.stringify(fresh) === JSON.stringify(cached)) return;
           // Something changed (e.g. a newly published story): fetch any new
           // pictures first so the swap doesn't show them half-loaded.
-          await preloadImages(fresh.slice(0, FEATURED_COUNT).map((s) => s.photoUrl));
+          await preloadImages(pickFeatured(fresh).map((s) => s.photoUrl));
           setCachedStories(fresh);
           if (active) setFlattenedStories(fresh);
           return;
@@ -152,7 +173,7 @@ export default function Home() {
         // a few seconds so a slow connection still gets the page.
         await preloadImages([
           ...HERO_BACKDROPS,
-          ...stories.slice(0, FEATURED_COUNT).map((s) => s.photoUrl),
+          ...pickFeatured(stories).map((s) => s.photoUrl),
         ]);
         if (!error && data) setCachedStories(stories);
         if (active) setFlattenedStories(stories);
@@ -186,13 +207,14 @@ export default function Home() {
   // Flatten the selected story into a single object so StoryHero and
   // EntryCard can keep reading entry.title, entry.summary, entry.place,
   // entry.category — no component changes.
-  // Carousel only features the first 5 stories — ArchiveBrowser below still
-  // searches/lists all of them, so the rest stay fully reachable, just not
-  // in the featured row.
-  const featuredStories = flattenedStories.slice(0, FEATURED_COUNT);
+  // Carousel only features FEATURED_STORY_IDS — ArchiveBrowser below still
+  // searches/lists every story, so the rest stay fully reachable, just not
+  // in the featured row. selectedIndex counts within featuredStories, so the
+  // hero reads from that list, not the full one.
+  const featuredStories = pickFeatured(flattenedStories);
   const openingIndex = Math.max(0, featuredStories.findIndex((s) => s.id === OPENING_STORY_ID));
   const selectedIndex = chosenIndex ?? openingIndex;
-  const selectedEntry = flattenedStories[selectedIndex] ?? flattenedStories[0];
+  const selectedEntry = featuredStories[selectedIndex] ?? featuredStories[0];
 
   return (
     <main
