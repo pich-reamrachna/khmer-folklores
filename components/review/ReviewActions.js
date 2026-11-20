@@ -44,7 +44,7 @@ export default function ReviewActions({
           width: 100%;
           padding: 0.95rem 1.4rem;
           border-radius: 2px;
-          font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+          font-family: var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif;
           font-size: 0.7rem;
           font-weight: 700;
           letter-spacing: 0.18em;

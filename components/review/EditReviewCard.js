@@ -18,7 +18,7 @@ const styles = {
   pair: { display: "flex", flexWrap: "wrap", gap: "0.75rem" },
   side: { flex: "1 1 240px", minWidth: 0, padding: "0.75rem 0.9rem", borderRadius: 2, backgroundColor: "rgba(0, 0, 0, 0.2)", border: "1px solid rgba(245, 239, 230, 0.12)" },
   sideNew: { borderColor: "rgba(197, 160, 89, 0.6)" },
-  sideLabel: { fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif", fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#A89F91", margin: "0 0 0.4rem" },
+  sideLabel: { fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif", fontSize: "0.62rem", fontWeight: 700, letterSpacing: "0.16em", textTransform: "uppercase", color: "#A89F91", margin: "0 0 0.4rem" },
   value: { ...s.body, margin: 0 },
   photo: { ...s.photo, marginTop: 0 },
 };

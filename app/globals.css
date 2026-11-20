@@ -1,3 +1,13 @@
+/* Line spacing for the big serif titles. Each sets
+   line-height: var(--khmer-leading, <its English value>), so English keeps
+   its tight spacing and, when the page is in Khmer (<html lang="km">, set by
+   LanguageContext.js), the variable gives the taller Khmer letters room —
+   at the English spacing a two-line Khmer title's subscripts ran into the
+   line below. */
+:root:lang(km) {
+  --khmer-leading: 1.45;
+}
+
 .hide-scrollbar {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none;
@@ -505,7 +515,7 @@ textarea.contribute-input:focus {
 }
 .archive-search-bar--light .archive-search-input::placeholder {
   color: #6b6257;
-  font-family: var(--font-fell), var(--font-khmer), serif;
+  font-family: var(--font-fell), var(--font-khmer-serif), serif;
   font-style: italic;
   font-size: 1.05rem;
 }
@@ -694,7 +704,7 @@ select:-webkit-autofill {
   border-radius: 999px;
   background-color: #c9a961;
   color: #1a1817;
-  font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+  font-family: var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -760,7 +770,7 @@ select:-webkit-autofill {
   border-radius: 10px;
   background-color: transparent;
   color: #d9d2c5;
-  font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+  font-family: var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.2em;
@@ -854,7 +864,7 @@ fieldset:disabled select {
   border-radius: 999px;
   background: transparent;
   color: #d9d2c5;
-  font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+  font-family: var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif;
   font-size: 0.7rem;
   font-weight: 700;
   letter-spacing: 0.18em;

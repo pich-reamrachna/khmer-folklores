@@ -269,10 +269,10 @@ export default function AuthCard({ initialMode }) {
           max-width: 300px;
         }
         .auth-overlay-title {
-          font-family: var(--font-fell), var(--font-khmer), serif;
+          font-family: var(--font-fell), var(--font-khmer-serif), serif;
           font-size: 2.3rem;
           font-weight: 400;
-          line-height: 1.1;
+          line-height: var(--khmer-leading, 1.1);
           color: #f5efe6;
           margin: 0 0 0.75rem;
         }
@@ -289,7 +289,7 @@ export default function AuthCard({ initialMode }) {
           border-radius: 2px;
           padding: 0.85rem 2.4rem;
           color: #e6c575;
-          font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+          font-family: var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif;
           font-size: 0.72rem;
           font-weight: 700;
           letter-spacing: 0.22em;

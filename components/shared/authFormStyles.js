@@ -29,7 +29,7 @@ const authFormStyles = {
     gap: "1.25rem",
   },
   title: {
-    fontFamily: "var(--font-khmer), var(--font-cinzel), serif, 'Times New Roman'",
+    fontFamily: "var(--font-khmer-serif), var(--font-cinzel), serif, 'Times New Roman'",
     fontSize: "2rem",
     fontWeight: 600,
     margin: "0 0 0.5rem",

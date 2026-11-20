@@ -161,14 +161,14 @@ const styles = {
   // it would win for English too. Cinzel has no Khmer letters, so Khmer
   // text still falls through to the Khmer font.
   title: {
-    fontFamily: "var(--font-cinzel), var(--font-khmer), serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif, 'Times New Roman'",
     fontSize: "clamp(2.2rem, 4vw, 3.4rem)",
     fontWeight: 500,
     color: "#24201B",
     letterSpacing: "0.03em",
     textTransform: "uppercase",
     textAlign: "center",
-    lineHeight: 1.1,
+    lineHeight: "var(--khmer-leading, 1.1)",
     margin: "0 0 1.2rem",
   },
   subtitle: {
@@ -203,7 +203,7 @@ const styles = {
   // Translated ("Stories in View" label) — needs var(--font-khmer). An
   // italic old-print note, like a ledger annotation.
   listCount: {
-    fontFamily: "var(--font-fell), var(--font-khmer), serif",
+    fontFamily: "var(--font-fell), var(--font-khmer-serif), serif",
     fontSize: "1rem",
     fontStyle: "italic",
     color: "#5A5248",
@@ -245,7 +245,7 @@ const styles = {
   // Sizes, weights and inks chosen to read clearly on the pale, textured
   // paper — lighter/smaller versions blurred into it.
   khmerTitle: {
-    fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
+    fontFamily: "var(--font-khmer-serif), serif",
     fontSize: "1rem",
     fontWeight: 500,
     color: "#4A4339",
@@ -282,7 +282,7 @@ const styles = {
     flex: "0 0 auto",
   },
   place: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.8rem",
     fontWeight: 600,
     color: "#4F4130",

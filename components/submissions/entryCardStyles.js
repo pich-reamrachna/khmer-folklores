@@ -10,9 +10,11 @@
 // with the curator's note in a dark panel.
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
+// Small spaced-capital labels: the same Khmer font, drawn bigger (app/layout.js).
+const khmerLabel = "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif";
 // Cinzel for titles; Khmer (which it has no letters for) falls through to
 // the Khmer font.
-const cinzel = "var(--font-cinzel), var(--font-khmer), serif";
+const cinzel = "var(--font-cinzel), var(--font-khmer-serif), serif";
 
 const entryCardStyles = {
   card: {
@@ -27,7 +29,7 @@ const entryCardStyles = {
   // The date, above the title.
   meta: { fontFamily: khmerSans, fontSize: "0.78rem", color: "#A89F91", margin: "0 0 0.55rem", overflowWrap: "anywhere" },
   // overflowWrap: the title is whatever the submitter typed.
-  title: { fontFamily: cinzel, fontSize: "1.3rem", fontWeight: 500, lineHeight: 1.25, color: "#F5EFE6", margin: 0, overflowWrap: "anywhere" },
+  title: { fontFamily: cinzel, fontSize: "1.3rem", fontWeight: 500, lineHeight: "var(--khmer-leading, 1.25)", color: "#F5EFE6", margin: 0, overflowWrap: "anywhere" },
   // A telling's own title, under the story's (TellingCard.js). Whatever
   // the sharer typed, English or Khmer.
   subtitle: { fontFamily: khmerSans, fontSize: "0.95rem", color: "#D9D2C5", margin: "0.4rem 0 0", overflowWrap: "anywhere" },
@@ -38,7 +40,7 @@ const entryCardStyles = {
     display: "inline-flex",
     alignItems: "center",
     paddingTop: "0.15rem",
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.68rem",
     fontWeight: 700,
     letterSpacing: "0.16em",
@@ -61,7 +63,7 @@ const entryCardStyles = {
   },
   noteLabel: {
     display: "block",
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.66rem",
     fontWeight: 600,
     letterSpacing: "0.2em",
@@ -79,7 +81,7 @@ const entryCardStyles = {
   link: {
     display: "inline-block",
     marginTop: "1.1rem",
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.72rem",
     fontWeight: 700,
     letterSpacing: "0.18em",

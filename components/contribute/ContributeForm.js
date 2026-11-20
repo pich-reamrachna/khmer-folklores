@@ -143,8 +143,10 @@ function validate({ title, place, description, photoFile, t, newStory, khmerTitl
 // tall box reads oddly). Focus glows live in app/globals.css's
 // .contribute-input rule, since a :focus can't be inline.
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
+// Small spaced-capital labels: the same Khmer font, drawn bigger (app/layout.js).
+const khmerLabel = "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif";
 // Cinzel has no Khmer letters, so a Khmer story name falls through.
-const cinzel = "var(--font-cinzel), var(--font-khmer), serif";
+const cinzel = "var(--font-cinzel), var(--font-khmer-serif), serif";
 const styles = {
   // Standalone page: full-height, top padding clears the fixed NavBar.
   section: {
@@ -174,7 +176,7 @@ const styles = {
     maxWidth: 640,
   },
   eyebrow: {
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.7rem",
     fontWeight: 700,
     color: "#A89F91",
@@ -188,7 +190,7 @@ const styles = {
     fontWeight: 500,
     color: "#C9A961",
     margin: "0 0 2rem",
-    lineHeight: 1.15,
+    lineHeight: "var(--khmer-leading, 1.15)",
     overflowWrap: "anywhere",
   },
   // newStory only — sits between the heading and the form, so the heading's
@@ -207,7 +209,7 @@ const styles = {
     marginBottom: "1.6rem",
   },
   label: {
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.66rem",
     fontWeight: 700,
     color: "#A89F91",
@@ -674,7 +676,7 @@ export default function ContributeForm({
           border-radius: 2px;
           background-color: #c5a059;
           color: #1a1817;
-          font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+          font-family: var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif;
           font-size: 0.72rem;
           font-weight: 700;
           letter-spacing: 0.22em;

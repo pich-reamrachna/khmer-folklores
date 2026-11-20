@@ -37,10 +37,10 @@ export default function SignupHeading() {
           /* IM Fell English: an old-print serif with real lowercase letters
              (Cinzel is capitals only). It has no Khmer letters, so Khmer
              text falls through to Kantumruy Pro. */
-          font-family: var(--font-fell), var(--font-khmer), serif, "Times New Roman";
+          font-family: var(--font-fell), var(--font-khmer-serif), serif, "Times New Roman";
           font-size: clamp(2.6rem, 4.4vw, 3.8rem);
           font-weight: 400;
-          line-height: 1.1;
+          line-height: var(--khmer-leading, 1.1);
           /* Gold, glowing like lamplight: a tight bright halo plus a wide
              soft one, in the site's gold. */
           color: #E6C575;

@@ -14,6 +14,8 @@ import { useLanguage } from "../shared/LanguageContext.js";
 // after a submission (?submitted=…).
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
+// Small spaced-capital labels: the same Khmer font, drawn bigger (app/layout.js).
+const khmerLabel = "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif";
 const styles = {
   // Same top/side padding as /share and /review — clears the fixed NavBar.
   // The site's warm charcoal, like the home hero and story pages; the
@@ -25,7 +27,7 @@ const styles = {
   // eyebrows. Quiet spaced capitals, then the title in gold Cinzel, as on
   // the home hero.
   eyebrow: { fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 1rem" },
-  title: { fontFamily: "var(--font-cinzel), var(--font-khmer), serif", fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 500, color: "#C9A961", lineHeight: 1.15, margin: "0 0 1.75rem" },
+  title: { fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif", fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 500, color: "#C9A961", lineHeight: "var(--khmer-leading, 1.15)", margin: "0 0 1.75rem" },
   // The two tabs in a dark pill, only as wide as they are. A gold pill
   // (`thumb`) sits behind the chosen one and slides across when the other
   // is picked. The tabs' text colours and hover live in app/globals.css's
@@ -61,7 +63,7 @@ const styles = {
     padding: "0.7rem 1.4rem",
     border: "none",
     borderRadius: 999,
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.75rem",
     fontWeight: 700,
     letterSpacing: "0.2em",

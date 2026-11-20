@@ -43,9 +43,9 @@ const styles = {
     // Cinzel first: the Khmer font also draws Latin letters, so listed first
     // it would win for English too. Cinzel has no Khmer letters, so a Khmer
     // title still falls through to the Khmer font.
-    fontFamily: "var(--font-cinzel), var(--font-khmer), serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif, 'Times New Roman'",
     fontWeight: 500,
-    lineHeight: 1.1,
+    lineHeight: "var(--khmer-leading, 1.1)",
     textTransform: "uppercase",
     textShadow: "0 0 8px rgba(10, 9, 8, 0.95), 0 0 2px rgba(10, 9, 8, 0.9)",
   },
@@ -72,7 +72,7 @@ const styles = {
   // The story's place. A Khmer value needs var(--font-khmer).
   meta: {
     margin: "0.9rem 0 0",
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 600,
     color: "#CFC6B8",

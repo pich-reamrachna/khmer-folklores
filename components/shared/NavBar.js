@@ -188,7 +188,7 @@ const styles = {
     // and "ខ្មែរ", and --font-khmer has no Latin glyphs (subsets:
     // ["khmer"] in layout.js), so "EN" still falls through to
     // --font-jakarta automatically without any conditional logic.
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.72rem",
     fontWeight: 700,
     letterSpacing: "0.15em",
@@ -294,7 +294,7 @@ const styles = {
     backgroundColor: "transparent",
     color: "#CFC6B8",
     // Khmer first — same reasoning as langPill above.
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 700,
     letterSpacing: "0.1em",

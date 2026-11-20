@@ -11,6 +11,8 @@ import { useTranslation } from "../shared/uiText.js";
 // fields that differ from the published version, with their new values.
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
+// Small spaced-capital labels: the same Khmer font, drawn bigger (app/layout.js).
+const khmerLabel = "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif";
 const styles = {
   // A dark panel like the curator's note on the row (entryCardStyles.js),
   // with a left rule in the status colour.
@@ -18,7 +20,7 @@ const styles = {
   head: { display: "flex", justifyContent: "space-between", alignItems: "center", gap: "0.75rem", flexWrap: "wrap", marginBottom: "0.6rem" },
   heading: { fontFamily: khmerSans, fontSize: "0.9rem", fontWeight: 700, color: "#F5EFE6", margin: 0 },
   // Plain coloured capitals, like the row's own status (entryCardStyles.js).
-  badge: { fontFamily: khmerSans, fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", whiteSpace: "nowrap" },
+  badge: { fontFamily: khmerLabel, fontSize: "0.66rem", fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", whiteSpace: "nowrap" },
   note: { fontFamily: khmerSans, fontSize: "0.88rem", lineHeight: 1.6, color: "#F5EFE6", margin: "0 0 0.75rem", whiteSpace: "pre-wrap", overflowWrap: "anywhere" },
   noteLabel: { display: "block", fontWeight: 700, color: "#E0736A", marginBottom: "0.2rem" },
   label: { fontFamily: khmerSans, fontSize: "0.72rem", fontWeight: 700, color: "#A89F91", margin: "0.6rem 0 0.15rem" },

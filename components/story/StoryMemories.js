@@ -54,11 +54,11 @@ const styles = {
   // Cinzel first: it has no Khmer letters, so Khmer text falls through to
   // the Khmer font, while English stays in Cinzel.
   title: {
-    fontFamily: "var(--font-cinzel), var(--font-khmer), serif",
+    fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif",
     fontSize: "clamp(2rem, 4vw, 3rem)",
     fontWeight: 500,
     color: "#C9A961",
-    lineHeight: 1.15,
+    lineHeight: "var(--khmer-leading, 1.15)",
     margin: "0 0 1rem",
   },
   subtitle: {
@@ -79,7 +79,7 @@ const styles = {
   },
   // Translated ("Tellings" label) — needs var(--font-khmer).
   listCount: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 700,
     color: "#A89F91",
@@ -112,11 +112,11 @@ const styles = {
   // The telling's own title (single field, English or Khmer) — needs the
   // Khmer font stack explicitly.
   tellingTitle: {
-    fontFamily: "var(--font-cinzel), var(--font-khmer), serif",
+    fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif",
     fontSize: "1.35rem",
     fontWeight: 500,
     color: "#F5EFE6",
-    lineHeight: 1.3,
+    lineHeight: "var(--khmer-leading, 1.3)",
     margin: 0,
     // minWidth 0 lets it shrink in the flex header; break long unbroken titles.
     minWidth: 0,
@@ -252,7 +252,7 @@ const styles = {
     borderRadius: 2,
     backgroundColor: "#C5A059",
     color: "#1A1817",
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.78rem",
     fontWeight: 700,
     letterSpacing: "0.12em",

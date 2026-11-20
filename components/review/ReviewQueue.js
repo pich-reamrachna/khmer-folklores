@@ -18,6 +18,8 @@ import { useLanguage } from "../shared/LanguageContext.js";
 // app/review/page.js does the fetching and the curator-only check.
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
+// Small spaced-capital labels: the same Khmer font, drawn bigger (app/layout.js).
+const khmerLabel = "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif";
 const styles = {
   // Same top/side padding as /share — clears the fixed 90px NavBar. The
   // charcoal texture and bamboo are My Entries' (.my-entries-section in
@@ -36,7 +38,7 @@ const styles = {
   // Deliberately not translated — decorative label, like the site's other
   // eyebrows.
   eyebrow: { fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 1rem" },
-  title: { fontFamily: "var(--font-cinzel), var(--font-khmer), serif", fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 500, color: "#C9A961", lineHeight: 1.15, margin: 0 },
+  title: { fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif", fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 500, color: "#C9A961", lineHeight: "var(--khmer-leading, 1.15)", margin: 0 },
   count: { fontFamily: khmerSans, fontSize: "0.9rem", color: "#A89F91", margin: "0 0 0.4rem" },
   // The tabs: same dark pill with a sliding gold one behind the chosen tab
   // as My Entries (MyEntries.js); colours and hover in app/globals.css's
@@ -74,7 +76,7 @@ const styles = {
     padding: "0.7rem 1.4rem",
     border: "none",
     borderRadius: 999,
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.72rem",
     fontWeight: 700,
     letterSpacing: "0.2em",

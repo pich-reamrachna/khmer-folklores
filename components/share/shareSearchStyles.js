@@ -60,13 +60,13 @@ const shareSearchStyles = {
   // Cinzel first: the Khmer font also draws Latin letters, so listed first
   // it would win for English too; Khmer still falls through to it.
   title: {
-    fontFamily: "var(--font-cinzel), var(--font-khmer), serif, 'Times New Roman'",
+    fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif, 'Times New Roman'",
     fontSize: "clamp(2rem, 3.6vw, 3rem)",
     fontWeight: 500,
     color: "#24201B",
     textTransform: "uppercase",
     letterSpacing: "0.03em",
-    lineHeight: 1.1,
+    lineHeight: "var(--khmer-leading, 1.1)",
     margin: "0 0 1.2rem",
     textAlign: "center",
   },
@@ -88,7 +88,7 @@ const shareSearchStyles = {
   centred: { textAlign: "center" },
   // An italic old-print note, like the archive's story count.
   resultsHeading: {
-    fontFamily: "var(--font-fell), var(--font-khmer), serif",
+    fontFamily: "var(--font-fell), var(--font-khmer-serif), serif",
     fontSize: "1.05rem",
     fontStyle: "italic",
     color: "#5A5248",

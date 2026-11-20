@@ -18,7 +18,7 @@ const styles = {
     padding: "1.1rem 1.4rem",
   },
   khmerTitle: {
-    fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
+    fontFamily: "var(--font-khmer-serif), serif",
     fontSize: "1rem",
     fontWeight: 500,
     color: "#4A4339",

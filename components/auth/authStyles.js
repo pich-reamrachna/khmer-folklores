@@ -7,7 +7,8 @@
 
 import authFormStyles from "../shared/authFormStyles.js";
 
-const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
+// Small spaced-capital labels: the same Khmer font, drawn bigger (app/layout.js).
+const khmerLabel = "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif";
 
 const authStyles = {
   // The page: the home hero's rustic charcoal texture, with the box centred
@@ -48,7 +49,7 @@ const authStyles = {
     borderBottom: "1px solid transparent",
     padding: "0 0 0.55rem",
     cursor: "pointer",
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.7rem",
     fontWeight: 700,
     letterSpacing: "0.2em",
@@ -59,10 +60,10 @@ const authStyles = {
     borderBottom: "1px solid #C5A059",
   },
   title: {
-    fontFamily: "var(--font-fell), var(--font-khmer), serif",
+    fontFamily: "var(--font-fell), var(--font-khmer-serif), serif",
     fontSize: "clamp(2.2rem, 3.2vw, 2.8rem)",
     fontWeight: 400,
-    lineHeight: 1.1,
+    lineHeight: "var(--khmer-leading, 1.1)",
     margin: "0 0 1.75rem",
   },
   // Tighter than it looks: each field ends in a message slot (below), which
@@ -73,7 +74,7 @@ const authStyles = {
     marginBottom: "0.7rem",
   },
   label: {
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.66rem",
     fontWeight: 700,
     letterSpacing: "0.2em",
@@ -90,7 +91,7 @@ const authStyles = {
     border: "none",
     padding: "0.5rem 0 0.55rem",
     color: "#F5EFE6",
-    fontFamily: "var(--font-fell), var(--font-khmer), serif",
+    fontFamily: "var(--font-fell), var(--font-khmer-serif), serif",
     fontSize: "1.15rem",
     outline: "none",
   },
@@ -120,7 +121,7 @@ const authStyles = {
     padding: "1rem",
     fontSize: "0.72rem",
     letterSpacing: "0.22em",
-    textTransform: "uppercase",
+    textTransform: "uppercase", fontFamily: khmerLabel 
   },
   trackingNone: {
     letterSpacing: "normal",

@@ -13,8 +13,10 @@
 // pasted URL) would otherwise spill out of the card.
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
+// Small spaced-capital labels: the same Khmer font, drawn bigger (app/layout.js).
+const khmerLabel = "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif";
 // Cinzel has no Khmer letters, so a Khmer title falls through.
-const cinzel = "var(--font-cinzel), var(--font-khmer), serif";
+const cinzel = "var(--font-cinzel), var(--font-khmer-serif), serif";
 
 const reviewStyles = {
   // The card: a hairline box; its two columns come from .review-card.
@@ -34,7 +36,7 @@ const reviewStyles = {
   },
   // Small spaced capitals above the title (kind of item · category · date).
   kicker: {
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.66rem",
     fontWeight: 700,
     letterSpacing: "0.2em",
@@ -47,13 +49,13 @@ const reviewStyles = {
     fontFamily: cinzel,
     fontSize: "clamp(1.5rem, 2.4vw, 1.9rem)",
     fontWeight: 500,
-    lineHeight: 1.2,
+    lineHeight: "var(--khmer-leading, 1.2)",
     color: "#F5EFE6",
     margin: 0,
     overflowWrap: "anywhere",
   },
   khmerTitle: {
-    fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
+    fontFamily: "var(--font-khmer-serif), serif",
     fontSize: "0.95rem",
     color: "#A89F91",
     margin: "0.35rem 0 0",
@@ -64,7 +66,7 @@ const reviewStyles = {
   metaName: { color: "#F5EFE6" },
   // A small spaced-capital heading inside the left column ("Their telling").
   subhead: {
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.66rem",
     fontWeight: 700,
     letterSpacing: "0.2em",
@@ -95,7 +97,7 @@ const reviewStyles = {
   // adds its own reserved line.
   field: { display: "flex", flexDirection: "column", gap: "0.4rem", marginBottom: "0.8rem" },
   label: {
-    fontFamily: khmerSans,
+    fontFamily: khmerLabel,
     fontSize: "0.66rem",
     fontWeight: 700,
     color: "#A89F91",

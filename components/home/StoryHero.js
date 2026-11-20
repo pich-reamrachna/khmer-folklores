@@ -153,7 +153,7 @@ const styles = {
   // The story's category ("LEGEND") above the title. Can show
   // categoryKhmer, so it needs var(--font-khmer).
   eyebrow: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 600,
     color: "#A89F91",
@@ -166,15 +166,19 @@ const styles = {
     display: "flex",
     alignItems: "center",
   },
-  // Under the English title, quieter than it — the English one leads.
-  khmerTitle: {
-    fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
-    fontSize: "1.35rem",
-    fontWeight: 400,
-    color: "#D9D2C5",
-    margin: "0 0 1.4rem",
+  // Added on top of `title` when the title shows in Khmer. Noto Serif Khmer
+  // (app/layout.js) is the Khmer match for Cinzel: a serif with the same
+  // thick-and-thin strokes. The roomier line-height keeps stacked subscripts
+  // and vowel marks from being cut off by the fixed height; 3em is still
+  // exactly two lines, so switching stories never moves the text below.
+  // Font-size (0.9x the English) is in the <style> tag below.
+  titleKhmer: {
+    fontFamily: "var(--font-khmer-serif), var(--font-khmer), serif",
+    lineHeight: 1.5,
+    height: "3em",
+    letterSpacing: 0,
   },
-  // Three hairlines of different lengths under the Khmer title — a
+  // Three hairlines of different lengths under the title — a
   // decorative break before the summary, like ruled lines in a ledger.
   rule: {
     display: "flex",
@@ -232,7 +236,7 @@ const styles = {
     alignItems: "center",
     gap: "0.9rem",
     textDecoration: "none",
-    fontFamily: "var(--font-khmer), var(--font-cinzel), serif",
+    fontFamily: "var(--font-khmer-serif), var(--font-cinzel), serif",
     fontWeight: 700,
     letterSpacing: "0.2em",
     textTransform: "uppercase",
@@ -323,11 +327,16 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
   }, []);
   const t = useTranslation();
 
-  // khmerTitle/title stack (both shown together) regardless of language —
-  // everything else swaps, falling back to English when untranslated.
+  // One title, in the chosen language — Khmer when the story has a Khmer
+  // name, English otherwise. Decided here rather than with pickText() because
+  // the Khmer styling must only apply when the text really is Khmer (Cinzel
+  // stays for an English fallback). Everything else swaps the same way,
+  // falling back to English when untranslated.
   // summary (story-level), not description (one contributor's specific
   // telling) — description is reserved for StoryMemories.js, where each
   // version is shown separately and correctly attributed.
+  const titleIsKhmer = language === "km" && Boolean(entry.khmerTitle);
+  const title = titleIsKhmer ? entry.khmerTitle : entry.title;
   const summary = pickText(language, entry.summaryKhmer, entry.summary);
   const category = pickText(language, entry.categoryKhmer, entry.category);
   // Letter-spacing off for Khmer labels (see trackingNone above).
@@ -411,11 +420,12 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
           <div key={entry.id} className="hero-fade hero-text">
             {category ? <p style={{ ...styles.eyebrow, ...tracking }}>{category}</p> : null}
 
-            <h1 style={styles.title} className="hero-title">{entry.title}</h1>
-
-            {entry.khmerTitle ? (
-              <div style={styles.khmerTitle}>{entry.khmerTitle}</div>
-            ) : null}
+            <h1
+              style={titleIsKhmer ? { ...styles.title, ...styles.titleKhmer } : styles.title}
+              className={titleIsKhmer ? "hero-title hero-title-km" : "hero-title"}
+            >
+              {title}
+            </h1>
 
             <div style={styles.rule} aria-hidden="true">
               {RULE_WIDTHS.map((width) => (
@@ -569,6 +579,14 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
           font-size: clamp(2.8rem, 5.2vw, 4.8rem);
           margin-bottom: 0.8rem;
         }
+        /* Khmer title: 0.9x the English size (see titleKhmer above) — Khmer
+           letters read small next to Cinzel's capitals, so not much less.
+           Two classes so it outranks the plain .hero-title rules in the
+           media queries below; each of those has its own Khmer size next
+           to it. */
+        .hero-title.hero-title-km {
+          font-size: clamp(2.5rem, 4.7vw, 4.3rem);
+        }
         .hero-summary {
           height: 4.95em;
           -webkit-line-clamp: 3;
@@ -661,6 +679,9 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
             font-size: clamp(2.6rem, 5vw, 3.6rem);
             margin-bottom: 0.8rem;
           }
+          .hero-title.hero-title-km {
+            font-size: clamp(2.3rem, 4.5vw, 3.2rem);
+          }
           .hero-summary {
             height: 3.3em;
             -webkit-line-clamp: 2;
@@ -679,6 +700,9 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
           .hero-title {
             font-size: clamp(1.8rem, 7.4vw, 2.8rem);
             height: auto !important;
+          }
+          .hero-title.hero-title-km {
+            font-size: clamp(1.7rem, 7vw, 2.6rem);
           }
           .hero-summary {
             font-size: 0.95rem;

@@ -29,6 +29,13 @@ export function LanguageProvider({ children }) {
     }
   }, []);
 
+  // <html lang> follows the switch, so screen readers read Khmer as Khmer and
+  // the stylesheet can tell which language is showing (globals.css's
+  // --khmer-leading). app/layout.js renders it as "en" until this runs.
+  useEffect(() => {
+    document.documentElement.lang = language;
+  }, [language]);
+
   const setLanguage = (next) => {
     setLanguageState(next);
     window.localStorage.setItem(STORAGE_KEY, next);
@@ -46,10 +53,10 @@ export function useLanguage() {
 }
 
 // The one fallback rule every component uses when swapping entry text by
-// language: Khmer if selected and present, otherwise English. Doesn't
-// apply to khmerTitle/title — those stack (both shown together) rather
-// than swap, per how khmerTitle already worked before this switcher
-// existed.
+// language: Khmer if selected and present, otherwise English. khmerTitle/
+// title are handled by each component instead — the archive list stacks
+// both, while the hero and story page show one and style it by which one
+// it is (StoryHero.js, StoryDetails.js).
 export function pickText(language, khmerValue, englishValue) {
   return language === "km" && khmerValue ? khmerValue : englishValue;
 }

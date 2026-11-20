@@ -5,8 +5,8 @@ import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 
 // First section of a story's dedicated page, in two bands:
-//  - the header: back link, the English title with the Khmer title under
-//    it, then the story-level summary as a pull quote (not any one
+//  - the header: back link, the title in the chosen language with the other
+//    language's title under it, then the story-level summary as a pull quote (not any one
 //    contributor's description — see StoryMemories.js for those), and the
 //    story's picture on the right — with the Khmer title again, huge and
 //    faint, as a watermark behind;
@@ -99,7 +99,7 @@ const styles = {
     position: "absolute",
     top: 110,
     left: "1.5rem",
-    fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
+    fontFamily: "var(--font-khmer-serif), serif",
     fontSize: "clamp(7rem, 15vw, 14rem)",
     fontWeight: 700,
     lineHeight: 1,
@@ -114,8 +114,8 @@ const styles = {
     paddingBottom: "3rem",
     borderBottom: "1px solid rgba(245, 239, 230, 0.1)",
   },
-  // Type follows the home hero (StoryHero.js): the English title in gold
-  // Cinzel, the Khmer title under it.
+  // Type follows the home hero (StoryHero.js): the title in gold Cinzel, the
+  // other language's title under it.
   // overflowWrap: lets a single long word (e.g. "Reincarnation") break
   // instead of overflowing the page at the clamp's smallest size.
   title: {
@@ -128,12 +128,24 @@ const styles = {
     margin: "0 0 0.8rem",
     overflowWrap: "break-word",
   },
-  // Under the English title, quieter than it — the English one leads.
+  // Added on top of `title` when it shows in Khmer: Noto Serif Khmer
+  // (app/layout.js), the Khmer match for Cinzel's thick-and-thin serif, and
+  // a roomier line-height so stacked subscripts and vowel marks clear the
+  // line above. Same size as the home hero's Khmer title (0.9x the English).
+  titleKhmer: {
+    fontFamily: "var(--font-khmer-serif), var(--font-khmer), serif",
+    fontSize: "clamp(2.5rem, 4.7vw, 4.3rem)",
+    lineHeight: 1.5,
+    letterSpacing: "normal",
+  },
+  // Under the title, the other language's title — quieter, the chosen one
+  // leads. One font list for either language: Kantumruy Pro only has Khmer
+  // letters, so English falls through to Jakarta.
   // overflowWrap: Khmer script often has no spaces to break on, so a long
-  // khmerTitle is effectively one unbreakable word without this.
-  khmerTitle: {
-    fontFamily: "var(--font-khmer), 'Kantumruy Pro', serif",
-    fontSize: "1.35rem",
+  // Khmer title is effectively one unbreakable word without this.
+  subtitle: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "1.5rem",
     fontWeight: 400,
     color: "#D9D2C5",
     margin: 0,
@@ -173,7 +185,7 @@ const styles = {
   // summaryKhmer — the Fell font has no Khmer letters, so Khmer falls
   // through to the Khmer font.
   summary: {
-    fontFamily: "var(--font-fell), var(--font-khmer), serif",
+    fontFamily: "var(--font-fell), var(--font-khmer-serif), serif",
     fontStyle: "italic",
     fontSize: "clamp(1.4rem, 2vw, 1.75rem)",
     color: "#F5EFE6",
@@ -199,7 +211,7 @@ const styles = {
     borderBottom: "1px solid rgba(245, 239, 230, 0.1)",
   },
   detailLabel: {
-    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.68rem",
     fontWeight: 600,
     color: "#A89F91",
@@ -208,7 +220,7 @@ const styles = {
     whiteSpace: "nowrap",
   },
   detailValue: {
-    fontFamily: "var(--font-fell), var(--font-khmer), serif",
+    fontFamily: "var(--font-fell), var(--font-khmer-serif), serif",
     fontSize: "1.1rem",
     color: "#F5EFE6",
     textAlign: "right",
@@ -224,10 +236,15 @@ const styles = {
 export default function StoryDetails({ entry, children }) {
   const { language } = useLanguage();
   const t = useTranslation();
-  // khmerTitle/title stack (both shown together) regardless of language.
-  // The category and place are in the details table below. summary (story-
-  // level), not description (StoryMemories.js's per-contributor telling),
-  // swaps, falling back to English when untranslated.
+  // The title in the chosen language, the other one under it. Khmer leads
+  // only when the story has a Khmer title; otherwise the English one leads
+  // with nothing under it. The category and place are in the details table
+  // below. summary (story-level), not description (StoryMemories.js's
+  // per-contributor telling), swaps, falling back to English when
+  // untranslated.
+  const titleIsKhmer = language === "km" && Boolean(entry.khmerTitle);
+  const title = titleIsKhmer ? entry.khmerTitle : entry.title;
+  const subtitle = titleIsKhmer ? entry.title : entry.khmerTitle;
   const summary = pickText(language, entry.summaryKhmer, entry.summary);
   const place = pickText(language, entry.placeKhmer, entry.place);
   // The kind in the chosen language (English when there's no Khmer one).
@@ -256,11 +273,9 @@ export default function StoryDetails({ entry, children }) {
 
         <div style={styles.header} className="details-header">
           <div>
-            <h1 style={styles.title}>{entry.title}</h1>
+            <h1 style={titleIsKhmer ? { ...styles.title, ...styles.titleKhmer } : styles.title}>{title}</h1>
 
-            {entry.khmerTitle ? (
-              <div style={styles.khmerTitle}>{entry.khmerTitle}</div>
-            ) : null}
+            {subtitle ? <div style={styles.subtitle}>{subtitle}</div> : null}
 
             {summary ? <p style={styles.summary}>“{summary}”</p> : null}
           </div>

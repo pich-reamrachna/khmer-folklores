@@ -15,6 +15,8 @@ import { useTranslation } from "../shared/uiText.js";
 // refuses, so there's no Delete here at all.
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
+// Small spaced-capital labels: the same Khmer font, drawn bigger (app/layout.js).
+const khmerLabel = "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif";
 const styles = {
   // Opens the band under the story's header (StoryDetails.js), whose
   // hairline already sits above it — so no rule or gap of its own.
@@ -22,8 +24,8 @@ const styles = {
   // Heading and title follow the home hero (StoryHero.js): quiet spaced
   // capitals, then Cinzel — first, so English stays in Cinzel and Khmer
   // (which Cinzel has no letters for) falls through to the Khmer font.
-  heading: { fontFamily: khmerSans, fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 0.75rem" },
-  title: { fontFamily: "var(--font-cinzel), var(--font-khmer), serif", fontSize: "1.6rem", fontWeight: 500, color: "#C9A961", margin: "0 0 1rem", overflowWrap: "anywhere" },
+  heading: { fontFamily: khmerLabel, fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 0.75rem" },
+  title: { fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif", fontSize: "1.6rem", fontWeight: 500, color: "#C9A961", margin: "0 0 1rem", overflowWrap: "anywhere" },
   // pre-wrap keeps the sharer's line breaks; anywhere breaks a long run.
   body: { fontFamily: khmerSans, fontSize: "1.05rem", lineHeight: 1.8, color: "#D9D2C5", whiteSpace: "pre-wrap", overflowWrap: "anywhere", margin: 0 },
   photo: { display: "block", maxWidth: "100%", maxHeight: 420, borderRadius: 12, marginTop: "1.5rem", objectFit: "cover" },
