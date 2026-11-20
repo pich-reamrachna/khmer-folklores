@@ -362,7 +362,7 @@ export default function ArchiveBrowser({ stories }) {
           <div className="archive-results">
             <div style={styles.listHeader}>
               <p style={{ ...styles.listCount, ...(language === "km" ? styles.trackingNone : null) }}>
-                {filteredStories.length} {t("archiveStoriesInView")}
+                {t("archiveStoriesInView").replace("{n}", filteredStories.length)}
               </p>
             </div>
 
@@ -416,7 +416,9 @@ export default function ArchiveBrowser({ stories }) {
             ) : (
               <>
                 <p style={styles.snippet}>
-                  &quot;{formatQueryForDisplay(query)}&quot; {t("archiveNoResultsSuffix")}
+                  {/* A function replacement, so a "$&" typed in the search
+                      is shown as-is rather than read as a replace pattern. */}
+                  {t("archiveNoResults").replace("{query}", () => formatQueryForDisplay(query))}
                 </p>
                 {/* Nothing matched exactly — offer the closest story by
                     name/summary (typo-tolerant, see utils/storyMatch.js).

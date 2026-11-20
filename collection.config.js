@@ -18,7 +18,7 @@ const collection = {
   description: "An archive of Khmer Folklores, legends and stories showcasing the variance in Khmer Storytelling.",
   // Optional Khmer translation of description, shown when the site's
   // language switcher is set to Khmer (absent until contributed).
-  descriptionKhmer: "បណ្ណសារនៃរឿងព្រេងខ្មែរ តំណាលនិទាន និងរឿងរ៉ាវ បង្ហាញពីភាពចម្រុះនៃសិល្បៈនិទានរឿងខ្មែរ។",
+  descriptionKhmer: "បណ្ណសាររឿងព្រេង និងរឿងនិទានខ្មែរ ដែលបង្ហាញថារឿងតែមួយ អាចនិទានខុសៗគ្នា តាមការចងចាំរបស់អ្នកនិទាននីមួយៗ។",
 
   // Who is building this archive? Your name, as you want it shown.
   curator: "Pich Ream Rachna",

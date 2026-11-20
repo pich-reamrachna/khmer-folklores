@@ -24,7 +24,7 @@ export default function ReviewActions({
         {busy ? (
           <>
             <span className="btn-spinner" aria-hidden="true" />
-            {t("contributeSubmitting")}
+            {t("reviewSaving")}
           </>
         ) : (
           t(approving ? approveLabel : rejectLabel)
