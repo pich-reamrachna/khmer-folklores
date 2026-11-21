@@ -255,6 +255,8 @@ const uiText = {
   // someone else's words, not their own.
   reviewTellingLabel: { en: "Telling", km: "ការនិទាន" },
   reviewPendingCount: { en: "waiting", km: "កំពុងរង់ចាំ" },
+  // Under the tabs, when only the open tab has nothing (ReviewQueue.js).
+  reviewTabEmpty: { en: "Nothing waiting here.", km: "គ្មានអ្វីរង់ចាំនៅទីនេះទេ។" },
   reviewEmpty: { en: "Nothing to review — every submission has been handled.", km: "គ្មានអ្វីត្រូវពិនិត្យទេ — អ្នកបានពិនិត្យរឿងទាំងអស់រួចហើយ។" },
   reviewLoadError: { en: "The review queue couldn't be loaded. Refresh to try again.", km: "មិនអាចបង្ហាញបញ្ជីរឿងដែលរង់ចាំការពិនិត្យបានទេ។ សូមបើកទំព័រនេះម្ដងទៀត។" },
   reviewSubmittedBy: { en: "shared by", km: "ចែករំលែកដោយ" },

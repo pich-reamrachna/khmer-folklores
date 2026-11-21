@@ -231,8 +231,11 @@ export default function ReviewQueue({ submissions, tellings, edits, loadFailed }
                 <li key={item.id}>{current[3](item)}</li>
               ))}
             </ul>
-          ) : loadFailed ? null : (
-            <p style={styles.empty}>{t("reviewEmpty")}</p>
+          ) : loadFailed || total === 0 ? null : (
+            // Just this tab is empty — others still have something waiting
+            // (their counts say so). When the whole queue is empty, the
+            // count line above already says so, once.
+            <p style={styles.empty}>{t("reviewTabEmpty")}</p>
           )}
         </div>
       </div>
