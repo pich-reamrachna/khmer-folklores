@@ -9,6 +9,9 @@ import { useLanguage } from "./LanguageContext.js";
 // sizes stay its own; what tells the two apart is the script itself (Cinzel
 // capitals vs. the Khmer serif) and the small gap between them. A story
 // with no Khmer name just shows the English one.
+// fixedOrder: always English first, whatever the language — the review page
+// (ReviewSubmission.js), where the curator reads both names and the swap on
+// a language toggle only moved them around.
 
 const styles = {
   pair: {
@@ -18,13 +21,13 @@ const styles = {
   },
 };
 
-export default function TitlePair({ title, khmerTitle, englishStyle, khmerStyle }) {
+export default function TitlePair({ title, khmerTitle, englishStyle, khmerStyle, fixedOrder = false }) {
   const { language } = useLanguage();
   const names = [
     { text: title, style: englishStyle },
     { text: khmerTitle, style: khmerStyle },
   ].filter((name) => name.text);
-  if (language === "km") names.reverse();
+  if (language === "km" && !fixedOrder) names.reverse();
 
   return (
     <div style={styles.pair}>
