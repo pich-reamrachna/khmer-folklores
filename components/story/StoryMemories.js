@@ -43,7 +43,9 @@ const styles = {
   // story's own header above (StoryDetails.js): quiet spaced capitals, then
   // gold Cinzel. Deliberately not translated — a decorative label, kept
   // English like the site's other stylistic branding text.
+  // Can show Khmer: the label font draws Khmer bigger (app/layout.js).
   eyebrow: {
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 600,
     color: "#A89F91",
@@ -451,8 +453,8 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
     // id="tellings": /share's "Add my version" links land here (/<id>#tellings).
     <section id="tellings" style={styles.section} className="tellings-section">
       <div style={styles.container} className="tellings-content">
-        <p style={styles.eyebrow}>
-          Voices from the Community
+        <p style={{ ...styles.eyebrow, ...(language === "km" ? styles.trackingNone : null) }}>
+          {t("memoriesEyebrow")}
         </p>
 
         <h2 style={styles.title}>{t("memoriesTitle")}</h2>

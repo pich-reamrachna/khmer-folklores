@@ -428,7 +428,8 @@ const styles = {
     borderRadius: 2,
     padding: "0.45rem 0.6rem",
     margin: "0 -0.6rem",
-    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    // Khmer first, like userMenuLink above: "Log Out" can be Khmer.
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.85rem",
     fontWeight: 600,
     cursor: "pointer",
@@ -471,6 +472,20 @@ const styles = {
     wordBreak: "break-all",
     margin: 0,
   },
+  // The phone menu's My Entries / Review Submissions: linkIdle's spaced
+  // capitals (repeated here, since a style can't spread a sibling in the same
+  // object), with the bigger Khmer label font since both can be Khmer.
+  mobileAccountLink: {
+    textDecoration: "none",
+    color: "#CFC6B8",
+    fontSize: "0.78rem",
+    fontWeight: 700,
+    letterSpacing: "0.18em",
+    textTransform: "uppercase",
+    padding: "0.5rem 0",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
+  },
+  // Can be Khmer, so the label font draws Khmer bigger (app/layout.js).
   mobileLogoutBtn: {
     textAlign: "center",
     padding: "0.6rem",
@@ -478,7 +493,7 @@ const styles = {
     border: "1px solid rgba(245, 239, 230, 0.12)",
     backgroundColor: "transparent",
     color: "#F5EFE6",
-    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.78rem",
     fontWeight: 700,
     letterSpacing: "0.1em",
@@ -673,11 +688,11 @@ export default function NavBar() {
                 </Link>
                 {isCurator ? (
                   <Link href="/review" style={styles.userMenuLink} className="nav-menu-item" onClick={() => setUserMenuOpen(false)}>
-                    Review Submissions
+                    {t("navReviewSubmissions")}
                   </Link>
                 ) : null}
                 <button type="button" style={styles.userLogoutBtn} className="nav-menu-item" onClick={handleLogout}>
-                  Log Out
+                  {t("navLogOut")}
                 </button>
               </div>
             </div>
@@ -800,29 +815,29 @@ export default function NavBar() {
             </div>
             <Link
               href="/my-entries"
-              style={{
-                ...styles.linkIdle,
-                fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
-                ...(language === "km" ? styles.trackingNone : null),
-              }}
+              style={{ ...styles.mobileAccountLink, ...(language === "km" ? styles.trackingNone : null) }}
               onClick={() => setMenuOpen(false)}
             >
               {t("navMyEntries")}
             </Link>
             {isCurator ? (
-              <Link href="/review" style={styles.linkIdle} onClick={() => setMenuOpen(false)}>
-                Review Submissions
+              <Link
+                href="/review"
+                style={{ ...styles.mobileAccountLink, ...(language === "km" ? styles.trackingNone : null) }}
+                onClick={() => setMenuOpen(false)}
+              >
+                {t("navReviewSubmissions")}
               </Link>
             ) : null}
             <button
               type="button"
-              style={styles.mobileLogoutBtn}
+              style={{ ...styles.mobileLogoutBtn, ...(language === "km" ? styles.trackingNone : null) }}
               onClick={() => {
                 handleLogout();
                 setMenuOpen(false);
               }}
             >
-              Log Out
+              {t("navLogOut")}
             </button>
           </div>
         ) : (

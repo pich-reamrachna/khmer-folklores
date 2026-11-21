@@ -25,6 +25,9 @@ const uiText = {
   // Translated, unlike the top bar's links: editReturnedShort sends people
   // here by name, so a Khmer reader has to be able to find it in the menu.
   navMyEntries: { en: "My Entries", km: "កំណត់ត្រារបស់ខ្ញុំ" },
+  // The rest of the account menu, translated for the same reason.
+  navReviewSubmissions: { en: "Review Submissions", km: "ពិនិត្យរឿងដែលបានផ្ញើមក" },
+  navLogOut: { en: "Log Out", km: "ចាកចេញ" },
 
   // StoryHero.js.
   heroPrevStory: { en: "Previous story", km: "រឿងមុន" },
@@ -55,8 +58,9 @@ const uiText = {
   // BackButton.js
   goBack: { en: "Go Back", km: "ត្រឡប់ក្រោយ" },
 
-  // StoryMemories.js — memoriesEyebrow ("Voices from the Community") is
-  // deliberately not here, same reason as archiveEyebrow above.
+  // StoryMemories.js. Unlike archiveEyebrow above, its eyebrow is translated:
+  // the curator asked for it in Khmer too.
+  memoriesEyebrow: { en: "Voices from the Community", km: "ការនិទានរបស់អ្នកដទៃ" },
   memoriesTitle: { en: "What people remember.", km: "អ្នកទាំងអស់គ្នាចាំរឿងនេះបែបណា?" },
   memoriesSubtitle: {
     en: "Each memory is a small lantern showing how folklore lives in daily Cambodian conversation.",
@@ -295,7 +299,7 @@ const uiText = {
 
   // FirstTelling.js / StoryMemories.js — the story's first telling and the
   // tellings under it.
-  firstTellingHeading: { en: "The First Telling", km: "ការនិទានដំបូង" },
+  firstTellingHeading: { en: "The First Telling", km: "រឿងនិទានដំបូង" },
   memoriesNoneYet: {
     en: "No one else has shared their version yet — be the first.",
     km: "មិនទាន់មានអ្នកណាចែករំលែករឿងនេះតាមដែលខ្លួនចាំនៅឡើយទេ — អ្នកអាចជាអ្នកដំបូង។",
@@ -307,7 +311,7 @@ const uiText = {
   memoriesEdited: { en: "Edited", km: "បានកែ" },
   menuDeleteLocked: {
     en: "The first telling of a published story can't be deleted — you can still edit it.",
-    km: "មិនអាចលុបការនិទានដំបូងរបស់រឿងដែលបានបង្ហោះបានទេ — ប៉ុន្តែអ្នកនៅតែអាចកែវាបាន។",
+    km: "មិនអាចលុបរឿងនិទានដំបូងរបស់រឿងដែលបានបង្ហោះបានទេ — ប៉ុន្តែអ្នកនៅតែអាចកែវាបាន។",
   },
 };
 
