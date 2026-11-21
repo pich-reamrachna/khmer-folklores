@@ -548,6 +548,18 @@ textarea.contribute-input:focus {
   font-style: italic;
   font-size: 1.05rem;
 }
+/* In Khmer (<html lang="km">, see LanguageContext.js): a taller line, so the
+   bigger Khmer letters' vowel marks and subscripts aren't cut off by the
+   field's height; and the placeholder at the field's own size and upright —
+   Khmer has no italic, so the browser just slants the letters, and the
+   larger size was what overflowed the field. */
+:root:lang(km) .archive-search-input {
+  line-height: 1.7;
+}
+:root:lang(km) .archive-search-bar--light .archive-search-input::placeholder {
+  font-style: normal;
+  font-size: inherit;
+}
 
 /* Every field on the site — keeps it dark when the browser fills it from a
    saved suggestion (or previews one on hover). The browser's own autofill
