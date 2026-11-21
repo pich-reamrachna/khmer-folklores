@@ -11,9 +11,12 @@ import TitlePair from "../shared/TitlePair.js";
 
 // One of the user's own tellings on /my-entries, with where it stands:
 // waiting for review, published (linking to its story), or returned with the
-// curator's note. Waiting and returned tellings aren't on the story page, so
-// they get an Edit button here; so does a published one with changes waiting
-// (EditStatus.js). Same card as SubmissionCard.js. The link's :hover lives in
+// curator's note. Every telling has an Edit button here, like the stories
+// in SubmissionCard.js: a waiting or returned one (not on the story page)
+// is fixed directly; a published one's changes go to the curator for review
+// (EditStatus.js shows them waiting) — the same edit as the story page's ⋯
+// menu, so a contributor doesn't have to find it there. Same card as
+// SubmissionCard.js. The link's :hover lives in
 // app/globals.css (.share-match-link).
 
 // Badge colour per status; the label comes from uiText (tellingStatus*).
@@ -64,16 +67,14 @@ export default function TellingCard({ telling }) {
             {t("submissionsViewStory")} →
           </Link>
         ) : null}
-        {telling.status !== "published" || telling.edit ? (
-          <div style={styles.editSlot}>
-            <EditEntryButton
-              storyId={telling.storyId}
-              storyTitle={telling.storyTitle}
-              storyTitleKhmer={telling.storyKhmerTitle}
-              telling={telling}
-            />
-          </div>
-        ) : null}
+        <div style={styles.editSlot}>
+          <EditEntryButton
+            storyId={telling.storyId}
+            storyTitle={telling.storyTitle}
+            storyTitleKhmer={telling.storyKhmerTitle}
+            telling={telling}
+          />
+        </div>
       </div>
     </div>
   );

@@ -4,9 +4,10 @@ import { useContributeModal } from "../contribute/contributeModalContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import { formEntry } from "../../utils/editableEntry.js";
 
-// "Edit" on a /my-entries card: for a telling that's waiting for review or
-// was returned (those aren't on the story page, so this is where the owner
-// fixes them), or a published one whose changes are waiting. Opens the same
+// "Edit" on a /my-entries card: for any of the owner's tellings — one that's
+// waiting for review or was returned (not on the story page, so this is the
+// only place to fix it), or a published one (its changes go to review, the
+// same as editing from the story page's ⋯ menu). Opens the same
 // edit form as the story page (StoryPageShell owns the modal), pre-filled
 // with the waiting changes if there are any; saving sends them to review.
 
