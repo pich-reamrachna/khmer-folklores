@@ -17,12 +17,15 @@ export default function TellingReviewCard({ telling }) {
   const { story } = telling;
   const place = pickText(language, telling.placeKhmer, telling.place);
   const tracking = language === "km" ? s.trackingNone : null;
+  // Just the story's name in the chosen language (here it's only a reminder
+  // of which story; the telling is what's being reviewed). Khmer only when
+  // the story has a Khmer name, styled to match the script shown.
+  const titleIsKhmer = language === "km" && Boolean(story?.khmerTitle);
 
   return (
     <article style={s.card} className="review-card">
       <div style={s.read}>
-        <h3 style={s.title}>{story?.title ?? "?"}</h3>
-        {story?.khmerTitle ? <p style={s.khmerTitle}>{story.khmerTitle}</p> : null}
+        <h3 style={titleIsKhmer ? s.khmerTitle : s.title}>{titleIsKhmer ? story.khmerTitle : story?.title ?? "?"}</h3>
         <p style={s.meta}>
           {t("reviewSubmittedBy")} <span style={s.metaName}>{telling.contributor}</span>
           {place ? ` · ${place}` : ""}

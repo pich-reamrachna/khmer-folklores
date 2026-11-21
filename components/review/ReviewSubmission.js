@@ -4,6 +4,7 @@ import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import { formatTimestamp } from "../../utils/formatDate.js";
 import reviewStyles from "./reviewStyles.js";
+import TitlePair from "../shared/TitlePair.js";
 
 // The read-only half of a /review card: the story as submitted and its first
 // telling, so the curator can read it before writing the summary.
@@ -17,9 +18,15 @@ export default function ReviewSubmission({ submission }) {
 
   return (
     <div>
-      {submission.category ? <p style={{ ...reviewStyles.kicker, ...tracking }}>{submission.category}</p> : null}
-      <h3 style={reviewStyles.title}>{submission.title}</h3>
-      {submission.khmerTitle ? <p style={reviewStyles.khmerTitle}>{submission.khmerTitle}</p> : null}
+      {submission.category ? (
+        <p style={{ ...reviewStyles.kicker, ...tracking }}>{pickText(language, submission.categoryKhmer, submission.category)}</p>
+      ) : null}
+      <TitlePair
+        title={submission.title}
+        khmerTitle={submission.khmerTitle}
+        englishStyle={reviewStyles.title}
+        khmerStyle={reviewStyles.khmerTitle}
+      />
       <p style={reviewStyles.meta}>
         {t("reviewSubmittedBy")} <span style={reviewStyles.metaName}>{origin?.contributor ?? "?"}</span>
         {place ? ` · ${place}` : ""}

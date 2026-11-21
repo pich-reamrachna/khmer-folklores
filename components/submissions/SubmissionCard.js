@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { pickText, useLanguage } from "../shared/LanguageContext.js";
+import { useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import { formatTimestamp } from "../../utils/formatDate.js";
 import styles from "./entryCardStyles.js";
 import EditEntryButton from "./EditEntryButton.js";
 import EditStatus from "./EditStatus.js";
+import TitlePair from "../shared/TitlePair.js";
 
 // One of the user's own new stories on /my-entries, with where it stands:
 // waiting for review, rejected (showing the curator's note), or published
@@ -36,9 +37,12 @@ export default function SubmissionCard({ submission }) {
       <div style={styles.top}>
         <div>
           <p style={styles.meta}>{date}</p>
-          {/* In the chosen language — the Khmer name when Khmer is on and
-              the story has one, else the English. */}
-          <h3 style={styles.title}>{pickText(language, submission.khmerTitle, submission.title)}</h3>
+          <TitlePair
+            title={submission.title}
+            khmerTitle={submission.khmerTitle}
+            englishStyle={styles.title}
+            khmerStyle={styles.khmerTitle}
+          />
         </div>
         <span style={{ ...styles.badge, ...tracking, color: status.color }}>
           {t(status.key)}

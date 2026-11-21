@@ -74,6 +74,7 @@ export default async function ReviewPage() {
     title: s.title,
     khmerTitle: s.khmer_title,
     category: s.category,
+    categoryKhmer: s.category_khmer,
     submittedAt: s.submitted_at,
     origin: s.origin ? toTelling(s.origin) : null,
   }));

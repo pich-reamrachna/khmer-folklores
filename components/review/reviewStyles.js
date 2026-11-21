@@ -54,11 +54,18 @@ const reviewStyles = {
     margin: 0,
     overflowWrap: "anywhere",
   },
+  // The story's Khmer name, with `title` in shared/TitlePair.js: the same
+  // colour, and the same size to the eye — 0.9x the font-size, since every
+  // Khmer letter is drawn 15% bigger (app/layout.js). Weight 400: the Khmer
+  // serif reads heavier than thin Cinzel at 500. The taller line keeps its
+  // stacked marks clear of the English name.
   khmerTitle: {
     fontFamily: "var(--font-khmer-serif), serif",
-    fontSize: "0.95rem",
-    color: "#A89F91",
-    margin: "0.35rem 0 0",
+    fontSize: "clamp(1.35rem, 2.16vw, 1.71rem)",
+    fontWeight: 400,
+    lineHeight: 1.5,
+    color: "#F5EFE6",
+    margin: 0,
     overflowWrap: "anywhere",
   },
   meta: { fontFamily: khmerSans, fontSize: "0.8rem", color: "#A89F91", margin: "0.9rem 0 0", overflowWrap: "anywhere" },

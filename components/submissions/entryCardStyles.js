@@ -3,9 +3,8 @@
 // note, so both tabs read as one list.
 //
 // Each entry is a ruled row rather than a boxed card: small details on top,
-// the title in the chosen language — Cinzel for English (as on the story
-// pages' tellings), the Khmer font at the same size for Khmer — and its
-// status on the right. A row the curator sent back (a story
+// the story's English and Khmer names (shared/TitlePair.js) — Cinzel for
+// English, the Khmer serif for Khmer — and its status on the right. A row the curator sent back (a story
 // not accepted, a telling returned) carries a red rule down its left side,
 // with the curator's note in a dark panel.
 
@@ -28,11 +27,16 @@ const entryCardStyles = {
   top: { display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1.5rem" },
   // The date, above the title.
   meta: { fontFamily: khmerSans, fontSize: "0.78rem", color: "#A89F91", margin: "0 0 0.55rem", overflowWrap: "anywhere" },
-  // overflowWrap: the title is whatever the submitter typed.
+  // The story's English name. overflowWrap: whatever the submitter typed.
   title: { fontFamily: cinzel, fontSize: "1.3rem", fontWeight: 500, lineHeight: "var(--khmer-leading, 1.25)", color: "#F5EFE6", margin: 0, overflowWrap: "anywhere" },
+  // The story's Khmer name, with `title` in shared/TitlePair.js: the same
+  // colour, and the same size to the eye — 0.9x the font-size, since every
+  // Khmer letter is drawn 15% bigger (app/layout.js). Weight 400: the Khmer
+  // serif reads heavier than thin Cinzel at 500.
+  khmerTitle: { fontFamily: "var(--font-khmer-serif), serif", fontSize: "1.17rem", fontWeight: 400, lineHeight: 1.5, color: "#F5EFE6", margin: 0, overflowWrap: "anywhere" },
   // A telling's own title, under the story's (TellingCard.js). Whatever
   // the sharer typed, English or Khmer.
-  subtitle: { fontFamily: khmerSans, fontSize: "0.95rem", color: "#D9D2C5", margin: "0.4rem 0 0", overflowWrap: "anywhere" },
+  subtitle: { fontFamily: khmerSans, fontSize: "0.95rem", color: "#D9D2C5", margin: "0.6rem 0 0", overflowWrap: "anywhere" },
   // The status, as plain coloured small spaced capitals — no box, so it reads
   // as information rather than something to click. color comes from the
   // status.

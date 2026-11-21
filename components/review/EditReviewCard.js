@@ -27,6 +27,9 @@ export default function EditReviewCard({ edit }) {
   const { language } = useLanguage();
   const t = useTranslation();
   const { story, published: before } = edit;
+  // Just the story's name in the chosen language, as on TellingReviewCard.js:
+  // Khmer only when the story has a Khmer name, styled to match the script.
+  const titleIsKhmer = language === "km" && Boolean(story?.khmerTitle);
   const place = (x) => pickText(language, x.placeKhmer, x.place);
   const photo = (url) => (url ? <img src={url} alt="" style={styles.photo} /> : <p style={styles.value}>—</p>);
 
@@ -41,8 +44,7 @@ export default function EditReviewCard({ edit }) {
   return (
     <article style={s.card} className="review-card">
       <div style={s.read}>
-        <h3 style={s.title}>{story?.title ?? "?"}</h3>
-        {story?.khmerTitle ? <p style={s.khmerTitle}>{story.khmerTitle}</p> : null}
+        <h3 style={titleIsKhmer ? s.khmerTitle : s.title}>{titleIsKhmer ? story.khmerTitle : story?.title ?? "?"}</h3>
         <p style={s.meta}>
           {t("reviewSubmittedBy")} <span style={s.metaName}>{before.contributor}</span> · &ldquo;{before.title}&rdquo;
           {edit.updatedAt ? ` · ${formatTimestamp(edit.updatedAt, language)}` : ""}

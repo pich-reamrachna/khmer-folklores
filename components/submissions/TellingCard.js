@@ -1,12 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { pickText, useLanguage } from "../shared/LanguageContext.js";
+import { useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import { formatTimestamp } from "../../utils/formatDate.js";
 import styles from "./entryCardStyles.js";
 import EditEntryButton from "./EditEntryButton.js";
 import EditStatus from "./EditStatus.js";
+import TitlePair from "../shared/TitlePair.js";
 
 // One of the user's own tellings on /my-entries, with where it stands:
 // waiting for review, published (linking to its story), or returned with the
@@ -34,9 +35,13 @@ export default function TellingCard({ telling }) {
       <div style={styles.top}>
         <div>
           <p style={styles.meta}>{date}</p>
-          {/* Which story it's a telling of, in the chosen language (Khmer
-              name when Khmer is on and there is one, else the English). */}
-          <h3 style={styles.title}>{pickText(language, telling.storyKhmerTitle, telling.storyTitle)}</h3>
+          {/* Which story it's a telling of, in both languages. */}
+          <TitlePair
+            title={telling.storyTitle}
+            khmerTitle={telling.storyKhmerTitle}
+            englishStyle={styles.title}
+            khmerStyle={styles.khmerTitle}
+          />
           {/* The telling's own title, under the story it belongs to. */}
           {telling.title ? <p style={styles.subtitle}>{telling.title}</p> : null}
         </div>
