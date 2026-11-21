@@ -14,10 +14,12 @@ import s from "./reviewStyles.js";
 // (DecisionPicker.js); only that decision's fields show: approving shows the
 // story's name, Khmer name and category to tidy and its summary to write,
 // rejecting shows the note the submitter will see. Typed values are kept if
-// the choice is switched. Approving needs a summary in both English and
-// Khmer (the Khmer one must actually contain Khmer script), rejecting needs a
-// note — the database enforces the summary rules too
-// (stories_published_needs_summary, stories_published_needs_khmer_summary).
+// the choice is switched. Approving needs the story's name and summary in
+// both English and Khmer (the Khmer ones must actually contain Khmer
+// script) — a contributor only has to give one name, so the curator fills in
+// the other here. Rejecting needs a note. The database enforces these too
+// (stories_published_needs_summary, stories_published_needs_khmer_summary,
+// stories_published_needs_both_names).
 
 const MAX = 1000;
 // Any character in the Khmer Unicode block (same check as ArchiveBrowser.js).
@@ -58,6 +60,8 @@ export default function ReviewForm({ submission }) {
   function approve() {
     const found = {};
     if (title.trim().length < 3) found.title = t("reviewTitleError");
+    if (!khmerTitle.trim()) found.khmerTitle = t("reviewKhmerTitleError");
+    else if (!KHMER_SCRIPT.test(khmerTitle)) found.khmerTitle = t("reviewKhmerTitleScriptError");
     if (!summary.trim()) found.summary = t("reviewSummaryError");
     if (!summaryKhmer.trim()) found.summaryKhmer = t("reviewSummaryKhmerError");
     else if (!KHMER_SCRIPT.test(summaryKhmer)) found.summaryKhmer = t("reviewSummaryKhmerScriptError");
@@ -67,7 +71,7 @@ export default function ReviewForm({ submission }) {
     if (Object.keys(found).length > 0) return;
     save({
       title: title.trim(),
-      khmer_title: khmerTitle.trim() || null,
+      khmer_title: khmerTitle.trim(),
       category: cat.en,
       category_khmer: cat.km,
       summary: summary.trim(),
@@ -112,8 +116,8 @@ export default function ReviewForm({ submission }) {
 
       {choice === "approve" ? (
         <>
-          {field("title", "newStoryTitleLabel", title, setTitle)}
-          {field("khmerTitle", "newStoryKhmerTitleLabel", khmerTitle, setKhmerTitle)}
+          {field("title", "reviewTitleLabel", title, setTitle)}
+          {field("khmerTitle", "reviewKhmerTitleLabel", khmerTitle, setKhmerTitle)}
           <div style={s.field}>
             <label style={label} htmlFor={`${submission.id}-category`}>{t("newStoryCategoryLabel")}</label>
             <select id={`${submission.id}-category`} style={s.input} value={category} onChange={(e) => setCategory(e.target.value)}>

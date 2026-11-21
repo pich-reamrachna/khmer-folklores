@@ -123,7 +123,7 @@ export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, 
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label={`${t("contributeDialogLabel")} ${pickText(language, storyTitleKhmer, storyTitle)}`}
+        aria-label={`${t("contributeDialogLabel")} ${pickText(language, storyTitleKhmer, storyTitle) || storyTitleKhmer}`}
         tabIndex={-1}
         className="contribute-dialog"
       >

@@ -218,8 +218,11 @@ const uiText = {
     en: "The curator reads every new story and writes its summary before it appears in the archive.",
     km: "អ្នកចងក្រងនឹងអានរឿងថ្មីនីមួយៗ ហើយសរសេរសេចក្ដីសង្ខេបខ្លីមួយ មុននឹងដាក់បង្ហាញក្នុងបណ្ណសារ។",
   },
-  newStoryTitleLabel: { en: "Story name (English)", km: "ចំណងជើងរឿង (ជាភាសាអង់គ្លេស)" },
-  newStoryKhmerTitleLabel: { en: "Story name in Khmer (optional)", km: "ចំណងជើងរឿងជាភាសាខ្មែរ (បើមាន)" },
+  newStoryTitleLabel: { en: "Story name in English", km: "ចំណងជើងរឿងជាភាសាអង់គ្លេស" },
+  newStoryKhmerTitleLabel: { en: "Story name in Khmer", km: "ចំណងជើងរឿងជាភាសាខ្មែរ" },
+  // Under the English name: a new story needs at least one of the two.
+  newStoryNameHint: { en: "Fill in at least one: English, Khmer, or both.", km: "សូមបំពេញយ៉ាងហោចណាស់មួយ៖ ភាសាអង់គ្លេស ភាសាខ្មែរ ឬទាំងពីរ។" },
+  newStoryNameRequired: { en: "Give the story a name in English or Khmer.", km: "សូមដាក់ចំណងជើងរឿងជាភាសាអង់គ្លេស ឬភាសាខ្មែរ។" },
   newStoryKhmerTitleLenError: { en: "Khmer name must be {max} characters or fewer.", km: "ចំណងជើងខ្មែរមិនអាចវែងជាង {max} តួអក្សរទេ។" },
   newStoryCategoryLabel: { en: "Category", km: "ប្រភេទរឿង" },
   newStoryCategoryPlaceholder: { en: "Choose a category", km: "ជ្រើសរើសប្រភេទរឿង" },
@@ -274,7 +277,12 @@ const uiText = {
   // One button for both, so the Khmer says "confirm and send the note"
   // rather than naming either decision.
   reviewRejectReturn: { en: "Reject & Return", km: "បញ្ជាក់ និងផ្ញើសារ" },
-  reviewTitleError: { en: "Story name must be at least 3 characters.", km: "ចំណងជើងរឿងត្រូវមានយ៉ាងតិច 3 តួអក្សរ។" },
+  // The approve form's name fields: both are needed to publish.
+  reviewTitleLabel: { en: "Story name in English (needed to approve)", km: "ចំណងជើងរឿងជាភាសាអង់គ្លេស (ត្រូវសរសេរ ដើម្បីអនុម័ត)" },
+  reviewKhmerTitleLabel: { en: "Story name in Khmer (needed to approve)", km: "ចំណងជើងរឿងជាភាសាខ្មែរ (ត្រូវសរសេរ ដើម្បីអនុម័ត)" },
+  reviewKhmerTitleError: { en: "Add the story's Khmer name before approving.", km: "សូមបញ្ចូលចំណងជើងរឿងជាភាសាខ្មែរ មុននឹងអនុម័ត។" },
+  reviewKhmerTitleScriptError: { en: "The Khmer name needs to be written in Khmer.", km: "ចំណងជើងរឿងជាភាសាខ្មែរ ត្រូវសរសេរជាអក្សរខ្មែរ។" },
+  reviewTitleError: { en: "The English story name must be at least 3 characters.", km: "ចំណងជើងរឿងជាភាសាអង់គ្លេស ត្រូវមានយ៉ាងតិច 3 តួអក្សរ។" },
   reviewSummaryError: { en: "Write a summary before approving.", km: "សូមសរសេរសេចក្ដីសង្ខេប មុននឹងអនុម័ត។" },
   reviewSummaryKhmerError: { en: "Write the summary in Khmer before approving.", km: "សូមសរសេរសេចក្ដីសង្ខេបជាភាសាខ្មែរ មុននឹងអនុម័ត។" },
   reviewSummaryKhmerScriptError: { en: "The Khmer summary needs to be written in Khmer.", km: "សេចក្ដីសង្ខេបជាភាសាខ្មែរ ត្រូវសរសេរជាអក្សរខ្មែរ។" },

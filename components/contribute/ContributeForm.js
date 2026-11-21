@@ -104,18 +104,29 @@ function validate({ title, place, description, photoFile, t, newStory, khmerTitl
   const errors = {};
 
   const titleVal = title.trim();
+  const khmerVal = newStory ? khmerTitle.trim() : "";
   const titleOrderError = khmerOrderError(titleVal, t);
-  if (len(titleVal) < TITLE_MIN || len(titleVal) > TITLE_MAX)
+  // A new story needs a name in English or Khmer — at least one, since some
+  // contributors only know one of the two languages; the curator fills in
+  // the other before approving (ReviewForm.js). A telling's own title is
+  // always required.
+  if (newStory && !titleVal && !khmerVal) errors.title = t("newStoryNameRequired");
+  else if (newStory && !titleVal) {
+    // No English name: nothing to check here.
+  } else if (len(titleVal) < TITLE_MIN || len(titleVal) > TITLE_MAX)
     errors.title = fill(t("contributeTitleLenError"), { min: TITLE_MIN, max: TITLE_MAX });
   else if (hasForbiddenChars(titleVal, false)) errors.title = t("contributeTitleCharError");
   else if (titleOrderError) errors.title = titleOrderError;
 
-  // newStory only: the Khmer name is optional, the category is required.
+  // newStory only: the category is required.
   if (newStory) {
-    const khmerVal = khmerTitle.trim();
     const khmerOrderErr = khmerOrderError(khmerVal, t);
     if (len(khmerVal) > TITLE_MAX)
       errors.khmerTitle = fill(t("newStoryKhmerTitleLenError"), { max: TITLE_MAX });
+    // Khmer-only: the Khmer name is also the first telling's title, which
+    // has the same 3-character minimum as any telling title.
+    else if (!titleVal && khmerVal && len(khmerVal) < TITLE_MIN)
+      errors.khmerTitle = fill(t("contributeTitleLenError"), { min: TITLE_MIN, max: TITLE_MAX });
     else if (hasForbiddenChars(khmerVal, false)) errors.khmerTitle = t("contributeTitleCharError");
     else if (khmerOrderErr) errors.khmerTitle = khmerOrderErr;
     if (!categories.some((c) => c.en === category)) errors.category = t("newStoryCategoryError");
@@ -330,8 +341,13 @@ export default function ContributeForm({
   // A story's first telling has no title of its own — it always carries the
   // story's title, so its Title field is hidden and the story title is saved.
   const firstTelling = !!entry?.isFirstTelling;
-  const [title, setTitle] = useState(firstTelling ? storyTitle : entry?.title ?? initialTitle);
+  // A first telling's title is its story's name: the English one, or the
+  // Khmer one for a waiting story shared with only a Khmer name.
+  const [title, setTitle] = useState(firstTelling ? storyTitle || storyTitleKhmer : entry?.title ?? initialTitle);
   const [khmerTitle, setKhmerTitle] = useState(initialKhmerTitle);
+  // The "needs N characters" hint — not on a new story's English name left
+  // empty, since a Khmer name alone is enough there.
+  const titleTooShort = len(title.trim()) < TITLE_MIN && !(newStory && !title.trim());
   const [category, setCategory] = useState("");
   const [place, setPlace] = useState(entry?.place ?? "");
   const [description, setDescription] = useState(entry?.description ?? "");
@@ -417,7 +433,7 @@ export default function ContributeForm({
         const { data: isReviewer } = await supabase.rpc("is_reviewer");
         sentToReview = isReviewer !== true;
         const changes = {
-          title: firstTelling ? storyTitle : title.trim(),
+          title: firstTelling ? storyTitle || storyTitleKhmer : title.trim(),
           place: province.en,
           place_khmer: province.km,
           description: description.trim(),
@@ -476,7 +492,9 @@ export default function ContributeForm({
           p_title: title.trim(),
           p_khmer_title: khmerTitle.trim(),
           p_category: category,
-          p_entry_title: title.trim(),
+          // The first telling is titled with the story's name — the
+          // English one if given, else the Khmer one.
+          p_entry_title: title.trim() || khmerTitle.trim(),
           p_place: province.en,
           p_place_khmer: province.km,
           p_description: description.trim(),
@@ -553,7 +571,8 @@ export default function ContributeForm({
           {isEditing ? t("contributeEditEyebrow") : newStory ? t("newStoryEyebrow") : t("contributeEyebrow")}
         </p>
         <h1 style={styles.title}>
-          {newStory ? t("newStoryHeading") : pickText(language, storyTitleKhmer, storyTitle)}
+          {/* A waiting story may have only one name, in either language. */}
+          {newStory ? t("newStoryHeading") : pickText(language, storyTitleKhmer, storyTitle) || storyTitleKhmer}
         </h1>
         {newStory ? <p style={styles.reviewNote}>{t("newStoryReviewNote")}</p> : null}
 
@@ -568,6 +587,7 @@ export default function ContributeForm({
               <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="title">
                 {newStory ? t("newStoryTitleLabel") : t("contributeTitleLabel")}
               </label>
+              {newStory ? <p style={styles.hint}>{t("newStoryNameHint")}</p> : null}
               <input
                 id="title"
                 className="contribute-input"
@@ -578,9 +598,9 @@ export default function ContributeForm({
               />
               <div style={styles.metaRow}>
                 {errors.title ? <p style={styles.fieldError}>{errors.title}</p> : null}
-                <p style={{ ...styles.counter, ...(len(title.trim()) < TITLE_MIN ? styles.counterOver : null) }}>
+                <p style={{ ...styles.counter, ...(titleTooShort ? styles.counterOver : null) }}>
                   {len(title)} / {TITLE_MAX}
-                  {len(title.trim()) < TITLE_MIN ? ` ${fill(t("contributeMinHint"), { n: TITLE_MIN })}` : ""}
+                  {titleTooShort ? ` ${fill(t("contributeMinHint"), { n: TITLE_MIN })}` : ""}
                 </p>
               </div>
             </div>

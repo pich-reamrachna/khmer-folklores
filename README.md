@@ -12,6 +12,7 @@ ChangKeang is a community archive of Khmer legends, ghost stories, superstitions
 The archive is for Cambodians who grew up hearing these stories and want to keep them, and for anyone who wants to read them. Most of them will read on a phone, often on mobile data, and many read Khmer more easily than English. What I did for them:
 
 - **Khmer first.** The whole interface switches between English and Khmer. Story titles are shown in Khmer as well as English. Khmer text is never transliterated or replaced. The form catches Khmer typed in a letter order that phones can't draw (it shows a dotted circle ◌), in `utils/khmerOrder.js`. The database refuses the same text, in `supabase/khmer-order.sql`.
+- **One language is enough to share.** Some contributors only know Khmer and some only know English, so a new story needs just one name, in either language, and a telling can be written in either. When I approve a story I add the missing name and write the summary in both languages, so every published story has both. The approve form and the database both enforce this (`supabase/story-names-either.sql`). A story shared with only a Khmer name gets a web address like `/story-3fa9c1`, because addresses are made from the English name.
 - **Words chosen by a Khmer reader.** A code review pointed out that the AI-written Khmer for "returned" and "not accepted" sounded like a government office refusing a form. I chose gentler words myself, such as រង់ចាំការកែសម្រួលពីអ្នក ("waiting for your edits") and មិនបានទទួលយក. I also gave the My Entries page a Khmer name in the menu, កំណត់ត្រារបស់ខ្ញុំ. Later I reviewed all of the Khmer interface text and story summaries. I rewrote much of it myself so it reads naturally in context rather than word for word from the English (for example ស្វែងរករឿង for "Find a story to follow."), and had the AI redraft the rest in the same style.
 - **Cambodian dates.** Dates show the day in Phnom Penh (UTC+7), not the server's UTC day, with Khmer month names in Khmer mode (`utils/formatDate.js`). Before this fix, a story shared at 6am in Phnom Penh showed the day before.
 - **Phones first.** Every page has a phone layout. On the home page the hero is a poster: picture on top, text below, and a swipe moves between stories. The archive list, My Entries and the review page all have their own phone layouts. Forms lock and show a spinner while sending, so a slow connection doesn't lead to a double submit.
@@ -27,7 +28,7 @@ The archive is for Cambodians who grew up hearing these stories and want to keep
 
 | Table | What it holds |
 |---|---|
-| `stories` | One row per story: title, Khmer title, category, the curator's summary, `status` (`pending` / `published` / `rejected`), `rejection_note`, `first_shared_by`, `origin_entry_id` (its first telling), `submitted_at` |
+| `stories` | One row per story: title, Khmer title (a waiting story may have only one of the two), category, the curator's summary, `status` (`pending` / `published` / `rejected`), `rejection_note`, `first_shared_by`, `origin_entry_id` (its first telling), `submitted_at` |
 | `entries` | One row per telling: `story_id`, `owner`, `contributor` (username), title, place and `place_khmer`, description, `photo_url`, `status` (`pending` / `published` / `returned`), `return_note`, `edited_at` |
 | `entry_edits` | A waiting change to a published telling, one per telling, with its own `status` (`pending` / `returned`) and `return_note`. The published telling stays on the story page until the change is approved. |
 | `curators` | The reviewer list. RLS is on with no policies, so only the SQL Editor can read it or add someone. |
@@ -52,7 +53,7 @@ A brand-new story's first telling starts `published`, because it is reviewed tog
 | Add a telling | No | Own, status must be `pending`, published stories only | Same |
 | Edit a telling | No | Own unpublished tellings directly (they go back to `pending`). Published tellings only through `entry_edits`. | Can keep their own edits published |
 | Delete a telling | No | Own, except the first telling of a published story | Any |
-| New story | No | Only through `submit_story()`, which re-checks the lengths and refuses an exact duplicate name | Same |
+| New story | No | Only through `submit_story()`, which re-checks the lengths, needs at least one name, and refuses an exact duplicate name in either language | Same |
 | Publish or return | No | No | Only through `review_entry()` and `review_entry_edit()`, or by updating `stories` |
 
 Other database rules:
@@ -60,6 +61,7 @@ Other database rules:
 - **A trigger that stops a telling being moved** to another story.
 - **A trigger that sets the "Edited" date** on a telling.
 - **A rule that refuses an edit that changes nothing.**
+- **A published story must have both names,** the Khmer one in Khmer script.
 
 The original `CREATE TABLE` statements for `stories`, `entries` and `profiles`, the week 7 check constraints, and the photo upload and read rules on the `photos` bucket were run in the dashboard early in the semester and aren't saved as files. Everything from Sprint 2 on is in `supabase/`, including the photo delete rules (`photo-storage-delete.sql`).
 
