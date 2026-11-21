@@ -1,30 +1,29 @@
 "use client";
 
 import { useState } from "react";
-import ArchiveSearch from "../home/ArchiveSearch.js";
-import StoryMatchCard from "./StoryMatchCard.js";
-import DidYouMean from "./DidYouMean.js";
-import StartNewStoryButton from "./StartNewStoryButton.js";
+import StorySearch from "./StorySearch.js";
 import NewStoryPanel from "./NewStoryPanel.js";
-import { searchStories } from "../../utils/storyMatch.js";
+import SignInPrompt from "./SignInPrompt.js";
 import { useTranslation } from "../shared/uiText.js";
 import { useLanguage } from "../shared/LanguageContext.js";
 import styles from "./shareSearchStyles.js";
-import { usePublishedStories } from "./usePublishedStories.js";
+import { useSignedIn } from "./useSignedIn.js";
 
-// "Share a Memory": first "Is your story already here?" — matches appear as
-// the user types; each one leads to that story's tellings, where the existing
-// "Share Your Version" button adds theirs. Only once they've searched can
-// they choose "start a new one", which swaps this view for NewStoryPanel
-// (the query is kept, so "Back to search" returns to the same results).
+// "Share a Memory": picks which of three views /share shows.
+//  - Signed out: SignInPrompt — sharing needs an account, so they're told up
+//    front instead of after searching and picking a story.
+//  - Signed in: StorySearch, "Is your story already here?"
+//  - After "start a new one": NewStoryPanel, the new-story form (the query
+//    is kept here, so "Back to search" returns to the same results).
+// While the session is still being checked (a moment), only the eyebrow
+// shows, so neither the prompt nor the search flashes up and then swaps.
 
 export default function ShareSearch() {
   const t = useTranslation();
   const { language } = useLanguage();
-  const stories = usePublishedStories(); // null until loaded
+  const signedIn = useSignedIn(); // undefined while checking
   const [query, setQuery] = useState("");
   const [composing, setComposing] = useState(false);
-  const { matches, suggestion } = searchStories(query, stories ?? []);
 
   if (composing) {
     return (
@@ -42,46 +41,8 @@ export default function ShareSearch() {
       <div style={styles.waves} aria-hidden="true" />
       <div style={styles.container}>
         <p style={{ ...styles.eyebrow, ...(language === "km" ? styles.trackingNone : null) }}>{t("navShareMemory")}</p>
-        <h1 style={styles.title}>{t("shareTitle")}</h1>
-        <p style={styles.subtitle}>{t("shareSubtitle")}</p>
-
-        <div style={styles.searchWrap}>
-          <ArchiveSearch value={query} onChange={setQuery} placeholder={t("sharePlaceholder")} light />
-        </div>
-
-        {/* aria-live so screen-reader users hear matches appear as they type. */}
-        <div style={styles.results} aria-live="polite">
-          {/* Typed before the stories arrived: say so, rather than a false
-              "no similar stories" plus a "start a new one" that would skip
-              the duplicate check. */}
-          {query.trim() && stories === null ? (
-            <p style={styles.resultsHeading}>{t("shareLoadingStories")}</p>
-          ) : query.trim() ? (
-            <>
-              {matches.length > 0 ? (
-                <>
-                  <p style={styles.resultsHeading}>{t("shareMatchesHeading")}</p>
-                  <ul style={styles.list}>
-                    {matches.map((story) => (
-                      <li key={story.id}>
-                        <StoryMatchCard story={story} />
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              ) : suggestion ? (
-                <div style={styles.centred}>
-                  <DidYouMean story={suggestion} onPick={setQuery} light />
-                </div>
-              ) : (
-                <p style={styles.resultsHeading}>{t("shareNoMatches")}</p>
-              )}
-              <div style={styles.centred}>
-                <StartNewStoryButton onStart={() => setComposing(true)} />
-              </div>
-            </>
-          ) : null}
-        </div>
+        {signedIn === false ? <SignInPrompt /> : null}
+        {signedIn ? <StorySearch query={query} setQuery={setQuery} onStart={() => setComposing(true)} /> : null}
       </div>
     </section>
   );

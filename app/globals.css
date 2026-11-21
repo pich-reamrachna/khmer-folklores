@@ -400,13 +400,42 @@ main {
 }
 
 /* Gold links on the dark pages — StoryMatchCard.js-style "Add my version"
-   links (also used on My Entries) and StartNewStoryButton.js's "Log in" —
-   next/link Links, so their :hover lives here, same reason as the rules
-   above. */
-.share-match-link:hover,
-.share-login-link:hover {
+   links (also used on My Entries) — next/link Links, so their :hover lives
+   here, same reason as the rules above. */
+.share-match-link:hover {
   color: #ffffff;
 }
+/* SignInPrompt.js's Sign In / Sign Up buttons on /share's parchment
+   (next/link Links, so all of it lives here): an outlined pill like
+   StartNewStoryButton.js's, Sign In filled in dark ink. */
+.share-signin-btn {
+  display: inline-block;
+  padding: 0.75rem 1.6rem;
+  border: 1px solid #6b4f26;
+  border-radius: 999px;
+  background-color: transparent;
+  color: #4f3a1c;
+  font-family: var(--font-khmer), var(--font-jakarta), system-ui, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+.share-signin-btn:hover {
+  background-color: #24201b;
+  border-color: #24201b;
+  color: #f5efe6;
+}
+.share-signin-btn.is-primary {
+  background-color: #24201b;
+  border-color: #24201b;
+  color: #f5efe6;
+}
+.share-signin-btn.is-primary:hover {
+  background-color: #4f3a1c;
+  border-color: #4f3a1c;
+}
+
 /* The same links on /share's parchment: ink-brown, darkening on hover.
    After the rule above, so it wins there. */
 .ink-link:hover {

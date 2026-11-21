@@ -189,8 +189,13 @@ const uiText = {
   shareDidYouMean: { en: "Did you mean", km: "តើអ្នកសំដៅលើ" },
   shareAddVersion: { en: "This is it — add my version", km: "រឿងនេះហើយ — ចែករំលែកបន្ថែម" },
   shareStartNew: { en: "My story isn't here — start a new one", km: "រឿងរបស់ខ្ញុំមិនមាននៅទីនេះទេ — ចាប់ផ្ដើមរឿងថ្មី" },
-  shareLoginToStart: { en: "Log in to start a new story.", km: "សូមចូលគណនីដើម្បីចាប់ផ្ដើមរឿងថ្មី។" },
-  shareLoginLink: { en: "Log in", km: "ចូលគណនី" },
+  // SignInPrompt.js: what a signed-out visitor sees on /share instead of
+  // the search. Its buttons reuse authLoginButton / authSignupButton.
+  shareSignInTitle: { en: "Sign in to share a memory", km: "ចូលគណនីដើម្បីចែករំលែករឿង" },
+  shareSignInText: {
+    en: "Anyone can read the archive. To add a story, or your own telling of one, sign in first, or create an account if you don't have one yet.",
+    km: "អ្នកណាក៏អាចអានរឿងក្នុងបណ្ណសារបាន។ ដើម្បីចែករំលែករឿងថ្មី ឬរឿងដែលអ្នកចាំ សូមចូលគណនីជាមុនសិន ឬបង្កើតគណនីថ្មី បើអ្នកមិនទាន់មាន។",
+  },
   shareBackToSearch: { en: "Back to search", km: "ត្រឡប់ទៅការស្វែងរក" },
 
   // NewStoryPanel.js / NewStoryFields.js / ContributeForm.js's newStory mode.
