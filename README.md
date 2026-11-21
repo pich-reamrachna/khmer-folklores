@@ -61,7 +61,7 @@ Other database rules:
 - **A trigger that sets the "Edited" date** on a telling.
 - **A rule that refuses an edit that changes nothing.**
 
-UNSURE: the original `CREATE TABLE` for `stories`, `entries` and `profiles`, the week 7 check constraints, and the Storage policies on the `photos` bucket were run in the dashboard. They are not in `supabase/`.
+UNSURE: the original `CREATE TABLE` for `stories`, `entries` and `profiles`, the week 7 check constraints, and the upload and read Storage policies on the `photos` bucket were run in the dashboard. They are not in `supabase/`. The delete policies are in `supabase/photo-storage-delete.sql`.
 
 ```
 Visitor ─► Next.js on Vercel ─► Supabase (Postgres with RLS)
@@ -90,6 +90,7 @@ curator on /review ──► review_entry() / review_entry_edit() / stories upda
 - **The first telling of a published story can't be deleted by its owner,** because the story is built on it. They can still edit it, and the edit is reviewed.
 - **Usernames, not emails,** are what's shown publicly. This is enforced in the database.
 - **The login redirect only goes to a page on this site,** so a crafted `?next=` link can't send someone to another website.
+- **Photos stay in a public bucket.** Anyone who has a photo's exact link can open it, even while its telling is pending or returned. **Why:** the link is a long random name (`<owner id>/<random id>.jpg`), and a logged-out visitor can't find it, because the database never gives them unpublished tellings. A private bucket would need short-lived signed links on every page that shows a photo, plus a change to how photos are stored and checked, which was too risky to change right before the final. **Deleting does remove the file:** owners can delete photos in their own folder and the curator can delete any (`supabase/photo-storage-delete.sql`, added 2026-11-21). Before that, deleting a telling or replacing its photo left the old file online.
 
 ## 5. AI use
 
