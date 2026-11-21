@@ -121,7 +121,9 @@ Each telling on the site is credited to the username of the person who shared it
 - UNSURE: the full list of the people each story came from, and whether each one gave permission to be named. This isn't recorded in the code. Fill it in by hand, for example "a grandmother in Kandal who asked not to be named."
 - UNSURE: where the pictures in `public/featured_pictures/` came from (Ahpt, Bramat Promong, Crocodile Reincarnation, Daun Penh's Curse, Pous Keng Kang), and who made them. Same for the background images in `public/`, such as the brush strokes, the charcoal texture, the ink splash, the bamboo and the pattern. Credit them here.
 - Icons in `public/icons/` (for example `icons8-back-button-48.png`): UNSURE, probably from Icons8, from the file names. Check the licence and credit.
-- Fonts: Cinzel, IM Fell English, Plus Jakarta Sans and Kantumruy Pro, from Google Fonts, through `next/font`.
+- Fonts: Cinzel, IM Fell English and Plus Jakarta Sans, from Google Fonts through `next/font`. The three Khmer fonts, Kantumruy Pro, Noto Serif Khmer and Konkhmer Sleokchher, are local files in `app/fonts/` (Khmer letters only, so they can be drawn bigger than Latin text). All six are under the SIL Open Font License, and the licence files for the local ones are next to them.
+- Logo (`public/logo.png`): cut out from `Logo.jpg` with its dark background made transparent. UNSURE: who drew the original artwork. Credit it here.
+- Title texture (`public/textures/title-grain.jpg`): generated for this project with a script. It isn't from any outside source.
 
 ## 7. Running it locally
 
@@ -144,15 +146,15 @@ To rebuild the database, run the files in `supabase/` in the SQL Editor. That fo
 ## 8. Submission checklist
 
 ☑ Live URL loads logged out and shows published entries only: yes, https://khmer-folklores.vercel.app/<br>
-☑ A stranger cannot publish their own entry through the page or the console: yes, tested 2026-10-24 (eight console attacks with my second account, all refused)<br>
-☑ Logged out, the API returns nothing pending or returned: yes, tested 2026-10-24 (attack 5 returned `[]` for unpublished tellings, waiting edits and pending stories)<br>
+☑ A stranger cannot publish their own entry through the page or the console: yes, tested 2026-10-24 (eight console attacks with my second account, all refused), and again on 2026-11-21 with the contributor account (eight attempts, all refused)<br>
+☑ Logged out, the API returns nothing pending or returned: yes, tested 2026-10-24 (attack 5 returned `[]` for unpublished tellings, waiting edits and pending stories), and again on 2026-11-21 with a fresh pending telling, which a logged-out visitor couldn't see<br>
 ☑ Contributors can edit and delete only their own entries: yes (RLS on `entries` / `entry_edits`. Tested with a friend's account in Sprint 2.)<br>
-☐ No secrets anywhere in the repo history: UNSURE, checked with (how). `.env*` is ignored. Run `git log -p | grep -i "sb_secret\|service_role"` to confirm.<br>
-☐ At least eight real entries, each with a credited source: UNSURE. There are 8 published stories, but one is a test story named "test", and sources aren't recorded yet (section 6).<br>
+☑ No secrets anywhere in the repo history: yes, checked 2026-11-21 by searching every commit (`git log -p --all`) for `sb_secret`, `service_role`, JWTs, private keys and passwords. The only matches are this README's own warnings, and no `.env` file has ever been committed.<br>
+☐ At least eight real entries, each with a credited source: UNSURE. There are 7 published stories with 9 published tellings, and each telling is credited to the username of the person who shared it. All test stories and tellings were deleted on 2026-11-21. Where each story originally came from isn't recorded yet (section 6).<br>
 ☑ Khmer renders on every screen a user meets, including the queue: yes (the language switch covers every page, including /review)<br>
 ☑ Works at phone width: yes, tested at 390 × 844 (iPhone size) in Chrome<br>
-☐ No test entries, lorem ipsum or TODO comments in shipped pages: NO, not yet. The "test" story is published and needs removing.<br>
-☐ No console errors on the main pages: UNSURE, not checked for this README<br>
+☑ No test entries, lorem ipsum or TODO comments in shipped pages: yes, checked 2026-11-21. No TODO, lorem, placeholder text or sample data in the code, and every test story, telling and photo was deleted from the database the same day.<br>
+☑ No console errors on the main pages: yes, checked 2026-11-21 on the home page, /share, /login, /signup, a story page, /my-entries and /review. The missing site icon was the only error, and it's fixed (`app/favicon.ico`, `app/icon.png`). A page that doesn't exist still returns 404 on purpose, and so does /review for anyone who isn't the curator.<br>
 ☐ jesseorndorff is a collaborator on this repo: UNSURE, check in GitHub, Settings, Collaborators<br>
 ☐ Supabase project restored and awake on (date)<br>
 ☐ Demo video link opens in a private window: (link)<br>
