@@ -209,6 +209,14 @@ const styles = {
     color: "#5A5248",
     margin: 0,
   },
+  // In Khmer the count skips IM Fell: its old-style figures draw some
+  // digits (like 0) short and low, which beside tall Khmer letters looked
+  // like a subscript. The Khmer serif only covers Khmer script (its
+  // unicode-range in app/layout.js), so the number comes from Cinzel, whose
+  // digits are full height. English keeps IM Fell's figures.
+  listCountKhmer: {
+    fontFamily: "var(--font-khmer-serif), var(--font-cinzel), serif",
+  },
   // Shows exactly VISIBLE_ROWS rows before scrolling — matches the
   // mockup's gold scrollbar (app/globals.css's .archive-scroll rule).
   // maxHeight/overflowY live in this file's own <style> tag below,
@@ -270,6 +278,18 @@ const styles = {
     whiteSpace: "nowrap",
     overflow: "hidden",
     textOverflow: "ellipsis",
+  },
+  // The no-results message: the row snippet's look, but it wraps instead of
+  // being cut off with "…" — the Khmer sentence is longer and lost its
+  // ending on a phone. overflowWrap breaks a long unbroken search.
+  noResults: {
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
+    fontSize: "1rem",
+    fontWeight: 500,
+    color: "#3A342C",
+    lineHeight: "var(--khmer-leading, 1.5)",
+    margin: "0.3rem 0 0",
+    overflowWrap: "anywhere",
   },
   // Spacing above the "Did you mean …?" line under the no-results message.
   suggestion: {
@@ -361,7 +381,7 @@ export default function ArchiveBrowser({ stories }) {
 
           <div className="archive-results">
             <div style={styles.listHeader}>
-              <p style={{ ...styles.listCount, ...(language === "km" ? styles.trackingNone : null) }}>
+              <p style={{ ...styles.listCount, ...(language === "km" ? { ...styles.trackingNone, ...styles.listCountKhmer } : null) }}>
                 {t("archiveStoriesInView").replace("{n}", filteredStories.length)}
               </p>
             </div>
@@ -415,7 +435,7 @@ export default function ArchiveBrowser({ stories }) {
               </ul>
             ) : (
               <>
-                <p style={styles.snippet}>
+                <p style={styles.noResults}>
                   {/* A function replacement, so a "$&" typed in the search
                       is shown as-is rather than read as a replace pattern. */}
                   {t("archiveNoResults").replace("{query}", () => formatQueryForDisplay(query))}
