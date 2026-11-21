@@ -90,13 +90,14 @@ export default function SignUpForm({ tabs, onGoToLogin }) {
       return;
     }
     setUsernameAvailable("checking");
+    // Asked through username_available() (supabase/profiles-privacy.sql),
+    // which only answers yes/no: visitors can't read the profiles table.
     const supabase = createClient();
-    const { data } = await supabase
-      .from("profiles")
-      .select("id")
-      .eq("username_normalized", normalizeUsername(u))
-      .maybeSingle();
-    setUsernameAvailable(data ? false : true);
+    const { data: available, error } = await supabase.rpc("username_available", {
+      candidate: normalizeUsername(u),
+    });
+    // On an error, say nothing rather than guess "available".
+    setUsernameAvailable(error ? null : available);
   };
 
   const handleSubmit = async (event) => {
@@ -115,12 +116,10 @@ export default function SignUpForm({ tabs, onGoToLogin }) {
 
       // Availability pre-check (the unique index on the normalized username is
       // the race-safe backstop if two people grab it at once).
-      const { data: taken } = await supabase
-        .from("profiles")
-        .select("id")
-        .eq("username_normalized", normalizeUsername(u))
-        .maybeSingle();
-      if (taken) {
+      const { data: available } = await supabase.rpc("username_available", {
+        candidate: normalizeUsername(u),
+      });
+      if (available === false) {
         setUsernameAvailable(false);
         return;
       }
