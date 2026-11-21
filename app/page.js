@@ -10,6 +10,7 @@ import Footer from "../components/shared/Footer.js";
 import { preloadImages } from "../utils/preloadImages.js";
 import { getCachedStories, setCachedStories } from "../utils/archiveCache.js";
 import { useSectionPager } from "../utils/useSectionPager.js";
+import { useTranslation } from "../components/shared/uiText.js";
 
 // The stories the hero carousel features, by id, in carousel order — each
 // has its picture in public/featured_pictures/. A fixed list rather than
@@ -100,13 +101,14 @@ const statusStyles = {
     boxSizing: "border-box",
     textAlign: "center",
     color: "#CFC6B8",
-    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "1.05rem",
     fontWeight: 300,
   },
 };
 
 export default function Home() {
+  const t = useTranslation();
   // <main> is the scroll container; the footer's "Back to top" button
   // scrolls it back to the start.
   const mainRef = useRef(null);
@@ -187,7 +189,7 @@ export default function Home() {
     return (
       <main ref={mainRef} style={{ backgroundColor: "#1A1817" }}>
         <NavBar />
-        <div style={statusStyles.screen}>Loading the archive…</div>
+        <div style={statusStyles.screen}>{t("homeLoading")}</div>
       </main>
     );
   }
@@ -196,7 +198,7 @@ export default function Home() {
     return (
       <main ref={mainRef} style={{ backgroundColor: "#1A1817" }}>
         <NavBar />
-        <div style={statusStyles.screen}>No stories in the archive yet.</div>
+        <div style={statusStyles.screen}>{t("homeEmpty")}</div>
         <Footer
           onBackToTop={() => mainRef.current?.scrollTo({ top: 0, behavior: "smooth" })}
         />

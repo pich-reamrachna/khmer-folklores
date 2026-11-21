@@ -201,7 +201,7 @@ export default function LocationSelect({ id, value, onChange }) {
         <ul
           id={listboxId}
           role="listbox"
-          aria-label="Province"
+          aria-label={t("locationAriaLabel")}
           className="archive-scroll"
           style={styles.listbox}
         >

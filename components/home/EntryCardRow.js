@@ -1,6 +1,7 @@
 "use client";
 
 import EntryCard from "./EntryCard.js";
+import { useTranslation } from "../shared/uiText.js";
 
 // The row of featured stories under the hero, as a ring: the selected story
 // always sits in the middle, the one before it on the left and the one after
@@ -49,11 +50,12 @@ const styles = {
 };
 
 export default function EntryCardRow({ entries, selectedIndex, onSelect }) {
+  const t = useTranslation();
   const count = entries.length;
 
   return (
     <div style={styles.wrapper} className="entry-ring">
-      <div style={styles.track} aria-label="Featured stories">
+      <div style={styles.track} aria-label={t("featuredStoriesLabel")}>
         {entries.map((entry, index) => {
           const offset = ringOffset(index, selectedIndex, count);
           const visible = Math.abs(offset) <= 1;

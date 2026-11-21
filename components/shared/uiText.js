@@ -26,9 +26,19 @@ const uiText = {
   // The rest of the account menu, translated for the same reason.
   navReviewSubmissions: { en: "Review Submissions", km: "ពិនិត្យរឿងដែលបានផ្ញើមក" },
   navLogOut: { en: "Log Out", km: "ចាកចេញ" },
+  // Screen-reader labels (never shown): the nav bar itself and the account
+  // button, which is an icon with no visible text.
+  navPrimaryLabel: { en: "Main menu", km: "ម៉ឺនុយមេ" },
+  navAccountMenu: { en: "Account menu", km: "ម៉ឺនុយគណនី" },
   // The sign-in pill in the top bar and phone menu — the same words as the
   // sign-in and sign-up buttons themselves.
   navSignIn: { en: "Sign In / Sign Up", km: "ចូលគណនី/បង្កើតគណនី" },
+
+  // app/page.js: while the archive loads, and if it has no stories at all.
+  homeLoading: { en: "Loading the archive…", km: "កំពុងបើកបណ្ណសារ…" },
+  homeEmpty: { en: "No stories in the archive yet.", km: "មិនទាន់មានរឿងក្នុងបណ្ណសារនៅឡើយទេ។" },
+  // EntryCardRow.js: screen-reader label for the row of featured stories.
+  featuredStoriesLabel: { en: "Featured stories", km: "រឿងពិសេស" },
 
   // StoryHero.js.
   heroPrevStory: { en: "Previous story", km: "រឿងមុន" },
@@ -172,6 +182,8 @@ const uiText = {
   menuDelete: { en: "Delete", km: "លុប" },
   deleteConfirm: { en: "Delete this telling? This can't be undone.", km: "លុបរឿងដែលអ្នកបានចែករំលែកនេះមែនទេ? បើលុបហើយ មិនអាចយកមកវិញបានទេ។" },
   cancel: { en: "Cancel", km: "បោះបង់" },
+  // LocationSelect.js: screen-reader label for the province search box.
+  locationAriaLabel: { en: "Province", km: "ខេត្ត" },
   locationPlaceholder: { en: "Search a province (English or Khmer)…", km: "ស្វែងរកតាមខេត្ត (អង់គ្លេស ឬខ្មែរ)…" },
   locationNoMatch: { en: "No matching province", km: "សូមអភ័យទោស មិនអាចរកឃើញខេត្តដែលអ្នកកំពុងស្វែងរកបានទេ។" },
 
@@ -312,6 +324,14 @@ const uiText = {
 
   // FirstTelling.js / StoryMemories.js — the story's first telling and the
   // tellings under it.
+  // NotFound.js (app/not-found.js): an address with no page.
+  notFoundTitle: { en: "This page isn't here.", km: "រកមិនឃើញទំព័រនេះទេ។" },
+  notFoundText: {
+    en: "The link may be mistyped, or the story may have been moved or taken down.",
+    km: "តំណភ្ជាប់អាចវាយខុស ឬរឿងនេះប្រហែលជាត្រូវបានផ្លាស់ទី ឬដកចេញ។",
+  },
+  notFoundHome: { en: "Back to the archive", km: "ត្រឡប់ទៅបណ្ណសាររឿង" },
+
   firstTellingHeading: { en: "The First Telling", km: "រឿងនិទានដំបូង" },
   memoriesNoneYet: {
     en: "No one else has shared their version yet — be the first.",

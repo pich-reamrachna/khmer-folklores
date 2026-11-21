@@ -661,7 +661,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav style={{ ...styles.nav, ...(scrolled || onShare ? styles.navScrolled : null) }} aria-label="Primary">
+    <nav style={{ ...styles.nav, ...(scrolled || onShare ? styles.navScrolled : null) }} aria-label={t("navPrimaryLabel")}>
       <div style={styles.inner} className="nav-inner">
         <Link href="/" style={styles.lockup}>
           {/* alt="": the name is written right beside it, so a screen reader
@@ -702,7 +702,7 @@ export default function NavBar() {
                 onClick={() => setUserMenuOpen((open) => !open)}
                 aria-expanded={userMenuOpen}
                 aria-haspopup="true"
-                aria-label="Account menu"
+                aria-label={t("navAccountMenu")}
               >
                 <span style={styles.userIcon} className="nav-round-btn-icon" aria-hidden="true" />
               </button>

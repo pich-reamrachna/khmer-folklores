@@ -387,6 +387,30 @@ main {
   background-color: #f5efe6;
 }
 
+/* NotFound.js's "Back to the archive" link: a gold pill like the NavBar's
+   Sign In button, turning cream on hover. A next/link Link, so all of it
+   lives here. */
+.not-found-home {
+  display: inline-block;
+  padding: 0.75rem 1.6rem;
+  border-radius: 999px;
+  background-color: #c5a059;
+  color: #1a1817;
+  font-family: var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+.not-found-home.km {
+  letter-spacing: normal;
+}
+.not-found-home:hover {
+  background-color: #f5efe6;
+}
+
 /* NavBar.js's account button and language pill: gold-outlined pills
    matching the Sign In / Sign Up button, filling gold on hover and while
    their menu is open (aria-expanded), with the icon and label turning dark.
