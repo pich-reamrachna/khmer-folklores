@@ -12,13 +12,13 @@
 
 const collection = {
   // What does your archive collect? e.g. "Khmer Proverbs"
-  name: "Khmer Folklores",
+  name: "ChangKeang",
 
   // One sentence: what is this archive, and why does it matter?
-  description: "An archive of Khmer Folklores, legends and stories showcasing the variance in Khmer Storytelling.",
+  description: "ChangKeang is an archive of Khmer legends, folktales and customs, showing how the same story is told differently from one teller to the next.",
   // Optional Khmer translation of description, shown when the site's
   // language switcher is set to Khmer (absent until contributed).
-  descriptionKhmer: "បណ្ណសាររឿងព្រេង និងរឿងនិទានខ្មែរ ដែលបង្ហាញថារឿងតែមួយ អាចនិទានខុសៗគ្នា តាមការចងចាំរបស់អ្នកនិទាននីមួយៗ។",
+  descriptionKhmer: "ChangKeang ជាបណ្ណសាររឿងព្រេង រឿងនិទាន និងទំនៀមទម្លាប់ខ្មែរ ដែលបង្ហាញថារឿងតែមួយ អាចនិទានខុសៗគ្នា តាមការចងចាំរបស់អ្នកនិទាននីមួយៗ។",
 
   // Who is building this archive? Your name, as you want it shown.
   curator: "Pich Ream Rachna",

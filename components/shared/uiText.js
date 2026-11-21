@@ -12,9 +12,7 @@ import { useLanguage } from "./LanguageContext.js";
 // English, so the two don't always say exactly the same thing.
 
 const uiText = {
-  // NavBar.js / Footer.js (shared) — kicker ("A Khmer Folklore Archive")
-  // is deliberately not here: it's part of the fixed brand lockup in
-  // both places, kept English always. The two page links are translated;
+  // NavBar.js / Footer.js (shared). The two page links are translated;
   // navShareMemory is also My Entries' empty-state button (SubmissionsList.js).
   navBrowseArchive: { en: "Browse the Archive", km: "បណ្ណសាររឿង" },
   navShareMemory: { en: "Share a Memory", km: "ចែករំលែករឿង" },
@@ -74,12 +72,13 @@ const uiText = {
   memoriesLoginToast: { en: "Log in to contribute", km: "ចូលគណនីដើម្បីចែករំលែករឿង" },
 
   // Footer.js
+  footerTagline: { en: "A Khmer Folklore Archive", km: "បណ្ណសាររឿងព្រេងខ្មែរ" },
   footerBackToTop: { en: "Back to top", km: "ត្រឡប់ទៅលើ" },
   footerCreditLine: { en: "Curated by", km: "ចងក្រងដោយ" },
   footerSourceLine: { en: "Source:", km: "ប្រភព៖" },
   footerBuiltIn: {
-    en: "Built in ICT 340 — Vibe Coding, American University of Phnom Penh, Fall 2026. This archive is under construction all semester. Come back in December.",
-    km: "សាងសង់ក្នុងមុខវិជ្ជា ICT 340 — Vibe Coding សាកលវិទ្យាល័យអាមេរិកកាំងភ្នំពេញ រដូវស្លឹកឈើជ្រុះ ២០២៦។ បណ្ណសារនេះកំពុងសាងសង់ពេញមួយឆមាស។ សូមត្រឡប់មកម្ដងទៀតនៅខែធ្នូ។",
+    en: "Built in ICT 340 — Vibe Coding, American University of Phnom Penh, Fall 2026.",
+    km: "សាងសង់ក្នុងមុខវិជ្ជា ICT 340 — Vibe Coding សាកលវិទ្យាល័យអាមេរិកកាំងភ្នំពេញ រដូវស្លឹកឈើជ្រុះ ២០២៦។",
   },
 
   // app/login/page.js, app/signup/page.js.

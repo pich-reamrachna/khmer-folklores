@@ -57,12 +57,14 @@ const styles = {
     lineHeight: 1.15,
     margin: 0,
   },
-  // kicker: deliberately not translated, matching NavBar's lockup — the
-  // site name + tagline reads as one fixed brand unit in both places.
+  // The tagline under the name, in gold like the logo and the NavBar's
+  // name. Translated, so Khmer uses the bigger label font (app/layout.js),
+  // styled by kickerKhmer.
   kicker: {
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.68rem",
     fontWeight: 600,
-    color: "#A89F91",
+    color: "#C5A059",
     letterSpacing: "0.22em",
     textTransform: "uppercase",
     margin: "6px 0 0",
@@ -120,6 +122,14 @@ const styles = {
     WebkitMaskPosition: "center",
     maskPosition: "center",
   },
+  // Khmer tagline: no letter-spacing (it pries Khmer letters apart), so
+  // instead it's sized to be as wide as the name above it, the way the
+  // letter-spaced English is. 1.16rem was measured against the name at its
+  // fixed 1.9rem — change one and the other needs re-measuring.
+  kickerKhmer: {
+    letterSpacing: "normal",
+    fontSize: "1.16rem",
+  },
 };
 
 export default function Footer({ onBackToTop }) {
@@ -151,7 +161,7 @@ export default function Footer({ onBackToTop }) {
         <div style={styles.topRow} className="footer-top-row">
           <div>
             <p style={styles.siteName}>{collection.name}</p>
-            <p style={styles.kicker}>A Khmer Folklore Archive</p>
+            <p style={{ ...styles.kicker, ...(language === "km" ? styles.kickerKhmer : null) }}>{t("footerTagline")}</p>
           </div>
           <p style={styles.description}>{description}</p>
           <p style={styles.creditLine} className="footer-credit">

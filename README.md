@@ -1,11 +1,11 @@
-# Khmer Folklores
+# ChangKeang
 
-An archive of Khmer folklores, legends and stories showing the variety in Khmer storytelling.
+ChangKeang is an archive of Khmer legends, folktales and customs, showing how the same story is told differently from one teller to the next.
 ICT 340 (Vibe Coding) capstone, American University of Phnom Penh, Fall 2026. Curated by Pich Ream Rachna.
 
 ## 1. What this is
 
-Khmer Folklores is a community archive of Khmer legends, ghost stories, superstitions and customs, such as Pous Keng Kang, Neang Neath, Ahpt and Daun Penh's Curse. It is collected from me, my friends, my family and the people around me. The same story is often told differently from one province or family to the next, so every story keeps more than one telling: the first telling, credited to the person who shared it, and other people's versions under it. Anyone can browse and search the archive in English or Khmer. Someone with an account can share their own version of a story, or a story the archive doesn't have yet. Nothing goes public until I, the curator, have reviewed it.
+ChangKeang is a community archive of Khmer legends, ghost stories, superstitions and customs, such as Pous Keng Kang, Neang Neath, Ahpt and Daun Penh's Curse. It is collected from me, my friends, my family and the people around me. The same story is often told differently from one province or family to the next, so every story keeps more than one telling: the first telling, credited to the person who shared it, and other people's versions under it. Anyone can browse and search the archive in English or Khmer. Someone with an account can share their own version of a story, or a story the archive doesn't have yet. Nothing goes public until I, the curator, have reviewed it.
 
 ## 2. Who it's for
 

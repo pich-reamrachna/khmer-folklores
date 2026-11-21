@@ -8,9 +8,9 @@ import { useLanguage } from "./LanguageContext.js";
 import { useTranslation } from "./uiText.js";
 import { createClient } from "../../utils/supabase/client.js";
 
-// Text-only nav bar: site lockup on the left, the two page links in the
-// middle, account + language controls on the right.
-// No logo/icon — the archive's identity comes from collection.config.js.
+// Nav bar: the archive's logo and name on the left (the home link; the
+// name comes from collection.config.js), the two page links in the middle,
+// account + language controls on the right.
 // The gold underline marks the current section: "Share a Memory" on /share,
 // "Browse the Archive" everywhere else (.nav-tab on desktop, linkActive in
 // the phone menu). On desktop it also grows in under a link on hover.
@@ -57,31 +57,40 @@ const styles = {
     padding: "0 2rem",
     boxSizing: "border-box",
   },
+  // The home link: the archive's logo (public/logo.png — the curator's
+  // artwork with its dark background made transparent, so the bar shows
+  // through) with the name beside it, centred on the logo's height. Its own
+  // width, not the whole left grid column (.nav-inner) — so only the lockup
+  // itself is the home link.
   lockup: {
     display: "flex",
-    flexDirection: "column",
+    alignItems: "center",
+    gap: "0.75rem",
     textDecoration: "none",
-    // Its own width, not the whole left grid column (.nav-inner) — so only
-    // the name itself is the home link.
     justifySelf: "start",
   },
+  // Its height lives in app/globals.css's .nav-logo rule (64px, smaller on
+  // phone) — a media query can't override an inline style. The file is
+  // 192px tall, so it stays sharp on high-density screens. flexShrink 0: the
+  // name wraps before the logo squeezes.
+  logo: {
+    display: "block",
+    width: "auto",
+    flexShrink: 0,
+  },
+  // The name beside the logo — smaller than the old text-only lockup, so
+  // the logo leads.
   siteName: {
     fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "1.55rem",
+    fontSize: "1.15rem",
     fontWeight: 700,
     color: "#F5EFE6",
     letterSpacing: "0.02em",
     lineHeight: 1.1,
   },
-  // kicker: deliberately not translated — part of the fixed brand lockup,
-  // like the site name itself.
-  kicker: {
-    fontSize: "0.68rem",
-    fontWeight: 600,
+  // The name's last word, in the site's gold (see splitName below).
+  siteNameAccent: {
     color: "#C5A059",
-    letterSpacing: "0.22em",
-    textTransform: "uppercase",
-    marginTop: 4,
   },
   // display/gap for the links row live in app/globals.css's .nav-links
   // rule, not here — needed for the phone media query and fluid tablet
@@ -511,7 +520,19 @@ const styles = {
 // in NavBar). /my-submissions just forwards to /my-entries.
 const SIGNED_IN_ONLY = ["/my-entries", "/my-submissions", "/review"];
 
+// The site name split before its last word, so that word can be gold:
+// "ChangKeang" -> ["Chang", "Keang"] (where a capital follows a lowercase
+// letter), "Khmer Folklores" -> ["Khmer ", "Folklores"] (at its last space).
+// Works from collection.config.js's name rather than hard-coding the words;
+// a name it can't split ("Archive", "KHMER") stays whole, in one colour.
+function splitName(name) {
+  const camel = name.search(/[a-z][A-Z][a-z]*$/);
+  const at = Math.max(name.lastIndexOf(" ") + 1, camel >= 0 ? camel + 1 : 0);
+  return at > 0 ? [name.slice(0, at), name.slice(at)] : [name, ""];
+}
+
 export default function NavBar() {
+  const [nameStart, nameEnd] = splitName(collection.name);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
@@ -643,8 +664,13 @@ export default function NavBar() {
     <nav style={{ ...styles.nav, ...(scrolled || onShare ? styles.navScrolled : null) }} aria-label="Primary">
       <div style={styles.inner} className="nav-inner">
         <Link href="/" style={styles.lockup}>
-          <span style={styles.siteName}>{collection.name}</span>
-          <span style={styles.kicker}>A Khmer Folklore Archive</span>
+          {/* alt="": the name is written right beside it, so a screen reader
+              shouldn't read it twice. */}
+          <img src="/logo.png" alt="" width={194} height={192} style={styles.logo} className="nav-logo" />
+          <span style={styles.siteName}>
+            {nameStart}
+            <span style={styles.siteNameAccent}>{nameEnd}</span>
+          </span>
         </Link>
 
         <div className="nav-links nav-center">

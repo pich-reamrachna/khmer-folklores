@@ -128,6 +128,17 @@ main {
   }
 }
 
+/* NavBar.js's logo: 64px tall in the 90px bar, smaller on phone so it
+   doesn't outweigh the name beside it. */
+.nav-logo {
+  height: 64px;
+}
+@media (max-width: 640px) {
+  .nav-logo {
+    height: 44px;
+  }
+}
+
 /* NavBar.js's mobile menu. */
 .nav-links {
   display: flex;
