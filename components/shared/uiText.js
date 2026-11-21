@@ -33,7 +33,7 @@ const uiText = {
   // StoryHero.js.
   heroPrevStory: { en: "Previous story", km: "រឿងមុន" },
   heroNextStory: { en: "Next story", km: "រឿងបន្ទាប់" },
-  heroReadStory: { en: "Read the Story", km: "អានរឿងនេះ" },
+  heroReadStory: { en: "Read Story", km: "អានរឿងនេះ" },
 
   // ArchiveBrowser.js / ArchiveSearch.js. archiveEyebrow isn't word for
   // word: it sits above the list of every story, so "all stories".

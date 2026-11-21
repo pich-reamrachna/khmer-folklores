@@ -184,8 +184,11 @@ const styles = {
   //  - paddingTop: the marks above Khmer letters (ំ, ើ) reach above the
   //    line; overflow hidden clipped them at the box's top edge, but the
   //    padding is inside the box, so they now show.
+  // Konkhmer Sleokchher (app/layout.js) has only one weight, so fontWeight
+  // 400 here — otherwise the browser fakes a bold by smearing the letters.
   titleKhmer: {
-    fontFamily: "var(--font-khmer-serif), var(--font-khmer), serif",
+    fontFamily: "var(--font-khmer-display), var(--font-khmer-serif), serif",
+    fontWeight: 400,
     lineHeight: 1.5,
     height: "auto",
     maxHeight: "3em",
@@ -205,12 +208,15 @@ const styles = {
   },
   // fontSize/marginBottom: shrink on short viewports, so this box doesn't
   // single-handedly keep `main` tall on wide-but-short screens.
+  // Bold, slightly spaced Roman capitals, like an engraved inscription
+  // (Cinzel is modelled on Trajan's column); the Khmer title takes the same
+  // bold weight in Noto Serif Khmer. Its colour — weathered gold — comes from
+  // app/globals.css's .gold-title rule.
   title: {
     fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
-    fontWeight: 500,
-    color: "#C9A961",
+    fontWeight: 700,
     lineHeight: 1.05,
-    letterSpacing: "0.01em",
+    letterSpacing: "0.03em",
     marginTop: 0,
     marginLeft: 0,
     marginRight: 0,
@@ -222,6 +228,12 @@ const styles = {
     WebkitLineClamp: 2,
     WebkitBoxOrient: "vertical",
     overflow: "hidden",
+    // At least as wide as its longest word: a single long word in the bold
+    // title ("REINCARNATION") can be wider than the 560px text column. The
+    // gold fill (.gold-title) is painted from this box's background, so any
+    // part of a word outside the box had no gold behind it and vanished —
+    // growing the box shows the whole word, running past the column instead.
+    minWidth: "min-content",
   },
   // height/WebkitLineClamp/marginBottom: 2 lines instead of 3 on short
   // viewports. fontFamily: this can now show descriptionKhmer, which
@@ -248,17 +260,11 @@ const styles = {
   readButton: {
     display: "inline-flex",
     alignItems: "center",
-    gap: "0.9rem",
     textDecoration: "none",
     fontFamily: "var(--font-khmer-serif), var(--font-cinzel), serif",
     fontWeight: 700,
     letterSpacing: "0.2em",
     textTransform: "uppercase",
-  },
-  // The small ◆ either side of the button's label.
-  diamond: {
-    fontSize: "0.55rem",
-    letterSpacing: "normal",
   },
   // Letter-spacing is a Latin small-caps convention — applied to Khmer,
   // it pries apart the stacked consonant/vowel signs that make up a
@@ -436,7 +442,7 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
 
             <h1
               style={titleIsKhmer ? { ...styles.title, ...styles.titleKhmer } : styles.title}
-              className={titleIsKhmer ? "hero-title hero-title-km" : "hero-title"}
+              className={titleIsKhmer ? "hero-title hero-title-km gold-title" : "hero-title gold-title"}
             >
               {title}
             </h1>
@@ -450,9 +456,7 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
             <p style={styles.summary} className="hero-summary">{summary}</p>
 
             <Link href={`/${entry.id}`} style={{ ...styles.readButton, ...tracking }} className="hero-read-btn">
-              <span style={styles.diamond} aria-hidden="true">◆</span>
               {t("heroReadStory")}
-              <span style={styles.diamond} aria-hidden="true">◆</span>
             </Link>
           </div>
         </div>

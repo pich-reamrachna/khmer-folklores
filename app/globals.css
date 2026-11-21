@@ -128,6 +128,38 @@ main {
   }
 }
 
+/* The big story titles (StoryHero.js, StoryDetails.js): raised, weathered
+   gold instead of a flat colour.
+   - Fill: the letters are filled with a background (background-clip: text):
+     a metallic gradient — light at the top, a dark band below the middle,
+     light again at the bottom, like light on polished curved metal —
+     multiplied over a mottled grain texture (public/textures/title-grain.jpg)
+     for darker worn patches. The gradient alone already shows while the
+     texture loads.
+   - Depth: drop-shadow filters, which shade the finished gold letters
+     (text-shadow would paint over a background-clipped fill): a thin light
+     edge on top, a dark edge underneath, then a soft cast shadow, so the
+     letters look raised off the page.
+   Browsers that can't fill text with a background keep plain gold (the
+   @supports check), so the title is never invisible. */
+.gold-title {
+  color: #c9a961;
+  filter: drop-shadow(0 -1px 0 rgba(255, 240, 200, 0.55)) drop-shadow(0 3px 0 rgba(48, 32, 10, 1))
+    drop-shadow(0 4px 1px rgba(20, 12, 4, 0.8)) drop-shadow(0 10px 14px rgba(0, 0, 0, 0.7));
+}
+@supports ((background-clip: text) or (-webkit-background-clip: text)) {
+  .gold-title {
+    background-image: linear-gradient(180deg, #fff0c2 0%, #e3c47c 22%, #b8913f 48%, #7d5f22 56%, #c9a659 74%, #f2dc9c 100%),
+      url(/textures/title-grain.jpg);
+    background-size: 100% 100%, cover;
+    background-blend-mode: multiply, normal;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
 /* NavBar.js's logo: 64px tall in the 90px bar, smaller on phone so it
    doesn't outweigh the name beside it. */
 .nav-logo {

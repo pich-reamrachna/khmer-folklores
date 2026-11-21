@@ -81,10 +81,11 @@ const kantumruyProLabel = localFont({
 // The Khmer partner of Cinzel and IM Fell (serif): the same thick-and-thin
 // strokes, where Kantumruy Pro is a plain sans. preload: false — the browser
 // fetches it only when serif Khmer is actually on screen, so English-mode
-// visitors on mobile data never download it.
+// visitors on mobile data never download it. A variable font: the one file
+// holds every weight, 400 up to the bold 700 the story titles use.
 const notoSerifKhmer = localFont({
   src: "./fonts/NotoSerifKhmer-Khmer.woff2",
-  weight: "400 500",
+  weight: "400 700",
   display: "swap",
   preload: false,
   adjustFontFallback: false,
@@ -93,6 +94,24 @@ const notoSerifKhmer = localFont({
     { prop: "unicode-range", value: "U+1780-17FF, U+19E0-19FF, U+200C-200D, U+25CC" },
   ],
   variable: "--font-khmer-serif",
+});
+
+// Konkhmer Sleokchher, a decorative Khmer display face, for the big story
+// titles in Khmer (StoryHero.js, StoryDetails.js) — the Khmer counterpart to
+// their inscription-style Cinzel. One weight only. Same unicode-range/
+// size-adjust as the other Khmer fonts; preload false, so only Khmer visitors
+// fetch it (it's a large file, ~420KB).
+const khmerDisplay = localFont({
+  src: "./fonts/KonkhmerSleokchher-Khmer.woff2",
+  weight: "400",
+  display: "swap",
+  preload: false,
+  adjustFontFallback: false,
+  declarations: [
+    { prop: "size-adjust", value: "115%" },
+    { prop: "unicode-range", value: "U+1780-17FF, U+19E0-19FF, U+200C-200D, U+25CC" },
+  ],
+  variable: "--font-khmer-display",
 });
 
 export const metadata = {
@@ -104,7 +123,7 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
-      className={`${cinzel.variable} ${plusJakartaSans.variable} ${kantumruyPro.variable} ${kantumruyProLabel.variable} ${notoSerifKhmer.variable} ${imFell.variable}`}
+      className={`${cinzel.variable} ${plusJakartaSans.variable} ${kantumruyPro.variable} ${kantumruyProLabel.variable} ${notoSerifKhmer.variable} ${khmerDisplay.variable} ${imFell.variable}`}
     >
       <body
         style={{

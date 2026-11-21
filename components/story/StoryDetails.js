@@ -118,24 +118,32 @@ const styles = {
   // other language's title under it.
   // overflowWrap: lets a single long word (e.g. "Reincarnation") break
   // instead of overflowing the page at the clamp's smallest size.
+  // Bold, slightly spaced, in weathered gold (.gold-title in
+  // app/globals.css), as on the home hero (StoryHero.js). The 2rem floor
+  // keeps a long bold word ("Reincarnation") on one line on a phone.
   title: {
     fontFamily: "var(--font-cinzel), serif, 'Times New Roman'",
-    fontSize: "clamp(2.8rem, 5.2vw, 4.8rem)",
-    fontWeight: 500,
-    color: "#C9A961",
+    fontSize: "clamp(2rem, 5.2vw, 4.8rem)",
+    fontWeight: 700,
     lineHeight: 1.05,
-    letterSpacing: "0.01em",
+    letterSpacing: "0.03em",
     margin: "0 0 0.8rem",
     overflowWrap: "break-word",
   },
-  // Added on top of `title` when it shows in Khmer: Noto Serif Khmer
-  // (app/layout.js), the Khmer match for Cinzel's thick-and-thin serif, and
-  // a roomier line-height so stacked subscripts and vowel marks clear the
-  // line above. Same size as the home hero's Khmer title (0.9x the English).
+  // Added on top of `title` when it shows in Khmer: Konkhmer Sleokchher
+  // (app/layout.js), a decorative Khmer display face, at its one weight (400 — a faked bold
+  // would smear it), and a roomier line-height so stacked subscripts and
+  // vowel marks clear the line above. Same size as the home hero's Khmer
+  // title (0.9x the English).
   titleKhmer: {
-    fontFamily: "var(--font-khmer-serif), var(--font-khmer), serif",
+    fontFamily: "var(--font-khmer-display), var(--font-khmer-serif), serif",
+    fontWeight: 400,
     fontSize: "clamp(2.5rem, 4.7vw, 4.3rem)",
     lineHeight: 1.5,
+    // The display font's marks above the letters (ំ, ើ) rise past the line box, and
+    // the gold fill (.gold-title) only covers the box — without this room
+    // their tops vanished.
+    paddingTop: "0.2em",
     letterSpacing: "normal",
   },
   // Under the title, the other language's title — quieter, the chosen one
@@ -273,7 +281,7 @@ export default function StoryDetails({ entry, children }) {
 
         <div style={styles.header} className="details-header">
           <div>
-            <h1 style={titleIsKhmer ? { ...styles.title, ...styles.titleKhmer } : styles.title}>{title}</h1>
+            <h1 style={titleIsKhmer ? { ...styles.title, ...styles.titleKhmer } : styles.title} className="gold-title">{title}</h1>
 
             {subtitle ? <div style={styles.subtitle}>{subtitle}</div> : null}
 
