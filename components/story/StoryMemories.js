@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../utils/supabase/client.js";
 import { photoStoragePath } from "../../utils/storage.js";
@@ -9,12 +9,14 @@ import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 import { formatDate } from "../../utils/formatDate.js";
 import { formEntry } from "../../utils/editableEntry.js";
+import TellingViewer from "./TellingViewer.js";
 
 // "What people remember" — other people's tellings on a story's page, laid
 // out as a grid of ruled columns, newest first (one per contributor's
 // telling). Each shows its title, byline, the start of its text and a small
-// version of its photo; clicking it opens the rest (full text, photo at full
-// size), and — for the owner — it has a
+// version of its photo; clicking it opens the whole telling in a pop-up
+// (TellingViewer.js: photo on the left, text on the right), and — for the
+// owner — it has a
 // three-dots menu to edit or delete.
 // The story's first telling isn't here: it's the story itself, shown in full
 // under the title (FirstTelling.js). These are the replies to it.
@@ -107,8 +109,8 @@ const styles = {
     rowGap: "2.5rem",
     marginTop: "1.5rem",
   },
-  // The clickable summary (title + byline). Clicking/Enter/Space toggles the
-  // body open or closed.
+  // The clickable summary (title, byline, text, photo). Clicking/Enter/Space
+  // opens the telling in TellingViewer.
   summary: {
     cursor: "pointer",
   },
@@ -161,22 +163,15 @@ const styles = {
     WebkitLineClamp: 5,
     overflow: "hidden",
   },
+  // On the card the photo is a small cropped preview, so visitors can see a
+  // telling has one; the whole photo shows once it's opened (TellingViewer).
   photo: {
-    width: "100%",
-    maxWidth: 360,
-    maxHeight: 360,
+    width: 160,
+    height: 96,
     objectFit: "cover",
     borderRadius: 12,
     display: "block",
     margin: "0.85rem 0 0",
-  },
-  // Closed, the photo is a small cropped preview, so visitors can see a
-  // telling has one without opening it. Clicking it opens the card, like the
-  // text does (it's inside the same toggle).
-  photoThumb: {
-    width: 160,
-    height: 96,
-    maxHeight: 96,
   },
   // Owner-only three-dots menu, pinned to the telling's top-right.
   menuWrap: {
@@ -368,8 +363,9 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
   // the first render, the same accepted one-frame flash NavBar documents.
   const [userId, setUserId] = useState(null);
   const [toastMsg, setToastMsg] = useState("");
-  // Which tellings are expanded / which menu is open, keyed by display index.
-  const [expanded, setExpanded] = useState({});
+  // Which telling is open in the viewer / which menu is open, keyed by
+  // display index (null = none).
+  const [viewing, setViewing] = useState(null);
   const [openMenu, setOpenMenu] = useState(null);
   // The telling awaiting delete confirmation (null = no dialog open).
   const [pendingDelete, setPendingDelete] = useState(null);
@@ -418,7 +414,38 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
   // Logged-out visitors get a toast instead of a trip to the gated page.
   const promptLogin = () => showToast(t("memoriesLoginToast"));
 
-  const toggleExpanded = (i) => setExpanded((c) => ({ ...c, [i]: !c[i] }));
+  // Stable, so the viewer's focus/keyboard effect doesn't re-run each render.
+  const closeViewer = useCallback(() => setViewing(null), []);
+
+  // contributor · place · date (+ Edited / changes waiting). Shown on the
+  // card and again in the viewer, so both say the same.
+  const bylineFor = (version, place, isOwner) => (
+    <p style={{ ...styles.byline, ...(language === "km" ? styles.trackingNone : null) }}>
+      <span style={styles.bylineName}>{version.contributor}</span>
+      {place ? <span>· {place}</span> : null}
+      {version.date ? <span>· {formatDate(version.date, language)}</span> : null}
+      {/* Shown on any telling changed after it was posted, so
+          readers (and the curator) can tell it isn't the
+          original wording. Just "Edited" — a second date
+          beside the posted one read like a date range — with
+          the edit date kept in the hover tooltip. */}
+      {version.editedAt ? (
+        <span
+          style={styles.edited}
+          title={`${t("memoriesEdited")} ${formatDate(version.editedAt, language)}`}
+        >
+          · {t("memoriesEdited")}
+        </span>
+      ) : null}
+      {/* Only the owner sees it: their changes wait on the side
+          (the story keeps showing this published version). */}
+      {isOwner && version.edit ? (
+        <span style={styles.edited}>
+          · {t(version.edit.status === "returned" ? "editReturnedShort" : "editPendingShort")}
+        </span>
+      ) : null}
+    </p>
+  );
 
   const requestDelete = (version) => {
     setOpenMenu(null);
@@ -495,8 +522,6 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
             // place, and the telling's title swap/display by language.
             const description = pickText(language, version.descriptionKhmer, version.description);
             const place = pickText(language, version.placeKhmer, version.place);
-            const isExpanded = !!expanded[index];
-            const bodyId = `telling-body-${index}`;
             const isOwner = !!userId && version.owner === userId;
             return (
               <div key={version.id ?? index} className="thread-item">
@@ -552,59 +577,33 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
                   </div>
                 ) : null}
 
-                {/* The summary is a keyboard-accessible toggle (role=button); it
-                    holds block content, so it can't be a real <button>. */}
+                {/* The summary opens the telling (role=button); it holds
+                    block content, so it can't be a real <button>. */}
                 <div
                   style={styles.summary}
                   role="button"
                   tabIndex={0}
-                  aria-expanded={isExpanded}
-                  aria-controls={bodyId}
-                  onClick={() => toggleExpanded(index)}
+                  aria-haspopup="dialog"
+                  onClick={() => setViewing(index)}
                   onKeyDown={(e) => {
                     if (e.key === "Enter" || e.key === " ") {
                       e.preventDefault();
-                      toggleExpanded(index);
+                      setViewing(index);
                     }
                   }}
                 >
                   {version.title ? <h3 style={styles.tellingTitle}>{version.title}</h3> : null}
-                  <p style={{ ...styles.byline, ...(language === "km" ? styles.trackingNone : null) }}>
-                    <span style={styles.bylineName}>{version.contributor}</span>
-                    {place ? <span>· {place}</span> : null}
-                    {version.date ? <span>· {formatDate(version.date, language)}</span> : null}
-                    {/* Shown on any telling changed after it was posted, so
-                        readers (and the curator) can tell it isn't the
-                        original wording. Just "Edited" — a second date
-                        beside the posted one read like a date range — with
-                        the edit date kept in the hover tooltip. */}
-                    {version.editedAt ? (
-                      <span
-                        style={styles.edited}
-                        title={`${t("memoriesEdited")} ${formatDate(version.editedAt, language)}`}
-                      >
-                        · {t("memoriesEdited")}
-                      </span>
-                    ) : null}
-                    {/* Only the owner sees it: their changes wait on the side
-                        (the story keeps showing this published version). */}
-                    {isOwner && version.edit ? (
-                      <span style={styles.edited}>
-                        · {t(version.edit.status === "returned" ? "editReturnedShort" : "editPendingShort")}
-                      </span>
-                    ) : null}
-                  </p>
+                  {bylineFor(version, place, isOwner)}
 
-                  {/* The start of the text and a small photo while closed;
-                      all of the text, and the photo at full size, once
-                      opened. */}
-                  <div id={bodyId}>
-                    <p style={isExpanded ? styles.body : { ...styles.body, ...styles.bodyClamped }}>{description}</p>
+                  {/* The start of the text and a small photo; all of it is
+                      in the viewer. */}
+                  <div>
+                    <p style={{ ...styles.body, ...styles.bodyClamped }}>{description}</p>
                     {version.photoUrl ? (
                       <img
                         src={version.photoUrl}
                         alt={place ? `${t("photoSharedFrom")} ${place}` : t("photoSharedWithTelling")}
-                        style={isExpanded ? styles.photo : { ...styles.photo, ...styles.photoThumb }}
+                        style={styles.photo}
                       />
                     ) : null}
                   </div>
@@ -614,6 +613,21 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
           })}
         </div>
       </div>
+
+      {viewing !== null && thread[viewing] ? (() => {
+        const version = thread[viewing];
+        const place = pickText(language, version.placeKhmer, version.place);
+        return (
+          <TellingViewer
+            title={version.title}
+            byline={bylineFor(version, place, !!userId && version.owner === userId)}
+            description={pickText(language, version.descriptionKhmer, version.description)}
+            photoUrl={version.photoUrl}
+            photoAlt={place ? `${t("photoSharedFrom")} ${place}` : t("photoSharedWithTelling")}
+            onClose={closeViewer}
+          />
+        );
+      })() : null}
 
       <div
         style={{ ...styles.toast, ...(toastMsg ? styles.toastVisible : styles.toastHidden) }}
