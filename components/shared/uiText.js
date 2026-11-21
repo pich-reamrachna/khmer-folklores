@@ -14,9 +14,9 @@ import { useLanguage } from "./LanguageContext.js";
 const uiText = {
   // NavBar.js / Footer.js (shared) — kicker ("A Khmer Folklore Archive")
   // is deliberately not here: it's part of the fixed brand lockup in
-  // both places, kept English always. NavBar.js's top bar keeps its links
-  // hardcoded English for the same reason; navShareMemory is used by
-  // My Entries' empty state (SubmissionsList.js).
+  // both places, kept English always. The two page links are translated;
+  // navShareMemory is also My Entries' empty-state button (SubmissionsList.js).
+  navBrowseArchive: { en: "Browse the Archive", km: "បណ្ណសាររឿង" },
   navShareMemory: { en: "Share a Memory", km: "ចែករំលែករឿង" },
   navOpenMenu: { en: "Open menu", km: "បើកម៉ឺនុយ" },
   navCloseMenu: { en: "Close menu", km: "បិទម៉ឺនុយ" },
@@ -28,14 +28,18 @@ const uiText = {
   // The rest of the account menu, translated for the same reason.
   navReviewSubmissions: { en: "Review Submissions", km: "ពិនិត្យរឿងដែលបានផ្ញើមក" },
   navLogOut: { en: "Log Out", km: "ចាកចេញ" },
+  // The sign-in pill in the top bar and phone menu: the short words Khmer
+  // sites use, since the two long ones wouldn't fit the pill.
+  navSignIn: { en: "Sign In / Sign Up", km: "ចូល / ចុះឈ្មោះ" },
 
   // StoryHero.js.
   heroPrevStory: { en: "Previous story", km: "រឿងមុន" },
   heroNextStory: { en: "Next story", km: "រឿងបន្ទាប់" },
   heroReadStory: { en: "Read the Story", km: "អានរឿងនេះ" },
 
-  // ArchiveBrowser.js / ArchiveSearch.js — archiveEyebrow ("Open the
-  // Ledger") is deliberately not here: a decorative label, kept English always.
+  // ArchiveBrowser.js / ArchiveSearch.js. archiveEyebrow isn't word for
+  // word: it sits above the list of every story, so "all stories".
+  archiveEyebrow: { en: "Open the Ledger", km: "រឿងទាំងអស់" },
   archiveTitle: { en: "Find a story to follow.", km: "ស្វែងរករឿង" },
   archiveSubtitle: {
     en: "A living archive of Khmer legends, spirits, and the community memories that keep them alive.",
@@ -58,8 +62,7 @@ const uiText = {
   // BackButton.js
   goBack: { en: "Go Back", km: "ត្រឡប់ក្រោយ" },
 
-  // StoryMemories.js. Unlike archiveEyebrow above, its eyebrow is translated:
-  // the curator asked for it in Khmer too.
+  // StoryMemories.js.
   memoriesEyebrow: { en: "Voices from the Community", km: "ការនិទានរបស់អ្នកដទៃ" },
   memoriesTitle: { en: "What people remember.", km: "អ្នកទាំងអស់គ្នាចាំរឿងនេះបែបណា?" },
   memoriesSubtitle: {
@@ -216,6 +219,8 @@ const uiText = {
 
   // app/review/page.js + components/review/* (curator only). The form's story
   // name/Khmer name/category labels reuse the newStory* keys above.
+  // The eyebrow above reviewTitle: "for the curator".
+  reviewEyebrow: { en: "Curator Review", km: "សម្រាប់អ្នកចងក្រង" },
   reviewTitle: { en: "Waiting for review", km: "រឿងដែលរង់ចាំការពិនិត្យ" },
   // ReviewQueue.js sections, and the new-telling / waiting-change cards
   // (TellingReviewCard.js, EditReviewCard.js, TellingDecision.js).

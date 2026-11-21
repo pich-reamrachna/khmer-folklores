@@ -73,9 +73,8 @@ const styles = {
     letterSpacing: "0.02em",
     lineHeight: 1.1,
   },
-  // kicker/linkActive/linkIdle: deliberately not translated — the whole
-  // top bar reads as fixed site branding, like the site name itself.
-  // Only the language switcher (below) actually needs both languages.
+  // kicker: deliberately not translated — part of the fixed brand lockup,
+  // like the site name itself.
   kicker: {
     fontSize: "0.68rem",
     fontWeight: 600,
@@ -88,7 +87,10 @@ const styles = {
   // rule, not here — needed for the phone media query and fluid tablet
   // gap, and a plain stylesheet avoids the hydration-gap flash a <style
   // jsx> block here would have (see globals.css).
+  // linkActive/linkIdle (phone menu) and tab (desktop bar): the page links,
+  // in spaced capitals — Khmer uses the bigger label font (app/layout.js).
   linkActive: {
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     textDecoration: "none",
     color: "#F5EFE6",
     fontSize: "0.78rem",
@@ -99,6 +101,7 @@ const styles = {
     borderBottom: "2px solid #C5A059",
   },
   linkIdle: {
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     textDecoration: "none",
     color: "#CFC6B8",
     fontSize: "0.78rem",
@@ -112,6 +115,7 @@ const styles = {
   // underline grows out from the centre on hover (and stays shown on the
   // current page), and neither :hover nor an animated ::after can be inline.
   tab: {
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     textDecoration: "none",
     fontSize: "0.78rem",
     fontWeight: 700,
@@ -318,7 +322,7 @@ const styles = {
     border: "none",
     color: "#1A1817",
     textDecoration: "none",
-    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.78rem",
     fontWeight: 700,
     letterSpacing: "0.1em",
@@ -450,7 +454,7 @@ const styles = {
     border: "none",
     color: "#1A1817",
     textDecoration: "none",
-    fontFamily: "var(--font-jakarta), system-ui, sans-serif",
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.78rem",
     fontWeight: 700,
     letterSpacing: "0.1em",
@@ -512,6 +516,8 @@ export default function NavBar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const { language, setLanguage } = useLanguage();
+  // Letter-spacing off for Khmer labels (see trackingNone).
+  const tracking = language === "km" ? styles.trackingNone : null;
   const t = useTranslation();
   // Which nav item is the current page. "Browse the Archive" covers the
   // archive itself (home and story pages), not the share, account or
@@ -644,19 +650,19 @@ export default function NavBar() {
         <div className="nav-links nav-center">
           <Link
             href="/"
-            style={styles.tab}
+            style={{ ...styles.tab, ...tracking }}
             className={onBrowse ? "nav-tab is-active" : "nav-tab"}
             aria-current={onBrowse ? "page" : undefined}
           >
-            Browse the Archive
+            {t("navBrowseArchive")}
           </Link>
           <Link
             href="/share"
-            style={styles.tab}
+            style={{ ...styles.tab, ...tracking }}
             className={onShare ? "nav-tab is-active" : "nav-tab"}
             aria-current={onShare ? "page" : undefined}
           >
-            Share a Memory
+            {t("navShareMemory")}
           </Link>
         </div>
 
@@ -699,11 +705,11 @@ export default function NavBar() {
           ) : (
             <Link
               href="/login"
-              style={styles.authPrimaryBtn}
+              style={{ ...styles.authPrimaryBtn, ...tracking }}
               className={onAuth ? "auth-primary-btn is-current" : "auth-primary-btn"}
               aria-current={onAuth ? "page" : undefined}
             >
-              Sign In / Sign Up
+              {t("navSignIn")}
             </Link>
           )}
 
@@ -792,19 +798,19 @@ export default function NavBar() {
       >
         <Link
           href="/"
-          style={onBrowse ? styles.linkActive : styles.linkIdle}
+          style={{ ...(onBrowse ? styles.linkActive : styles.linkIdle), ...tracking }}
           aria-current={onBrowse ? "page" : undefined}
           onClick={() => setMenuOpen(false)}
         >
-          Browse the Archive
+          {t("navBrowseArchive")}
         </Link>
         <Link
           href="/share"
-          style={onShare ? styles.linkActive : styles.linkIdle}
+          style={{ ...(onShare ? styles.linkActive : styles.linkIdle), ...tracking }}
           aria-current={onShare ? "page" : undefined}
           onClick={() => setMenuOpen(false)}
         >
-          Share a Memory
+          {t("navShareMemory")}
         </Link>
 
         {user ? (
@@ -844,12 +850,12 @@ export default function NavBar() {
           <div style={styles.mobileAuthRow}>
             <Link
               href="/login"
-              style={styles.mobileAuthPrimaryBtn}
+              style={{ ...styles.mobileAuthPrimaryBtn, ...tracking }}
               className={onAuth ? "auth-primary-btn is-current" : "auth-primary-btn"}
               aria-current={onAuth ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
             >
-              Sign In / Sign Up
+              {t("navSignIn")}
             </Link>
           </div>
         )}

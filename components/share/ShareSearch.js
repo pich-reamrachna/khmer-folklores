@@ -8,6 +8,7 @@ import StartNewStoryButton from "./StartNewStoryButton.js";
 import NewStoryPanel from "./NewStoryPanel.js";
 import { searchStories } from "../../utils/storyMatch.js";
 import { useTranslation } from "../shared/uiText.js";
+import { useLanguage } from "../shared/LanguageContext.js";
 import styles from "./shareSearchStyles.js";
 import { usePublishedStories } from "./usePublishedStories.js";
 
@@ -19,6 +20,7 @@ import { usePublishedStories } from "./usePublishedStories.js";
 
 export default function ShareSearch() {
   const t = useTranslation();
+  const { language } = useLanguage();
   const stories = usePublishedStories(); // null until loaded
   const [query, setQuery] = useState("");
   const [composing, setComposing] = useState(false);
@@ -39,7 +41,7 @@ export default function ShareSearch() {
     <section style={styles.section}>
       <div style={styles.waves} aria-hidden="true" />
       <div style={styles.container}>
-        <p style={styles.eyebrow}>Share a Memory</p>
+        <p style={{ ...styles.eyebrow, ...(language === "km" ? styles.trackingNone : null) }}>{t("navShareMemory")}</p>
         <h1 style={styles.title}>{t("shareTitle")}</h1>
         <p style={styles.subtitle}>{t("shareSubtitle")}</p>
 

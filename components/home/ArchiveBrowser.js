@@ -142,9 +142,9 @@ const styles = {
     margin: "0 auto",
   },
   // The heading block is centred over the search and list, like a title
-  // page. Deliberately not translated — a decorative label, kept English
-  // like the site's other stylistic branding text.
+  // page. Can show Khmer, so the label font draws it bigger (app/layout.js).
   eyebrow: {
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 600,
     color: "#7A5C2E",
@@ -347,7 +347,7 @@ export default function ArchiveBrowser({ stories }) {
   return (
     <section style={styles.section} className="archive-section">
       <div style={styles.container} className="archive-container">
-        <p style={styles.eyebrow}>Open the Ledger</p>
+        <p style={{ ...styles.eyebrow, ...(language === "km" ? styles.trackingNone : null) }}>{t("archiveEyebrow")}</p>
 
         <h2 style={{ ...styles.title, ...(language === "km" ? styles.trackingNone : null) }} className="archive-title">
           {t("archiveTitle")}

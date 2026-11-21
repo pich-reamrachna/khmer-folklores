@@ -23,10 +23,9 @@ const styles = {
   // (.my-entries-section — pseudo-element layers can't be inline).
   section: { backgroundColor: "#1A1817", minHeight: "100vh", padding: "130px 2rem 4rem", boxSizing: "border-box", fontFamily: "var(--font-jakarta), system-ui, sans-serif", color: "#F5EFE6" },
   container: { maxWidth: 1300, margin: "0 auto" },
-  // Deliberately not translated — decorative label, like the site's other
-  // eyebrows. Quiet spaced capitals, then the title in gold Cinzel, as on
-  // the home hero.
-  eyebrow: { fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 1rem" },
+  // Quiet spaced capitals, then the title in gold Cinzel, as on the home
+  // hero.
+  eyebrow: { fontFamily: khmerLabel, fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 1rem" },
   title: { fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif", fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 500, color: "#C9A961", lineHeight: "var(--khmer-leading, 1.15)", margin: "0 0 1.75rem" },
   // The two tabs in a dark pill, only as wide as they are. A gold pill
   // (`thumb`) sits behind the chosen one and slides across when the other
@@ -133,7 +132,7 @@ export default function MyEntries({ submissions, tellings, storiesFailed, tellin
   return (
     <section style={styles.section} className="my-entries-section">
       <div style={styles.container} className="my-entries-content">
-        <p style={styles.eyebrow}>My Entries</p>
+        <p style={{ ...styles.eyebrow, ...tracking }}>{t("navMyEntries")}</p>
         <h1 style={styles.title}>{t("myEntriesTitle")}</h1>
 
         <div role="tablist" style={styles.tabs}>

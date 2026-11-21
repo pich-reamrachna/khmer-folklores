@@ -46,9 +46,9 @@ const shareSearchStyles = {
   },
   // position/zIndex: above the waves layer.
   container: { position: "relative", zIndex: 1, maxWidth: 760, margin: "0 auto" },
-  // Deliberately not translated — decorative label, like the site's other
-  // eyebrows.
+  // Can show Khmer, so the label font draws it bigger (app/layout.js).
   eyebrow: {
+    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
     fontSize: "0.75rem",
     fontWeight: 600,
     color: "#7A5C2E",
@@ -105,6 +105,8 @@ const shareSearchStyles = {
     flexDirection: "column",
     borderTop: "1px solid rgba(60, 50, 40, 0.25)",
   },
+  // Letter-spacing pries apart Khmer glyph clusters.
+  trackingNone: { letterSpacing: "normal" },
 };
 
 export default shareSearchStyles;

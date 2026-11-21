@@ -35,9 +35,7 @@ const styles = {
   container: { maxWidth: 1300, margin: "0 auto" },
   // Eyebrow and title on the left, the total on the right, on one baseline.
   header: { display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1.5rem", flexWrap: "wrap", margin: "0 0 1.75rem" },
-  // Deliberately not translated — decorative label, like the site's other
-  // eyebrows.
-  eyebrow: { fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 1rem" },
+  eyebrow: { fontFamily: khmerLabel, fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 1rem" },
   title: { fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif", fontSize: "clamp(2rem, 4vw, 2.75rem)", fontWeight: 500, color: "#C9A961", lineHeight: "var(--khmer-leading, 1.15)", margin: 0 },
   count: { fontFamily: khmerSans, fontSize: "0.9rem", color: "#A89F91", margin: "0 0 0.4rem" },
   // The tabs: same dark pill with a sliding gold one behind the chosen tab
@@ -151,7 +149,7 @@ export default function ReviewQueue({ submissions, tellings, edits, loadFailed }
       <div style={styles.container} className="my-entries-content">
         <div style={styles.header}>
           <div>
-            <p style={styles.eyebrow}>Curator Review</p>
+            <p style={{ ...styles.eyebrow, ...tracking }}>{t("reviewEyebrow")}</p>
             <h1 style={styles.title}>{t("reviewTitle")}</h1>
           </div>
           <p style={styles.count}>{status}</p>
