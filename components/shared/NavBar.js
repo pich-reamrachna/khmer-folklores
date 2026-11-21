@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import collection from "../../collection.config.js";
@@ -156,22 +157,82 @@ const styles = {
     WebkitMaskPosition: "center",
     maskPosition: "center",
   },
-  // Dropdown panel for the mobile menu. Absolutely positioned so it never
-  // adds to `nav`'s own height — StoryHero/ArchiveBrowser/StoryDetails all
-  // assume a fixed 90px NavBar for their top padding. display/opacity/
-  // transform (open/close animation, plus a >=641px safety hide) live in
-  // app/globals.css.
+  // The phone menu: a drawer sliding in from the right (where the hamburger
+  // is), most of the screen wide but not all of it — the page stays in
+  // view, dimmed, on the left (tap it to close). Rendered into <body>, not inside <nav>: once
+  // scrolled, nav's backdrop-filter would make it the box a fixed child is
+  // placed in, trapping the drawer inside the 90px bar. display/transform/
+  // visibility (the slide, plus a >=641px safety hide) live in
+  // app/globals.css (.nav-mobile-panel, .nav-mobile-backdrop).
   mobilePanel: {
-    position: "absolute",
-    top: "100%",
-    left: 0,
+    position: "fixed",
+    top: 0,
+    bottom: 0,
     right: 0,
+    zIndex: 1600,
+    width: "min(80vw, 320px)",
     flexDirection: "column",
     gap: "1.25rem",
-    padding: "1.25rem 2rem 1.5rem",
+    padding: "1.25rem 1.75rem 2rem",
     boxSizing: "border-box",
-    backgroundColor: "rgba(18, 17, 16, 0.98)",
-    borderBottom: "1px solid rgba(245, 239, 230, 0.08)",
+    overflowY: "auto",
+    backgroundColor: "#121110",
+    borderLeft: "1px solid rgba(201, 169, 97, 0.2)",
+    boxShadow: "-12px 0 40px rgba(0, 0, 0, 0.5)",
+  },
+  // The drawer's top row: just its close button, on the right.
+  mobilePanelHead: {
+    display: "flex",
+    justifyContent: "flex-end",
+  },
+  mobileProfile: {
+    display: "flex",
+    alignItems: "center",
+    gap: "0.75rem",
+    minWidth: 0,
+  },
+  // A round gold-outlined badge with the user icon, like the desktop
+  // account button.
+  mobileAvatar: {
+    flex: "0 0 auto",
+    width: 40,
+    height: 40,
+    boxSizing: "border-box",
+    borderRadius: "50%",
+    border: "1px solid rgba(201, 169, 97, 0.45)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  mobileAvatarIcon: {
+    display: "inline-block",
+    width: 18,
+    height: 18,
+    backgroundColor: "#E6C575",
+    WebkitMaskImage: "url(/icons/user.png)",
+    maskImage: "url(/icons/user.png)",
+    WebkitMaskSize: "contain",
+    maskSize: "contain",
+    WebkitMaskRepeat: "no-repeat",
+    maskRepeat: "no-repeat",
+    WebkitMaskPosition: "center",
+    maskPosition: "center",
+  },
+  mobileLinks: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: "0.6rem",
+  },
+  // The signed-in account and Log out, pushed to the bottom of the drawer
+  // (it's a full-height column) and ruled off from the rest.
+  mobileBottom: {
+    marginTop: "auto",
+    display: "flex",
+    flexDirection: "column",
+    gap: "1rem",
+    paddingTop: "1.25rem",
+    borderTop: "1px solid rgba(245, 239, 230, 0.12)",
   },
   langSwitcher: {
     position: "relative",
@@ -491,19 +552,6 @@ const styles = {
     wordBreak: "break-all",
     margin: 0,
   },
-  // The phone menu's My Entries / Review Submissions: linkIdle's spaced
-  // capitals (repeated here, since a style can't spread a sibling in the same
-  // object), with the bigger Khmer label font since both can be Khmer.
-  mobileAccountLink: {
-    textDecoration: "none",
-    color: "#CFC6B8",
-    fontSize: "0.78rem",
-    fontWeight: 700,
-    letterSpacing: "0.18em",
-    textTransform: "uppercase",
-    padding: "0.5rem 0",
-    fontFamily: "var(--font-khmer-label), var(--font-jakarta), system-ui, sans-serif",
-  },
   // Can be Khmer, so the label font draws Khmer bigger (app/layout.js).
   mobileLogoutBtn: {
     textAlign: "center",
@@ -541,6 +589,28 @@ export default function NavBar() {
   const [nameStart, nameEnd] = splitName(collection.name);
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  // The drawer is portalled into <body>, which only exists in the browser.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const drawerCloseRef = useRef(null);
+
+  // While the drawer is open: Esc closes it, focus moves into it, and the
+  // page's scroll container (each page's <main>) is frozen behind it.
+  useEffect(() => {
+    if (!menuOpen) return;
+    drawerCloseRef.current?.focus();
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    document.addEventListener("keydown", onKeyDown);
+    const main = document.querySelector("main");
+    const previous = main?.style.overflowY;
+    if (main) main.style.overflowY = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      if (main) main.style.overflowY = previous;
+    };
+  }, [menuOpen]);
   const [langMenuOpen, setLangMenuOpen] = useState(false);
   const { language, setLanguage } = useLanguage();
   // Letter-spacing off for Khmer labels (see trackingNone).
@@ -561,6 +631,9 @@ export default function NavBar() {
   // not only once scrolled (see navScrolled).
   // On either account page — the Sign In / Sign Up button shows as current.
   const onAuth = pathname === "/login" || pathname === "/signup";
+  // The account pages, underlined in the phone menu when you're on them.
+  const onMyEntries = pathname === "/my-entries";
+  const onReview = pathname === "/review";
   const onBrowse = !["/share", "/login", "/signup", "/my-entries", "/my-submissions", "/review"].includes(pathname);
   const langSwitcherRef = useRef(null);
   const [supabase] = useState(() => createClient());
@@ -817,76 +890,95 @@ export default function NavBar() {
           type="button"
           className="nav-toggle"
           style={styles.toggleButton}
-          onClick={() => setMenuOpen((open) => !open)}
+          onClick={() => setMenuOpen(true)}
           aria-expanded={menuOpen}
-          aria-label={menuOpen ? t("navCloseMenu") : t("navOpenMenu")}
+          aria-label={t("navOpenMenu")}
         >
+          {/* Always the hamburger: the open drawer has its own × (this
+              button sits under the dimmed backdrop then). */}
           <span
             style={{
               ...styles.toggleIcon,
-              WebkitMaskImage: `url(/icons/${menuOpen ? "close" : "menus"}.png)`,
-              maskImage: `url(/icons/${menuOpen ? "close" : "menus"}.png)`,
+              WebkitMaskImage: "url(/icons/menus.png)",
+              maskImage: "url(/icons/menus.png)",
             }}
           />
         </button>
       </div>
 
+      {mounted ? createPortal(
+      <>
+      <div
+        className={`nav-mobile-backdrop${menuOpen ? " nav-mobile-backdrop-open" : ""}`}
+        aria-hidden="true"
+        onClick={() => setMenuOpen(false)}
+      />
       <div
         style={styles.mobilePanel}
         className={`nav-mobile-panel${menuOpen ? " nav-mobile-panel-open" : ""}`}
         aria-hidden={!menuOpen}
       >
-        <Link
-          href="/"
-          style={{ ...(onBrowse ? styles.linkActive : styles.linkIdle), ...tracking }}
-          aria-current={onBrowse ? "page" : undefined}
-          onClick={() => setMenuOpen(false)}
-        >
-          {t("navBrowseArchive")}
-        </Link>
-        <Link
-          href="/share"
-          style={{ ...(onShare ? styles.linkActive : styles.linkIdle), ...tracking }}
-          aria-current={onShare ? "page" : undefined}
-          onClick={() => setMenuOpen(false)}
-        >
-          {t("navShareMemory")}
-        </Link>
+        {/* Top: just the close button, on the right. */}
+        <div style={styles.mobilePanelHead}>
+          <button
+            ref={drawerCloseRef}
+            type="button"
+            style={styles.toggleButton}
+            onClick={() => setMenuOpen(false)}
+            aria-label={t("navCloseMenu")}
+          >
+            <span
+              style={{
+                ...styles.toggleIcon,
+                WebkitMaskImage: "url(/icons/close.png)",
+                maskImage: "url(/icons/close.png)",
+              }}
+            />
+          </button>
+        </div>
 
-        {user ? (
-          <div style={styles.mobileAuthRow}>
-            <div>
-              <p style={styles.mobileUserName}>{username ?? t("navAccount")}</p>
-              <p style={styles.mobileUserEmail}>{user.email}</p>
-            </div>
+        {/* Every page link in one list, the same type, the current one
+            underlined: the two site pages, then the account's own. */}
+        <div style={styles.mobileLinks}>
+          <Link
+            href="/"
+            style={{ ...(onBrowse ? styles.linkActive : styles.linkIdle), ...tracking }}
+            aria-current={onBrowse ? "page" : undefined}
+            onClick={() => setMenuOpen(false)}
+          >
+            {t("navBrowseArchive")}
+          </Link>
+          <Link
+            href="/share"
+            style={{ ...(onShare ? styles.linkActive : styles.linkIdle), ...tracking }}
+            aria-current={onShare ? "page" : undefined}
+            onClick={() => setMenuOpen(false)}
+          >
+            {t("navShareMemory")}
+          </Link>
+          {user ? (
             <Link
               href="/my-entries"
-              style={{ ...styles.mobileAccountLink, ...(language === "km" ? styles.trackingNone : null) }}
+              style={{ ...(onMyEntries ? styles.linkActive : styles.linkIdle), ...tracking }}
+              aria-current={onMyEntries ? "page" : undefined}
               onClick={() => setMenuOpen(false)}
             >
               {t("navMyEntries")}
             </Link>
-            {isCurator ? (
-              <Link
-                href="/review"
-                style={{ ...styles.mobileAccountLink, ...(language === "km" ? styles.trackingNone : null) }}
-                onClick={() => setMenuOpen(false)}
-              >
-                {t("navReviewSubmissions")}
-              </Link>
-            ) : null}
-            <button
-              type="button"
-              style={{ ...styles.mobileLogoutBtn, ...(language === "km" ? styles.trackingNone : null) }}
-              onClick={() => {
-                handleLogout();
-                setMenuOpen(false);
-              }}
+          ) : null}
+          {user && isCurator ? (
+            <Link
+              href="/review"
+              style={{ ...(onReview ? styles.linkActive : styles.linkIdle), ...tracking }}
+              aria-current={onReview ? "page" : undefined}
+              onClick={() => setMenuOpen(false)}
             >
-              {t("navLogOut")}
-            </button>
-          </div>
-        ) : user === null ? (
+              {t("navReviewSubmissions")}
+            </Link>
+          ) : null}
+        </div>
+
+        {user === null ? (
           <div style={styles.mobileAuthRow}>
             <Link
               href="/login"
@@ -922,7 +1014,36 @@ export default function NavBar() {
             ខ្មែរ
           </button>
         </div>
+
+        {/* At the very bottom: who's signed in (name, email), and Log out
+            right under it. */}
+        {user ? (
+          <div style={styles.mobileBottom}>
+            <div style={styles.mobileProfile}>
+              <span style={styles.mobileAvatar} aria-hidden="true">
+                <span style={styles.mobileAvatarIcon} />
+              </span>
+              <div style={{ minWidth: 0 }}>
+                <p style={styles.mobileUserName}>{username ?? t("navAccount")}</p>
+                <p style={styles.mobileUserEmail}>{user.email}</p>
+              </div>
+            </div>
+            <button
+              type="button"
+              style={{ ...styles.mobileLogoutBtn, ...tracking }}
+              onClick={() => {
+                handleLogout();
+                setMenuOpen(false);
+              }}
+            >
+              {t("navLogOut")}
+            </button>
+          </div>
+        ) : null}
       </div>
+      </>,
+      document.body
+      ) : null}
     </nav>
   );
 }

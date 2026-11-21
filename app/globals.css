@@ -183,19 +183,34 @@ main {
 .nav-toggle {
   display: none;
 }
+/* NavBar.js's phone drawer. Closed: parked off-screen to the right and
+   hidden (visibility, so its links leave the Tab order too — after the
+   slide-out finishes, hence the delay). transform/visibility, not display,
+   so the slide can animate. */
 .nav-mobile-panel {
   display: flex;
-  /* Closed by default: lifted and invisible. opacity/transform (not
-     display) drive the open/close so they can transition — toggling
-     display can't be animated. */
-  opacity: 0;
-  transform: translateY(-8px);
-  pointer-events: none;
-  transition: opacity 200ms ease, transform 200ms ease;
+  transform: translateX(100%);
+  visibility: hidden;
+  transition: transform 280ms ease, visibility 0s linear 280ms;
 }
 .nav-mobile-panel-open {
+  transform: translateX(0);
+  visibility: visible;
+  transition: transform 280ms ease, visibility 0s;
+}
+/* The dimmed page beside the open drawer; tapping it closes the drawer.
+   Above the NavBar (z-index 100), just under the drawer (1600). */
+.nav-mobile-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1500;
+  background-color: rgba(10, 9, 8, 0.6);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 280ms ease;
+}
+.nav-mobile-backdrop-open {
   opacity: 1;
-  transform: translateY(0);
   pointer-events: auto;
 }
 @media (max-width: 640px) {
@@ -207,7 +222,8 @@ main {
   }
 }
 @media (min-width: 641px) {
-  .nav-mobile-panel {
+  .nav-mobile-panel,
+  .nav-mobile-backdrop {
     display: none;
   }
 }
