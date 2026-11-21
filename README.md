@@ -128,6 +128,7 @@ The archive's source, as set in `collection.config.js`: "Myself, My Friends, Fam
 | Daun Penh's Curse | Ngov_Kimyou | Phnom Penh |
 | Neang Neath | Sreng_Vongwathiny | Phnom Penh |
 | Neang Neath | my grandfather, Pich Ream (as Pich_Ream) | Kandal |
+| Phnom Neang Kangrei | me, Pich Ream Rachna (as achma) | Kampong Chhnang |
 | Pous Keng Kang | me, Pich Ream Rachna (as achma) | Banteay Meanchey |
 
 - Where a sharer first heard a story (a grandparent, a village, a friend) isn't recorded separately. A sharer can mention it in the telling itself.
@@ -169,8 +170,8 @@ To rebuild the database, first create the base tables and early rules (see secti
 - No test entries, lorem ipsum or TODO comments in shipped pages: yes, checked 2026-11-21. Every test story, telling and photo was deleted from the database the same day.
 - No console errors on the main pages: yes, checked 2026-11-21 on the home page, /share, /login, /signup, a story page, /my-entries and /review
 - jesseorndorff is a collaborator on this repo: yes
-- Supabase project restored and awake on (date)
+- Supabase project restored and awake on 2026-11-21
 - Demo video link opens in a private window: yes, (link)
 - Reflection pasted in the Canvas submission: yes
 - Posted in the Show Your Archive discussion: yes
-- Q&A slot booked for (date and time)
+- Q&A slot booked for 2026-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     12-04 9:50 AM
