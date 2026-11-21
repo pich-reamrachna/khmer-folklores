@@ -12,8 +12,9 @@ import { formEntry } from "../../utils/editableEntry.js";
 
 // "What people remember" — other people's tellings on a story's page, laid
 // out as a grid of ruled columns, newest first (one per contributor's
-// telling). Each shows its title, byline and the start of its text; clicking
-// it opens the rest (full text and photo), and — for the owner — it has a
+// telling). Each shows its title, byline, the start of its text and a small
+// version of its photo; clicking it opens the rest (full text, photo at full
+// size), and — for the owner — it has a
 // three-dots menu to edit or delete.
 // The story's first telling isn't here: it's the story itself, shown in full
 // under the title (FirstTelling.js). These are the replies to it.
@@ -168,6 +169,14 @@ const styles = {
     borderRadius: 12,
     display: "block",
     margin: "0.85rem 0 0",
+  },
+  // Closed, the photo is a small cropped preview, so visitors can see a
+  // telling has one without opening it. Clicking it opens the card, like the
+  // text does (it's inside the same toggle).
+  photoThumb: {
+    width: 160,
+    height: 96,
+    maxHeight: 96,
   },
   // Owner-only three-dots menu, pinned to the telling's top-right.
   menuWrap: {
@@ -586,15 +595,16 @@ export default function StoryMemories({ versions, storyId, storyTitle, storyTitl
                     ) : null}
                   </p>
 
-                  {/* The start of the text while closed; all of it, and the
-                      photo, once opened. */}
+                  {/* The start of the text and a small photo while closed;
+                      all of the text, and the photo at full size, once
+                      opened. */}
                   <div id={bodyId}>
                     <p style={isExpanded ? styles.body : { ...styles.body, ...styles.bodyClamped }}>{description}</p>
-                    {isExpanded && version.photoUrl ? (
+                    {version.photoUrl ? (
                       <img
                         src={version.photoUrl}
-                        alt={place ? `Photo shared from ${place}` : "Photo shared with this telling"}
-                        style={styles.photo}
+                        alt={place ? `${t("photoSharedFrom")} ${place}` : t("photoSharedWithTelling")}
+                        style={isExpanded ? styles.photo : { ...styles.photo, ...styles.photoThumb }}
                       />
                     ) : null}
                   </div>

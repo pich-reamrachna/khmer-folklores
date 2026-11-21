@@ -53,7 +53,7 @@ export default function FirstTelling({ telling, storyId, storyTitle, storyTitleK
       <p style={{ ...styles.heading, ...(language === "km" ? styles.trackingNone : null) }}>{t("firstTellingHeading")}</p>
       <p style={styles.body}>{pickText(language, telling.descriptionKhmer, telling.description)}</p>
       {telling.photoUrl ? (
-        <img src={telling.photoUrl} alt={place ? `Photo shared from ${place}` : "Photo shared with this story"} style={styles.photo} />
+        <img src={telling.photoUrl} alt={place ? `${t("photoSharedFrom")} ${place}` : t("photoSharedWithStory")} style={styles.photo} />
       ) : null}
 
       {isOwner ? (

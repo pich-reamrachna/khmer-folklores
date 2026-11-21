@@ -139,6 +139,8 @@ const uiText = {
   contributeSubmit: { en: "Share your telling", km: "ចែករំលែកការនិទានរបស់អ្នក" },
   contributeSubmitting: { en: "Saving…", km: "កំពុងបញ្ជូនរឿង…" },
   contributeClose: { en: "Close", km: "បិទ" },
+  // The share dialog's screen-reader name, followed by the story's title.
+  contributeDialogLabel: { en: "Share your telling of", km: "ចែករំលែកការនិទានរបស់អ្នកអំពី" },
   contributeMinHint: { en: "(min {n})", km: "(យ៉ាងតិច {n})" },
   contributeTitleLenError: { en: "Title must be {min}–{max} characters.", km: "ចំណងជើងត្រូវមានពី {min} ទៅ {max} តួអក្សរ។" },
   contributeTitleCharError: { en: "Title contains characters that aren't allowed.", km: "ចំណងជើងមានតួអក្សរខ្លះដែលមិនអាចប្រើបាន។ សូមកែចំណងជើង ហើយសាកម្ដងទៀត។" },
@@ -342,6 +344,11 @@ const uiText = {
   detailsKind: { en: "Kind", km: "ប្រភេទ" },
   detailsToldIn: { en: "Told in", km: "ទីកន្លែង" },
   memoriesEdited: { en: "Edited", km: "បានកែ" },
+  // A telling photo's screen-reader description (StoryMemories.js,
+  // FirstTelling.js): "…from" is followed by the place it was told in.
+  photoSharedFrom: { en: "Photo shared from", km: "រូបថតដែលបានចែករំលែកពី" },
+  photoSharedWithTelling: { en: "Photo shared with this telling", km: "រូបថតដែលបានចែករំលែកជាមួយការនិទាននេះ" },
+  photoSharedWithStory: { en: "Photo shared with this story", km: "រូបថតដែលបានចែករំលែកជាមួយរឿងនេះ" },
   menuDeleteLocked: {
     en: "The first telling of a published story can't be deleted — you can still edit it.",
     km: "មិនអាចលុបរឿងនិទានដំបូងរបស់រឿងដែលបានបង្ហោះបានទេ — ប៉ុន្តែអ្នកនៅតែអាចកែវាបាន។",

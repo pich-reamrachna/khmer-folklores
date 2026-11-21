@@ -4,6 +4,7 @@ import { useEffect, useRef, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import ContributeForm from "./ContributeForm.js";
 import { startPageLoading } from "../../utils/pageLoading.js";
+import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
 
 const FOCUSABLE =
@@ -32,6 +33,7 @@ const styles = {
 };
 
 export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, entry, onClose }) {
+  const { language } = useLanguage();
   const t = useTranslation();
   const router = useRouter();
   const dialogRef = useRef(null);
@@ -121,7 +123,7 @@ export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, 
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
-        aria-label={`Share your telling of ${storyTitle}`}
+        aria-label={`${t("contributeDialogLabel")} ${pickText(language, storyTitleKhmer, storyTitle)}`}
         tabIndex={-1}
         className="contribute-dialog"
       >
