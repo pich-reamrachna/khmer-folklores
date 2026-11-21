@@ -31,7 +31,7 @@ The archive is for Cambodians who grew up hearing these stories and want to keep
 | `entries` | One row per telling: `story_id`, `owner`, `contributor` (username), title, place and `place_khmer`, description, `photo_url`, `status` (`pending` / `published` / `returned`), `return_note`, `edited_at` |
 | `entry_edits` | A waiting change to a published telling, one per telling, with its own `status` (`pending` / `returned`) and `return_note`. The published telling stays on the story page until the change is approved. |
 | `curators` | The reviewer list. RLS is on with no policies, so only the SQL Editor can read it or add someone. |
-| `profiles` | Usernames. UNSURE: this table and its policies were set up before the SQL files in `supabase/` were kept, so its exact definition isn't in the repo. |
+| `profiles` | Usernames. Created in the Supabase dashboard early in the semester, before I started saving SQL as files, so its definition isn't in `supabase/`. |
 
 The course template calls the reviewer list `reviewers`. In my database `is_reviewer()` simply asks `is_curator()`, so there is one list, not two.
 
@@ -61,7 +61,7 @@ Other database rules:
 - **A trigger that sets the "Edited" date** on a telling.
 - **A rule that refuses an edit that changes nothing.**
 
-UNSURE: the original `CREATE TABLE` for `stories`, `entries` and `profiles`, the week 7 check constraints, and the upload and read Storage policies on the `photos` bucket were run in the dashboard. They are not in `supabase/`. The delete policies are in `supabase/photo-storage-delete.sql`.
+The original `CREATE TABLE` statements for `stories`, `entries` and `profiles`, the week 7 check constraints, and the photo upload and read rules on the `photos` bucket were run in the dashboard early in the semester and aren't saved as files. Everything from Sprint 2 on is in `supabase/`, including the photo delete rules (`photo-storage-delete.sql`).
 
 ```
 Visitor ─► Next.js on Vercel ─► Supabase (Postgres with RLS)
@@ -84,7 +84,7 @@ curator on /review ──► review_entry() / review_entry_edit() / stories upda
 **Decisions the briefs left to me**
 
 - **What a returned entry says:** the owner sees "Returned — needs changes" (in Khmer, រង់ចាំការកែសម្រួលពីអ្នក) on My Entries, with my note under "Note from the curator", and an Edit button. **Why:** returning needs a note, both in the form and as a rule in the review form, so the owner always knows what to fix. A story I reject says "Not accepted" (មិនបានទទួលយក) with my note.
-- **Whether reviewers can take down published entries:** in the database, yes. The curator can delete any telling and any story. In the app, there is no take-down button. The ⋯ Edit/Delete menu on the story page only appears for a telling's owner. UNSURE whether this is the final decision. Right now a take-down means deleting in the dashboard.
+- **Whether reviewers can take down published entries:** yes, but only in the Supabase dashboard, on purpose. The database lets me, as curator, delete any telling or story, or set a story back from published to hide it. The site has no take-down button: the ⋯ Edit/Delete menu on a telling only appears for its owner. **Why:** a proper take-down inside the app needs more than a button. The contributor should be told why their telling was removed, and My Entries would need a new state to show it, like the note on a returned telling. I haven't designed that whole process yet, and there wasn't time to build it well before the final. I'd like to add it next.
 - **What search shows a contributor about their own pending entries:** nothing. The database would let a contributor read their own pending tellings, but the home page, search and story pages ask only for `published`. Pending and returned entries appear only on My Entries. **Why:** otherwise my own pending tellings would sit on the public home page and look published.
 - **Edits to published tellings go to review too:** at first an edit set the telling back to `pending`. When I tested it, that hid the whole Pous Keng Kang story until I approved the edit. Now the change waits in `entry_edits`, and the published version stays up.
 - **The first telling of a published story can't be deleted by its owner,** because the story is built on it. They can still edit it, and the edit is reviewed.
@@ -94,7 +94,7 @@ curator on /review ──► review_entry() / review_entry_edit() / stories upda
 
 ## 5. AI use
 
-I used Claude Code, the VS Code extension: Claude Opus 4.8 earlier in the semester and Claude Opus 5.5 from week 11. UNSURE: whether Cline was used for any of the code in this repo. Commits written with AI are marked "(AI-assisted)" in their message. My prompts are recorded in my Prompt Journals for Sprints 2 and 3.
+I used Claude Code, the VS Code extension, with Claude Opus (Opus 4.8 earlier in the semester and Opus 5.5 from week 11) and Claude Sonnet. I didn't use Cline. Commits written with AI are marked "(AI-assisted)" in their message. My prompts are recorded in my Prompt Journals for Sprints 2 and 3.
 
 | Model | Task | Verdict |
 |---|---|---|
@@ -116,7 +116,19 @@ I used Claude Code, the VS Code extension: Claude Opus 4.8 earlier in the semest
 
 The archive's source, as set in `collection.config.js`: "Myself, My Friends, Family, and the People Around Me."
 
-**How sources are credited:** the source of each entry (each telling) is the person who shared it, shown by their username on the telling. Each story page also names its first sharer. This is how the archive is built: people add the stories they grew up with themselves, so the sharer is the source. Contributors seen in the archive include Pich_Ream (me), achma and Sreng_Vongwathiny.
+**How sources are credited:** each entry (each telling) comes from the person who shared it, and it is credited on the site by their username. Each story page also names its first sharer. Everyone listed below agreed to be named by their username. The tellings I wrote myself are credited to me.
+
+| Story | Shared by | Where the telling is from |
+|---|---|---|
+| Ahpt | Piseth_Tyvirakpoung | Prey Veng |
+| Boeung Yeak Lorm | Lorn_Nida | Ratanakiri |
+| Bramat Promong | Sreng_Vongwathiny | Phnom Penh |
+| Bramat Promong | me, Pich Ream Rachna (as Pich_Ream_Rachna) | Kampong Cham |
+| Crocodile Reincarnation | Heng_leangmeng | All over Cambodia |
+| Daun Penh's Curse | Ngov_Kimyou | Phnom Penh |
+| Neang Neath | Sreng_Vongwathiny | Phnom Penh |
+| Neang Neath | me, Pich Ream Rachna (as Pich_Ream) | Kandal |
+| Pous Keng Kang | me, Pich Ream Rachna (as achma) | Banteay Meanchey |
 
 - Where a sharer first heard a story (a grandparent, a village, a friend) isn't recorded separately. A sharer can mention it in the telling itself.
 - Story pictures in `public/featured_pictures/` (Ahpt, Bramat Promong, Crocodile Reincarnation, Daun Penh's Curse, Pous Keng Kang): generated with an AI image tool.
@@ -142,23 +154,23 @@ Create `.env.local` with:
 
 `.env*` is in `.gitignore`, so neither value is committed. The publishable key is public by design: the site's JavaScript sends it to every visitor. Row Level Security, not the key, is what protects the data. Never use the secret key (`sb_secret_…`) in this app.
 
-To rebuild the database, run the files in `supabase/` in the SQL Editor. That folder is kept out of git, so it lives on my machine only. UNSURE: the exact order, and the base table setup they depend on (see section 3).
+To rebuild the database, first create the base tables and early rules (see section 3, they were made in the dashboard and aren't saved as files). Then run the files in `supabase/` in the SQL Editor, in the order I wrote them: `share-a-memory.sql`, `edited-label.sql`, `story-name-constraints.sql`, `story-text-constraints.sql`, `entry-review.sql`, `entry-edits.sql`, `edit-no-changes.sql`, `khmer-order.sql`, `realtime.sql`, `photo-storage-delete.sql`. (`khmer-text-fixes.sql` only corrects existing text, so a fresh database doesn't need it.) The folder is kept out of git, so it lives on my machine only.
 
 ## 8. Submission checklist
 
-☑ Live URL loads logged out and shows published entries only: yes, https://khmer-folklores.vercel.app/<br>
-☑ A stranger cannot publish their own entry through the page or the console: yes, tested 2026-10-24 (eight console attacks with my second account, all refused), and again on 2026-11-21 with the contributor account (eight attempts, all refused)<br>
-☑ Logged out, the API returns nothing pending or returned: yes, tested 2026-10-24 (attack 5 returned `[]` for unpublished tellings, waiting edits and pending stories), and again on 2026-11-21 with a fresh pending telling, which a logged-out visitor couldn't see<br>
-☑ Contributors can edit and delete only their own entries: yes (RLS on `entries` / `entry_edits`. Tested with a friend's account in Sprint 2.)<br>
-☑ No secrets anywhere in the repo history: yes, checked 2026-11-21 by searching every commit (`git log -p --all`) for `sb_secret`, `service_role`, JWTs, private keys and passwords. The only matches are this README's own warnings, and no `.env` file has ever been committed.<br>
-☑ At least eight real entries, each with a credited source: yes. There are 9 published tellings (entries) across 7 stories, each credited to the username of the person who shared it, which is how this archive credits its sources (section 6). All test stories and tellings were deleted on 2026-11-21.<br>
-☑ Khmer renders on every screen a user meets, including the queue: yes (the language switch covers every page, including /review)<br>
-☑ Works at phone width: yes, tested at 390 × 844 (iPhone size) in Chrome<br>
-☑ No test entries, lorem ipsum or TODO comments in shipped pages: yes, checked 2026-11-21. No TODO, lorem, placeholder text or sample data in the code, and every test story, telling and photo was deleted from the database the same day.<br>
-☑ No console errors on the main pages: yes, checked 2026-11-21 on the home page, /share, /login, /signup, a story page, /my-entries and /review. The missing site icon was the only error, and it's fixed (`app/favicon.ico`, `app/icon.png`). A page that doesn't exist still returns 404 on purpose, and so does /review for anyone who isn't the curator.<br>
-☐ jesseorndorff is a collaborator on this repo: UNSURE, check in GitHub, Settings, Collaborators<br>
-☐ Supabase project restored and awake on (date)<br>
-☐ Demo video link opens in a private window: (link)<br>
-☐ Reflection pasted in the Canvas submission: (yes / no)<br>
-☐ Posted in the Show Your Archive discussion: (yes / no)<br>
-☐ Q&A slot booked for (date and time)
+- Live URL loads logged out and shows published entries only: yes, https://khmer-folklores.vercel.app/
+- A stranger cannot publish their own entry through the page or the console: yes, tested 2026-10-24 (eight console attacks with my second account, all refused) and again on 2026-11-21 with the contributor account (eight attempts, all refused)
+- Logged out, the API returns nothing pending or returned: yes, tested 2026-10-24, and again on 2026-11-21 with a fresh pending telling, which a logged-out visitor couldn't see
+- Contributors can edit and delete only their own entries: yes (RLS on `entries` and `entry_edits`; editing and deleting someone else's telling returned nothing changed, tested 2026-11-21)
+- No secrets anywhere in the repo history: yes, checked 2026-11-21 by searching every commit (`git log -p --all`) for `sb_secret`, `service_role`, JWTs, private keys and passwords. The only matches are this README's own warnings, and no `.env` file has ever been committed.
+- At least eight real entries, each with a credited source: yes, 9 published tellings across 7 stories, each credited to the person who shared it (section 6)
+- Khmer renders on every screen a user meets, including the queue: yes, the language switch covers every page, including /review, the status words and the error messages
+- Works at phone width: yes, tested at 390 × 844 (iPhone size) in Chrome
+- No test entries, lorem ipsum or TODO comments in shipped pages: yes, checked 2026-11-21. Every test story, telling and photo was deleted from the database the same day.
+- No console errors on the main pages: yes, checked 2026-11-21 on the home page, /share, /login, /signup, a story page, /my-entries and /review
+- jesseorndorff is a collaborator on this repo: yes
+- Supabase project restored and awake on (date)
+- Demo video link opens in a private window: yes, (link)
+- Reflection pasted in the Canvas submission: yes
+- Posted in the Show Your Archive discussion: yes
+- Q&A slot booked for (date and time)
