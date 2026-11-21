@@ -12,7 +12,8 @@ import { useTranslation } from "../shared/uiText.js";
 // comments below it (StoryMemories.js). Its owner can edit it (the changes
 // wait for the curator's review, and this keeps showing the published text);
 // deleting it isn't possible once the story is published — the database
-// refuses, so there's no Delete here at all.
+// refuses, so there's no Delete here at all. Its photo isn't here: it sits in
+// the right-hand column under the details table (StoryDetails.js).
 
 const khmerSans = "var(--font-khmer), var(--font-jakarta), system-ui, sans-serif";
 // Small spaced-capital labels: the same Khmer font, drawn bigger (app/layout.js).
@@ -27,7 +28,6 @@ const styles = {
   heading: { fontFamily: khmerLabel, fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 0.75rem" },
   // pre-wrap keeps the sharer's line breaks; anywhere breaks a long run.
   body: { fontFamily: khmerSans, fontSize: "1.05rem", lineHeight: 1.8, color: "#D9D2C5", whiteSpace: "pre-wrap", overflowWrap: "anywhere", margin: 0 },
-  photo: { display: "block", maxWidth: "100%", maxHeight: 420, borderRadius: 12, marginTop: "1.5rem", objectFit: "cover" },
   owner: { display: "flex", flexWrap: "wrap", alignItems: "center", gap: "1rem", marginTop: "1.25rem" },
   note: { fontFamily: khmerSans, fontSize: "0.78rem", color: "#A89F91", margin: 0 },
   // Letter-spacing pries apart Khmer glyph clusters.
@@ -45,16 +45,12 @@ export default function FirstTelling({ telling, storyId, storyTitle, storyTitleK
     createClient().auth.getSession().then(({ data }) => setUserId(data.session?.user?.id ?? null));
   }, []);
 
-  const place = pickText(language, telling.placeKhmer, telling.place);
   const isOwner = !!userId && telling.owner === userId;
 
   return (
     <article style={styles.wrap}>
       <p style={{ ...styles.heading, ...(language === "km" ? styles.trackingNone : null) }}>{t("firstTellingHeading")}</p>
       <p style={styles.body}>{pickText(language, telling.descriptionKhmer, telling.description)}</p>
-      {telling.photoUrl ? (
-        <img src={telling.photoUrl} alt={place ? `${t("photoSharedFrom")} ${place}` : t("photoSharedWithStory")} style={styles.photo} />
-      ) : null}
 
       {isOwner ? (
         <div style={styles.owner}>

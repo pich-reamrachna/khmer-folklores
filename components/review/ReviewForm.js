@@ -14,10 +14,14 @@ import s from "./reviewStyles.js";
 // (DecisionPicker.js); only that decision's fields show: approving shows the
 // story's name, Khmer name and category to tidy and its summary to write,
 // rejecting shows the note the submitter will see. Typed values are kept if
-// the choice is switched. Approving needs a summary, rejecting needs a note — the database
-// enforces the summary rule too (stories_published_needs_summary).
+// the choice is switched. Approving needs a summary in both English and
+// Khmer (the Khmer one must actually contain Khmer script), rejecting needs a
+// note — the database enforces the summary rules too
+// (stories_published_needs_summary, stories_published_needs_khmer_summary).
 
 const MAX = 1000;
+// Any character in the Khmer Unicode block (same check as ArchiveBrowser.js).
+const KHMER_SCRIPT = /[ក-៿]/;
 
 export default function ReviewForm({ submission }) {
   const router = useRouter();
@@ -55,6 +59,8 @@ export default function ReviewForm({ submission }) {
     const found = {};
     if (title.trim().length < 3) found.title = t("reviewTitleError");
     if (!summary.trim()) found.summary = t("reviewSummaryError");
+    if (!summaryKhmer.trim()) found.summaryKhmer = t("reviewSummaryKhmerError");
+    else if (!KHMER_SCRIPT.test(summaryKhmer)) found.summaryKhmer = t("reviewSummaryKhmerScriptError");
     const cat = categories.find((c) => c.en === category);
     if (!cat) found.category = t("newStoryCategoryError");
     setErrors(found);
@@ -65,7 +71,7 @@ export default function ReviewForm({ submission }) {
       category: cat.en,
       category_khmer: cat.km,
       summary: summary.trim(),
-      summary_khmer: summaryKhmer.trim() || null,
+      summary_khmer: summaryKhmer.trim(),
       status: "published",
       rejection_note: null,
     }, "approve");

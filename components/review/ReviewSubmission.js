@@ -2,6 +2,7 @@
 
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import ZoomablePhoto from "../shared/ZoomablePhoto.js";
 import { formatTimestamp } from "../../utils/formatDate.js";
 import reviewStyles from "./reviewStyles.js";
 import TitlePair from "../shared/TitlePair.js";
@@ -26,6 +27,7 @@ export default function ReviewSubmission({ submission }) {
         khmerTitle={submission.khmerTitle}
         englishStyle={reviewStyles.title}
         khmerStyle={reviewStyles.khmerTitle}
+        fixedOrder
       />
       <p style={reviewStyles.meta}>
         {t("reviewSubmittedBy")} <span style={reviewStyles.metaName}>{origin?.contributor ?? "?"}</span>
@@ -37,7 +39,7 @@ export default function ReviewSubmission({ submission }) {
         <>
           <p style={{ ...reviewStyles.subhead, ...tracking }}>{t("reviewTellingTitle")}</p>
           <p style={reviewStyles.body}>{origin.description}</p>
-          {origin.photoUrl ? <img src={origin.photoUrl} alt="" style={reviewStyles.photo} /> : null}
+          {origin.photoUrl ? <ZoomablePhoto src={origin.photoUrl} alt={t("reviewPhotoLabel")} style={reviewStyles.photo} /> : null}
         </>
       ) : (
         // Shouldn't happen — submit_story always links the first telling —

@@ -97,6 +97,10 @@ export default async function StoryPage({ params }) {
     // The story's own picture (the one its home hero slide shows), for the
     // header — not the first telling's photo, which FirstTelling shows.
     storyPhotoUrl: story.photo_url,
+    // The first telling's own photo, shown under the details table — only
+    // the first telling's, never a reply's (the spread above falls back to
+    // the earliest telling when the first one is missing).
+    firstTellingPhotoUrl: firstTelling?.photoUrl ?? null,
   };
 
   return (

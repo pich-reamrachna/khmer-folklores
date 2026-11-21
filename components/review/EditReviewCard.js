@@ -2,6 +2,7 @@
 
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import ZoomablePhoto from "../shared/ZoomablePhoto.js";
 import { formatTimestamp } from "../../utils/formatDate.js";
 import TellingDecision from "./TellingDecision.js";
 import s from "./reviewStyles.js";
@@ -31,7 +32,7 @@ export default function EditReviewCard({ edit }) {
   // Khmer only when the story has a Khmer name, styled to match the script.
   const titleIsKhmer = language === "km" && Boolean(story?.khmerTitle);
   const place = (x) => pickText(language, x.placeKhmer, x.place);
-  const photo = (url) => (url ? <img src={url} alt="" style={styles.photo} /> : <p style={styles.value}>—</p>);
+  const photo = (url) => (url ? <ZoomablePhoto src={url} alt={t("reviewPhotoLabel")} style={styles.photo} /> : <p style={styles.value}>—</p>);
 
   // A story's first telling carries the story's title, not its own, so its
   // title is never shown or compared here.

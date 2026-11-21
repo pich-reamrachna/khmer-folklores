@@ -263,7 +263,7 @@ const uiText = {
   reviewTellingTitle: { en: "Their telling", km: "ការនិទានរបស់គាត់" },
   reviewNoTelling: { en: "This story has no telling attached.", km: "រឿងនេះមិនមានការនិទានភ្ជាប់មកទេ។" },
   reviewSummaryLabel: { en: "Summary (needed to approve)", km: "សេចក្ដីសង្ខេប (ត្រូវសរសេរ ដើម្បីអនុម័ត)" },
-  reviewSummaryKhmerLabel: { en: "Summary in Khmer (optional)", km: "សេចក្ដីសង្ខេបជាភាសាខ្មែរ (បើមាន)" },
+  reviewSummaryKhmerLabel: { en: "Summary in Khmer (needed to approve)", km: "សេចក្ដីសង្ខេបជាភាសាខ្មែរ (ត្រូវសរសេរ ដើម្បីអនុម័ត)" },
   reviewNoteLabel: { en: "Note to the submitter (needed to reject)", km: "សារទៅអ្នកចែករំលែក (ត្រូវសរសេរ ដើម្បីបដិសេធ)" },
   reviewApprove: { en: "Approve & publish", km: "អនុម័ត និងដាក់បង្ហាញ" },
   // The decision buttons at the top of each /review form (DecisionPicker.js).
@@ -276,6 +276,8 @@ const uiText = {
   reviewRejectReturn: { en: "Reject & Return", km: "បញ្ជាក់ និងផ្ញើសារ" },
   reviewTitleError: { en: "Story name must be at least 3 characters.", km: "ចំណងជើងរឿងត្រូវមានយ៉ាងតិច 3 តួអក្សរ។" },
   reviewSummaryError: { en: "Write a summary before approving.", km: "សូមសរសេរសេចក្ដីសង្ខេប មុននឹងអនុម័ត។" },
+  reviewSummaryKhmerError: { en: "Write the summary in Khmer before approving.", km: "សូមសរសេរសេចក្ដីសង្ខេបជាភាសាខ្មែរ មុននឹងអនុម័ត។" },
+  reviewSummaryKhmerScriptError: { en: "The Khmer summary needs to be written in Khmer.", km: "សេចក្ដីសង្ខេបជាភាសាខ្មែរ ត្រូវសរសេរជាអក្សរខ្មែរ។" },
   reviewNoteError: { en: "Write a note explaining why before rejecting.", km: "សូមសរសេរសារពន្យល់ពីមូលហេតុ មុននឹងបដិសេធ។" },
   reviewSaveError: { en: "That wasn't saved. Please try again.", km: "មិនអាចរក្សាទុកបានទេ។ សូមសាកល្បងម្ដងទៀត។" },
   // ReviewActions.js's button while a decision saves. Its own key, not
@@ -350,6 +352,8 @@ const uiText = {
   // FirstTelling.js): "…from" is followed by the place it was told in.
   photoSharedFrom: { en: "Photo shared from", km: "រូបថតដែលបានចែករំលែកពី" },
   photoSharedWithTelling: { en: "Photo shared with this telling", km: "រូបថតដែលបានចែករំលែកជាមួយការនិទាននេះ" },
+  // ZoomablePhoto.js's button: clicking a photo opens it large.
+  photoEnlarge: { en: "View photo larger", km: "មើលរូបថតឲ្យធំ" },
   photoSharedWithStory: { en: "Photo shared with this story", km: "រូបថតដែលបានចែករំលែកជាមួយរឿងនេះ" },
   menuDeleteLocked: {
     en: "The first telling of a published story can't be deleted — you can still edit it.",

@@ -3,6 +3,7 @@
 import BackButton from "../shared/BackButton.js";
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import ZoomablePhoto from "../shared/ZoomablePhoto.js";
 
 // First section of a story's dedicated page, in two bands:
 //  - the header: back link, the title in the chosen language with the other
@@ -245,6 +246,15 @@ const styles = {
     margin: 0,
     overflowWrap: "anywhere",
   },
+  // The first telling's photo, under the details table in the right-hand
+  // column: the whole picture, the column's width.
+  firstTellingPhoto: {
+    display: "block",
+    width: "100%",
+    height: "auto",
+    borderRadius: 12,
+    marginTop: "1.75rem",
+  },
   // Letter-spacing pries apart Khmer glyph clusters.
   trackingNone: {
     letterSpacing: "normal",
@@ -309,15 +319,30 @@ export default function StoryDetails({ entry, children }) {
         <div style={styles.body} className="details-body">
           <div>{children}</div>
 
-          {details.length ? (
-            <dl style={styles.details}>
-              {details.map(([labelKey, value]) => (
-                <div key={labelKey} style={styles.detailRow}>
-                  <dt style={{ ...styles.detailLabel, ...tracking }}>{t(labelKey)}</dt>
-                  <dd style={styles.detailValue}>{value}</dd>
-                </div>
-              ))}
-            </dl>
+          {/* Right-hand column: the details table, then the first
+              telling's photo under it. */}
+          {details.length || entry.firstTellingPhotoUrl ? (
+            <div>
+              {details.length ? (
+                <dl style={styles.details}>
+                  {details.map(([labelKey, value]) => (
+                    <div key={labelKey} style={styles.detailRow}>
+                      <dt style={{ ...styles.detailLabel, ...tracking }}>{t(labelKey)}</dt>
+                      <dd style={styles.detailValue}>{value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : null}
+              {entry.firstTellingPhotoUrl ? (
+                // Click to see it large (PhotoLightbox).
+                <ZoomablePhoto
+                  src={entry.firstTellingPhotoUrl}
+                  alt={place ? `${t("photoSharedFrom")} ${place}` : t("photoSharedWithStory")}
+                  style={styles.firstTellingPhoto}
+                  fullWidth
+                />
+              ) : null}
+            </div>
           ) : null}
         </div>
       </div>

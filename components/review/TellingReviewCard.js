@@ -2,6 +2,7 @@
 
 import { pickText, useLanguage } from "../shared/LanguageContext.js";
 import { useTranslation } from "../shared/uiText.js";
+import ZoomablePhoto from "../shared/ZoomablePhoto.js";
 import { formatTimestamp } from "../../utils/formatDate.js";
 import TellingDecision from "./TellingDecision.js";
 import s from "./reviewStyles.js";
@@ -35,7 +36,7 @@ export default function TellingReviewCard({ telling }) {
         <p style={{ ...s.subhead, ...tracking }}>{t("reviewTellingTitle")}</p>
         {telling.title ? <p style={s.tellingTitle}>{telling.title}</p> : null}
         <p style={s.body}>{telling.description}</p>
-        {telling.photoUrl ? <img src={telling.photoUrl} alt="" style={s.photo} /> : null}
+        {telling.photoUrl ? <ZoomablePhoto src={telling.photoUrl} alt={t("reviewPhotoLabel")} style={s.photo} /> : null}
       </div>
       <div style={s.decide}>
         <TellingDecision id={telling.id} rpc="review_entry" idKey="entry_id" />
