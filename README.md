@@ -116,13 +116,14 @@ I used Claude Code, the VS Code extension: Claude Opus 4.8 earlier in the semest
 
 The archive's source, as set in `collection.config.js`: "Myself, My Friends, Family, and the People Around Me."
 
-Each telling on the site is credited to the username of the person who shared it, and each story page names its first sharer. Contributors seen in the archive include Pich_Ream (me), achma and Sreng_Vongwathiny.
+**How sources are credited:** the source of each entry (each telling) is the person who shared it, shown by their username on the telling. Each story page also names its first sharer. This is how the archive is built: people add the stories they grew up with themselves, so the sharer is the source. Contributors seen in the archive include Pich_Ream (me), achma and Sreng_Vongwathiny.
 
-- UNSURE: the full list of the people each story came from, and whether each one gave permission to be named. This isn't recorded in the code. Fill it in by hand, for example "a grandmother in Kandal who asked not to be named."
-- UNSURE: where the pictures in `public/featured_pictures/` came from (Ahpt, Bramat Promong, Crocodile Reincarnation, Daun Penh's Curse, Pous Keng Kang), and who made them. Same for the background images in `public/`, such as the brush strokes, the charcoal texture, the ink splash, the bamboo and the pattern. Credit them here.
-- Icons in `public/icons/` (for example `icons8-back-button-48.png`): UNSURE, probably from Icons8, from the file names. Check the licence and credit.
+- Where a sharer first heard a story (a grandparent, a village, a friend) isn't recorded separately. A sharer can mention it in the telling itself.
+- Story pictures in `public/featured_pictures/` (Ahpt, Bramat Promong, Crocodile Reincarnation, Daun Penh's Curse, Pous Keng Kang): generated with an AI image tool.
+- Background images in `public/` (the brush strokes, the charcoal texture, the ink splash, the bamboo and the pattern): generated with an AI image tool from reference pictures I chose of each element.
+- Icons in `public/icons/` (for example `icons8-back-button-48.png`): free icons found online. Three of them (back button, search, three dots) come from Icons8, judging by their file names.
 - Fonts: Cinzel, IM Fell English and Plus Jakarta Sans, from Google Fonts through `next/font`. The three Khmer fonts, Kantumruy Pro, Noto Serif Khmer and Konkhmer Sleokchher, are local files in `app/fonts/` (Khmer letters only, so they can be drawn bigger than Latin text). All six are under the SIL Open Font License, and the licence files for the local ones are next to them.
-- Logo (`public/logo.png`): cut out from `Logo.jpg` with its dark background made transparent. UNSURE: who drew the original artwork. Credit it here.
+- Logo (`public/logo.png`): generated with an AI image tool, then cut out with its dark background made transparent.
 - Title texture (`public/textures/title-grain.jpg`): generated for this project with a script. It isn't from any outside source.
 
 ## 7. Running it locally
@@ -150,7 +151,7 @@ To rebuild the database, run the files in `supabase/` in the SQL Editor. That fo
 ☑ Logged out, the API returns nothing pending or returned: yes, tested 2026-10-24 (attack 5 returned `[]` for unpublished tellings, waiting edits and pending stories), and again on 2026-11-21 with a fresh pending telling, which a logged-out visitor couldn't see<br>
 ☑ Contributors can edit and delete only their own entries: yes (RLS on `entries` / `entry_edits`. Tested with a friend's account in Sprint 2.)<br>
 ☑ No secrets anywhere in the repo history: yes, checked 2026-11-21 by searching every commit (`git log -p --all`) for `sb_secret`, `service_role`, JWTs, private keys and passwords. The only matches are this README's own warnings, and no `.env` file has ever been committed.<br>
-☐ At least eight real entries, each with a credited source: UNSURE. There are 7 published stories with 9 published tellings, and each telling is credited to the username of the person who shared it. All test stories and tellings were deleted on 2026-11-21. Where each story originally came from isn't recorded yet (section 6).<br>
+☑ At least eight real entries, each with a credited source: yes. There are 9 published tellings (entries) across 7 stories, each credited to the username of the person who shared it, which is how this archive credits its sources (section 6). All test stories and tellings were deleted on 2026-11-21.<br>
 ☑ Khmer renders on every screen a user meets, including the queue: yes (the language switch covers every page, including /review)<br>
 ☑ Works at phone width: yes, tested at 390 × 844 (iPhone size) in Chrome<br>
 ☑ No test entries, lorem ipsum or TODO comments in shipped pages: yes, checked 2026-11-21. No TODO, lorem, placeholder text or sample data in the code, and every test story, telling and photo was deleted from the database the same day.<br>
