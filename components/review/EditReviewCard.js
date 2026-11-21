@@ -33,11 +33,14 @@ export default function EditReviewCard({ edit }) {
   const place = (x) => pickText(language, x.placeKhmer, x.place);
   const photo = (url) => (url ? <img src={url} alt="" style={styles.photo} /> : <p style={styles.value}>—</p>);
 
+  // A story's first telling carries the story's title, not its own, so its
+  // title is never shown or compared here.
+  const isFirstTelling = story?.originEntryId === before.id;
   // Only the fields this edit actually changes.
   const changes = [
-    edit.title !== before.title && { key: "contributeTitleLabel", before: before.title, after: edit.title },
+    !isFirstTelling && edit.title !== before.title && { key: "contributeTitleLabel", before: before.title, after: edit.title },
     edit.place !== before.place && { key: "contributeLocationLabel", before: place(before), after: place(edit) },
-    edit.description !== before.description && { key: "contributeStoryLabel", before: before.description, after: edit.description },
+    edit.description !== before.description && { key: "reviewTellingLabel", before: before.description, after: edit.description },
     (edit.photoUrl ?? null) !== (before.photoUrl ?? null) && { key: "reviewPhotoLabel", before: photo(before.photoUrl), after: photo(edit.photoUrl), isNode: true },
   ].filter(Boolean);
 
@@ -46,7 +49,8 @@ export default function EditReviewCard({ edit }) {
       <div style={s.read}>
         <h3 style={titleIsKhmer ? s.khmerTitle : s.title}>{titleIsKhmer ? story.khmerTitle : story?.title ?? "?"}</h3>
         <p style={s.meta}>
-          {t("reviewSubmittedBy")} <span style={s.metaName}>{before.contributor}</span> · &ldquo;{before.title}&rdquo;
+          {t("reviewSubmittedBy")} <span style={s.metaName}>{before.contributor}</span>
+          {isFirstTelling ? null : <> · &ldquo;{before.title}&rdquo;</>}
           {edit.updatedAt ? ` · ${formatTimestamp(edit.updatedAt, language)}` : ""}
         </p>
 

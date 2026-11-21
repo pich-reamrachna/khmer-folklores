@@ -32,7 +32,7 @@ function toTelling(e) {
 }
 // The story a telling belongs to, for the card's heading.
 function toStory(s) {
-  return s ? { id: s.id, title: s.title, khmerTitle: s.khmer_title } : null;
+  return s ? { id: s.id, title: s.title, khmerTitle: s.khmer_title, originEntryId: s.origin_entry_id } : null;
 }
 
 export default async function ReviewPage() {
@@ -61,7 +61,7 @@ export default async function ReviewPage() {
       .order("created_at", { ascending: true }),
     supabase
       .from("entry_edits")
-      .select("*, entries(*, stories!entries_story_id_fkey(id, title, khmer_title))")
+      .select("*, entries(*, stories!entries_story_id_fkey(id, title, khmer_title, origin_entry_id))")
       .eq("status", "pending")
       .order("updated_at", { ascending: true }),
   ]);

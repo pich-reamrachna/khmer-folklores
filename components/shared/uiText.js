@@ -236,6 +236,10 @@ const uiText = {
   reviewBefore: { en: "Now on the story", km: "អ្វីដែលកំពុងបង្ហាញ" },
   reviewAfter: { en: "After approval", km: "ក្រោយពេលអនុម័ត" },
   reviewPhotoLabel: { en: "Photo", km: "រូបថត" },
+  // The telling's text on the reviewer's change card (EditReviewCard.js).
+  // Not contributeStoryLabel ("Your telling"): the curator is reading
+  // someone else's words, not their own.
+  reviewTellingLabel: { en: "Telling", km: "ការនិទាន" },
   reviewPendingCount: { en: "waiting", km: "កំពុងរង់ចាំ" },
   reviewEmpty: { en: "Nothing to review — every submission has been handled.", km: "គ្មានអ្វីត្រូវពិនិត្យទេ — អ្នកបានពិនិត្យរឿងទាំងអស់រួចហើយ។" },
   reviewLoadError: { en: "The review queue couldn't be loaded. Refresh to try again.", km: "មិនអាចបង្ហាញបញ្ជីរឿងដែលរង់ចាំការពិនិត្យបានទេ។ សូមបើកទំព័រនេះម្ដងទៀត។" },

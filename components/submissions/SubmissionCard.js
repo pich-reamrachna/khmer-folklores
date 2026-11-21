@@ -79,6 +79,7 @@ export default function SubmissionCard({ submission }) {
                 storyTitle={submission.title}
                 storyTitleKhmer={submission.khmerTitle}
                 telling={first}
+                firstTelling
               />
             </div>
           ) : null}

@@ -21,11 +21,10 @@ const styles = {
   // Opens the band under the story's header (StoryDetails.js), whose
   // hairline already sits above it — so no rule or gap of its own.
   wrap: { maxWidth: 760 },
-  // Heading and title follow the home hero (StoryHero.js): quiet spaced
-  // capitals, then Cinzel — first, so English stays in Cinzel and Khmer
-  // (which Cinzel has no letters for) falls through to the Khmer font.
+  // Quiet spaced capitals, like the home hero's eyebrow. There's no title
+  // under it: the first telling carries the story's title, already shown
+  // in the header above.
   heading: { fontFamily: khmerLabel, fontSize: "0.75rem", fontWeight: 600, color: "#A89F91", letterSpacing: "0.3em", textTransform: "uppercase", margin: "0 0 0.75rem" },
-  title: { fontFamily: "var(--font-cinzel), var(--font-khmer-serif), serif", fontSize: "1.6rem", fontWeight: 500, color: "#C9A961", margin: "0 0 1rem", overflowWrap: "anywhere" },
   // pre-wrap keeps the sharer's line breaks; anywhere breaks a long run.
   body: { fontFamily: khmerSans, fontSize: "1.05rem", lineHeight: 1.8, color: "#D9D2C5", whiteSpace: "pre-wrap", overflowWrap: "anywhere", margin: 0 },
   photo: { display: "block", maxWidth: "100%", maxHeight: 420, borderRadius: 12, marginTop: "1.5rem", objectFit: "cover" },
@@ -52,7 +51,6 @@ export default function FirstTelling({ telling, storyId, storyTitle, storyTitleK
   return (
     <article style={styles.wrap}>
       <p style={{ ...styles.heading, ...(language === "km" ? styles.trackingNone : null) }}>{t("firstTellingHeading")}</p>
-      {telling.title ? <h2 style={styles.title}>{telling.title}</h2> : null}
       <p style={styles.body}>{pickText(language, telling.descriptionKhmer, telling.description)}</p>
       {telling.photoUrl ? (
         <img src={telling.photoUrl} alt={place ? `Photo shared from ${place}` : "Photo shared with this story"} style={styles.photo} />
@@ -68,7 +66,7 @@ export default function FirstTelling({ telling, storyId, storyTitle, storyTitleK
                 storyId,
                 storyTitle,
                 storyTitleKhmer,
-                entry: formEntry(telling),
+                entry: formEntry(telling, { firstTelling: true }),
               })
             }
           >

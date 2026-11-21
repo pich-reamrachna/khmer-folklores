@@ -10,7 +10,9 @@ import { formEntry } from "../../utils/editableEntry.js";
 // edit form as the story page (StoryPageShell owns the modal), pre-filled
 // with the waiting changes if there are any; saving sends them to review.
 
-export default function EditEntryButton({ storyId, storyTitle, storyTitleKhmer, telling }) {
+// firstTelling: the story's own first telling (My Entries' story card), whose
+// title is the story's — the form then hides its Title field.
+export default function EditEntryButton({ storyId, storyTitle, storyTitleKhmer, telling, firstTelling = false }) {
   const t = useTranslation();
   const { open } = useContributeModal();
 
@@ -24,7 +26,7 @@ export default function EditEntryButton({ storyId, storyTitle, storyTitleKhmer, 
             storyId,
             storyTitle,
             storyTitleKhmer,
-            entry: formEntry(telling),
+            entry: formEntry(telling, { firstTelling }),
           })
         }
       >

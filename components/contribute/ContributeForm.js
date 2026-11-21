@@ -327,7 +327,10 @@ export default function ContributeForm({
   // newStory mode (/share): there's no story yet — `title` is the new story's
   // name (also used as this first telling's title), plus a Khmer name and a
   // category, and submitting creates both through submit_story.
-  const [title, setTitle] = useState(entry?.title ?? initialTitle);
+  // A story's first telling has no title of its own — it always carries the
+  // story's title, so its Title field is hidden and the story title is saved.
+  const firstTelling = !!entry?.isFirstTelling;
+  const [title, setTitle] = useState(firstTelling ? storyTitle : entry?.title ?? initialTitle);
   const [khmerTitle, setKhmerTitle] = useState(initialKhmerTitle);
   const [category, setCategory] = useState("");
   const [place, setPlace] = useState(entry?.place ?? "");
@@ -414,7 +417,7 @@ export default function ContributeForm({
         const { data: isReviewer } = await supabase.rpc("is_reviewer");
         sentToReview = isReviewer !== true;
         const changes = {
-          title: title.trim(),
+          title: firstTelling ? storyTitle : title.trim(),
           place: province.en,
           place_khmer: province.km,
           description: description.trim(),
@@ -560,6 +563,7 @@ export default function ContributeForm({
           {/* Locks every field (and the button) while it's being sent. */}
           <fieldset style={styles.lock} disabled={submitting} aria-busy={submitting}>
 
+            {firstTelling ? null : (
             <div style={styles.field}>
               <label style={{ ...styles.label, ...(km ? styles.trackingNone : null) }} htmlFor="title">
                 {newStory ? t("newStoryTitleLabel") : t("contributeTitleLabel")}
@@ -580,6 +584,7 @@ export default function ContributeForm({
                 </p>
               </div>
             </div>
+            )}
 
             {newStory ? (
               <NewStoryFields

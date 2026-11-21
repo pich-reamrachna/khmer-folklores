@@ -127,7 +127,7 @@ The archive's source, as set in `collection.config.js`: "Myself, My Friends, Fam
 | Crocodile Reincarnation | Heng_leangmeng | All over Cambodia |
 | Daun Penh's Curse | Ngov_Kimyou | Phnom Penh |
 | Neang Neath | Sreng_Vongwathiny | Phnom Penh |
-| Neang Neath | me, Pich Ream Rachna (as Pich_Ream) | Kandal |
+| Neang Neath | my grandfather, Pich Ream (as Pich_Ream) | Kandal |
 | Pous Keng Kang | me, Pich Ream Rachna (as achma) | Banteay Meanchey |
 
 - Where a sharer first heard a story (a grandparent, a village, a friend) isn't recorded separately. A sharer can mention it in the telling itself.

@@ -25,12 +25,15 @@ export function toEdit(row) {
 // last changes, not the published version — else the telling's own.
 // status and publishedPhotoUrl tell the form where to save (an edit for a
 // published telling, the telling itself otherwise) and which photo file is
-// still on show and mustn't be deleted.
-export function formEntry(telling) {
+// still on show and mustn't be deleted. firstTelling: this is the story's
+// first telling, whose title is always the story's own (the form hides its
+// Title field and saves the story title).
+export function formEntry(telling, { firstTelling = false } = {}) {
   const source = telling.edit ?? telling;
   return {
     id: telling.id,
     status: telling.status,
+    isFirstTelling: firstTelling,
     publishedPhotoUrl: telling.photoUrl ?? null,
     title: source.title,
     place: source.place,

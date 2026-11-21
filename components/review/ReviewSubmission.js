@@ -36,7 +36,6 @@ export default function ReviewSubmission({ submission }) {
       {origin ? (
         <>
           <p style={{ ...reviewStyles.subhead, ...tracking }}>{t("reviewTellingTitle")}</p>
-          {origin.title ? <p style={reviewStyles.tellingTitle}>{origin.title}</p> : null}
           <p style={reviewStyles.body}>{origin.description}</p>
           {origin.photoUrl ? <img src={origin.photoUrl} alt="" style={reviewStyles.photo} /> : null}
         </>
