@@ -205,6 +205,16 @@ const styles = {
     // run out of its column into the details table beside it.
     overflowWrap: "anywhere",
   },
+  // When the summary shows in Khmer: upright, smaller, with more room
+  // between lines. Khmer has no italic, so the slant was a faked one that
+  // blurred the letters; the Khmer serif is drawn 115% bigger (app/layout.js),
+  // so the same size read far larger than the English; and its stacked
+  // vowels and subscripts touched the next line at 1.45.
+  summaryKhmer: {
+    fontStyle: "normal",
+    fontSize: "clamp(1.1rem, 1.4vw, 1.25rem)",
+    lineHeight: 1.9,
+  },
   // The details table: one ruled row per detail, label left in small
   // spaced capitals, value right.
   details: {
@@ -254,6 +264,8 @@ export default function StoryDetails({ entry, children }) {
   const title = titleIsKhmer ? entry.khmerTitle : entry.title;
   const subtitle = titleIsKhmer ? entry.title : entry.khmerTitle;
   const summary = pickText(language, entry.summaryKhmer, entry.summary);
+  // Only when Khmer is what actually shows (no translation = English).
+  const summaryIsKhmer = language === "km" && Boolean(entry.summaryKhmer);
   const place = pickText(language, entry.placeKhmer, entry.place);
   // The kind in the chosen language (English when there's no Khmer one).
   const kind = pickText(language, entry.categoryKhmer, entry.category);
@@ -285,7 +297,7 @@ export default function StoryDetails({ entry, children }) {
 
             {subtitle ? <div style={styles.subtitle}>{subtitle}</div> : null}
 
-            {summary ? <p style={styles.summary}>“{summary}”</p> : null}
+            {summary ? <p style={summaryIsKhmer ? { ...styles.summary, ...styles.summaryKhmer } : styles.summary}>“{summary}”</p> : null}
           </div>
 
           {/* Decorative here — the title says what it is. */}
