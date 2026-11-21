@@ -161,6 +161,13 @@ const styles = {
     textTransform: "uppercase",
     margin: "0 0 1.2rem",
   },
+  // The eyebrow in Khmer: bigger than the English capitals' 0.75rem (Khmer
+  // at that size is hard to read) and no letter-spacing, which pries Khmer
+  // letters apart.
+  eyebrowKhmer: {
+    fontSize: "0.95rem",
+    letterSpacing: "normal",
+  },
   // minHeight: shrinks on short viewports.
   main: {
     display: "flex",
@@ -168,14 +175,21 @@ const styles = {
   },
   // Added on top of `title` when the title shows in Khmer. Noto Serif Khmer
   // (app/layout.js) is the Khmer match for Cinzel: a serif with the same
-  // thick-and-thin strokes. The roomier line-height keeps stacked subscripts
-  // and vowel marks from being cut off by the fixed height; 3em is still
-  // exactly two lines, so switching stories never moves the text below.
-  // Font-size (0.9x the English) is in the <style> tag below.
+  // thick-and-thin strokes. Font-size (0.9x the English) is in the <style>
+  // tag below.
+  //  - height auto, up to two lines (maxHeight): unlike the English, it
+  //    doesn't hold an empty second line open — that left a big gap under
+  //    the one-line Khmer titles. Every featured story's Khmer name fits on
+  //    one line, so switching between them still doesn't move the text.
+  //  - paddingTop: the marks above Khmer letters (ំ, ើ) reach above the
+  //    line; overflow hidden clipped them at the box's top edge, but the
+  //    padding is inside the box, so they now show.
   titleKhmer: {
     fontFamily: "var(--font-khmer-serif), var(--font-khmer), serif",
     lineHeight: 1.5,
-    height: "3em",
+    height: "auto",
+    maxHeight: "3em",
+    paddingTop: "0.2em",
     letterSpacing: 0,
   },
   // Three hairlines of different lengths under the title — a
@@ -418,7 +432,7 @@ export default function StoryHero({ entry, index, total, onSelect, children }) {
           {/* max-width lives in the <style> tag below (.hero-text) — it
               narrows on small screens to keep clear of the picture. */}
           <div key={entry.id} className="hero-fade hero-text">
-            {category ? <p style={{ ...styles.eyebrow, ...tracking }}>{category}</p> : null}
+            {category ? <p style={{ ...styles.eyebrow, ...(language === "km" ? styles.eyebrowKhmer : null) }}>{category}</p> : null}
 
             <h1
               style={titleIsKhmer ? { ...styles.title, ...styles.titleKhmer } : styles.title}
