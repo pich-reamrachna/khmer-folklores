@@ -93,7 +93,12 @@ export default function ContributeModal({ storyId, storyTitle, storyTitleKhmer, 
   const handleSuccess = ({ sentToReview } = {}) => {
     if (!entry || sentToReview) {
       navStarted.current = true;
-      const next = `/my-entries?submitted=${entry ? "edit" : "telling"}`;
+      // "edit" only for a published telling: its changes wait while the
+      // story keeps showing the earlier version. A pending or returned
+      // telling was never on the story, so resending it gets the plain
+      // "waiting for review" message instead.
+      const kind = entry?.status === "published" ? "edit" : "telling";
+      const next = `/my-entries?submitted=${kind}`;
       startPageLoading(next);
       startNavigation(() => router.push(next));
       return;
