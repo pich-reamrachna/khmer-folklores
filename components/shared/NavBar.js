@@ -343,6 +343,12 @@ const styles = {
   },
   // Same gold-outlined look as the language pill (.nav-round-btn in
   // app/globals.css holds the border, background and hover).
+  // Holds the account button's place until the session is known.
+  authPending: {
+    display: "block",
+    width: 36,
+    height: 36,
+  },
   userIconButton: {
     width: 36,
     height: 36,
@@ -558,7 +564,11 @@ export default function NavBar() {
   const onBrowse = !["/share", "/login", "/signup", "/my-entries", "/my-submissions", "/review"].includes(pathname);
   const langSwitcherRef = useRef(null);
   const [supabase] = useState(() => createClient());
-  const [user, setUser] = useState(null);
+  // undefined = not known yet (the session check below hasn't answered),
+  // null = signed out, else the signed-in user. Until it's known the account
+  // area stays empty — starting at "signed out" flashed Sign In / Sign Up on
+  // every refresh for signed-in visitors.
+  const [user, setUser] = useState(undefined);
   const [username, setUsername] = useState(null);
   const [isCurator, setIsCurator] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -591,9 +601,8 @@ export default function NavBar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [langMenuOpen]);
 
-  // No session exists yet on the very first render (nothing has been
-  // fetched from the client), so this intentionally starts logged-out —
-  // same accepted flash tradeoff as the language default above.
+  // The session is read in the browser after the first render, so the very
+  // first render doesn't know it yet (user stays undefined until this runs).
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       setUser(data.session?.user ?? null);
@@ -728,7 +737,7 @@ export default function NavBar() {
                 </button>
               </div>
             </div>
-          ) : (
+          ) : user === null ? (
             <Link
               href="/login"
               style={{ ...styles.authPrimaryBtn, ...tracking }}
@@ -737,6 +746,11 @@ export default function NavBar() {
             >
               {t("navSignIn")}
             </Link>
+          ) : (
+            // Not known yet: an empty slot the size of the account button
+            // (the common case on refresh), so the language pill beside it
+            // doesn't jump when the answer arrives.
+            <span style={styles.authPending} aria-hidden="true" />
           )}
 
           <div style={styles.langSwitcher} ref={langSwitcherRef}>
@@ -872,7 +886,7 @@ export default function NavBar() {
               {t("navLogOut")}
             </button>
           </div>
-        ) : (
+        ) : user === null ? (
           <div style={styles.mobileAuthRow}>
             <Link
               href="/login"
@@ -884,7 +898,7 @@ export default function NavBar() {
               {t("navSignIn")}
             </Link>
           </div>
-        )}
+        ) : null}
 
         <div style={styles.mobileLangRow}>
           <button
