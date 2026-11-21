@@ -28,9 +28,9 @@ const uiText = {
   // The rest of the account menu, translated for the same reason.
   navReviewSubmissions: { en: "Review Submissions", km: "ពិនិត្យរឿងដែលបានផ្ញើមក" },
   navLogOut: { en: "Log Out", km: "ចាកចេញ" },
-  // The sign-in pill in the top bar and phone menu: the short words Khmer
-  // sites use, since the two long ones wouldn't fit the pill.
-  navSignIn: { en: "Sign In / Sign Up", km: "ចូល / ចុះឈ្មោះ" },
+  // The sign-in pill in the top bar and phone menu — the same words as the
+  // sign-in and sign-up buttons themselves.
+  navSignIn: { en: "Sign In / Sign Up", km: "ចូលគណនី/បង្កើតគណនី" },
 
   // StoryHero.js.
   heroPrevStory: { en: "Previous story", km: "រឿងមុន" },
