@@ -17,13 +17,17 @@ import s from "./reviewStyles.js";
 // the choice is switched. Approving needs the story's name and summary in
 // both English and Khmer (the Khmer ones must actually contain Khmer
 // script) — a contributor only has to give one name, so the curator fills in
-// the other here. Rejecting needs a note. The database enforces these too
+// the other here. Each language stays in its own field: no Khmer letters in
+// the English name or summary, no English letters in the Khmer ones.
+// Rejecting needs a note. The database enforces these too
 // (stories_published_needs_summary, stories_published_needs_khmer_summary,
-// stories_published_needs_both_names).
+// stories_published_needs_both_names, stories_languages_in_own_fields).
 
 const MAX = 1000;
 // Any character in the Khmer Unicode block (same check as ArchiveBrowser.js).
 const KHMER_SCRIPT = /[ក-៿]/;
+// English (Latin) letters. Digits and punctuation are fine in either field.
+const LATIN_LETTERS = /[A-Za-z]/;
 
 export default function ReviewForm({ submission }) {
   const router = useRouter();
@@ -60,11 +64,15 @@ export default function ReviewForm({ submission }) {
   function approve() {
     const found = {};
     if (title.trim().length < 3) found.title = t("reviewTitleError");
+    else if (KHMER_SCRIPT.test(title)) found.title = t("englishNameKhmerError");
     if (!khmerTitle.trim()) found.khmerTitle = t("reviewKhmerTitleError");
     else if (!KHMER_SCRIPT.test(khmerTitle)) found.khmerTitle = t("reviewKhmerTitleScriptError");
+    else if (LATIN_LETTERS.test(khmerTitle)) found.khmerTitle = t("khmerNameLatinError");
     if (!summary.trim()) found.summary = t("reviewSummaryError");
+    else if (KHMER_SCRIPT.test(summary)) found.summary = t("reviewSummaryEnglishKhmerError");
     if (!summaryKhmer.trim()) found.summaryKhmer = t("reviewSummaryKhmerError");
     else if (!KHMER_SCRIPT.test(summaryKhmer)) found.summaryKhmer = t("reviewSummaryKhmerScriptError");
+    else if (LATIN_LETTERS.test(summaryKhmer)) found.summaryKhmer = t("reviewSummaryKhmerLatinError");
     const cat = categories.find((c) => c.en === category);
     if (!cat) found.category = t("newStoryCategoryError");
     setErrors(found);

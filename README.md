@@ -62,6 +62,7 @@ Other database rules:
 - **A trigger that sets the "Edited" date** on a telling.
 - **A rule that refuses an edit that changes nothing.**
 - **A published story must have both names,** the Khmer one in Khmer script.
+- **Each language stays in its own field:** no Khmer letters in a story's English name or summary, and no English letters in its Khmer ones (`supabase/languages-in-own-fields.sql`).
 
 The original `CREATE TABLE` statements for `stories`, `entries` and `profiles`, the week 7 check constraints, and the photo upload and read rules on the `photos` bucket were run in the dashboard early in the semester and aren't saved as files. Everything from Sprint 2 on is in `supabase/`, including the photo delete rules (`photo-storage-delete.sql`).
 

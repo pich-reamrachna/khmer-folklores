@@ -222,6 +222,10 @@ const uiText = {
   newStoryKhmerTitleLabel: { en: "Story name in Khmer", km: "ចំណងជើងរឿងជាភាសាខ្មែរ" },
   // Under the English name: a new story needs at least one of the two.
   newStoryNameHint: { en: "Fill in at least one: English, Khmer, or both.", km: "សូមបំពេញយ៉ាងហោចណាស់មួយ៖ ភាសាអង់គ្លេស ភាសាខ្មែរ ឬទាំងពីរ។" },
+  // A story's English name with Khmer letters in it (Share a Memory and the
+  // approve form): the Khmer name has its own field.
+  englishNameKhmerError: { en: "Write the English name without Khmer letters. The Khmer name goes in its own box.", km: "សូមសរសេរចំណងជើងជាភាសាអង់គ្លេស ដោយគ្មានអក្សរខ្មែរ។ ចំណងជើងជាភាសាខ្មែរ ត្រូវសរសេរនៅក្នុងប្រអប់ផ្សេង។" },
+  khmerNameLatinError: { en: "Write the Khmer name without English letters. The English name goes in its own box.", km: "សូមសរសេរចំណងជើងជាភាសាខ្មែរ ដោយគ្មានអក្សរអង់គ្លេស។ ចំណងជើងជាភាសាអង់គ្លេស ត្រូវសរសេរនៅក្នុងប្រអប់ផ្សេង។" },
   newStoryNameRequired: { en: "Give the story a name in English or Khmer.", km: "សូមដាក់ចំណងជើងរឿងជាភាសាអង់គ្លេស ឬភាសាខ្មែរ។" },
   newStoryKhmerTitleLenError: { en: "Khmer name must be {max} characters or fewer.", km: "ចំណងជើងខ្មែរមិនអាចវែងជាង {max} តួអក្សរទេ។" },
   newStoryCategoryLabel: { en: "Category", km: "ប្រភេទរឿង" },
@@ -283,6 +287,8 @@ const uiText = {
   reviewKhmerTitleError: { en: "Add the story's Khmer name before approving.", km: "សូមបញ្ចូលចំណងជើងរឿងជាភាសាខ្មែរ មុននឹងអនុម័ត។" },
   reviewKhmerTitleScriptError: { en: "The Khmer name needs to be written in Khmer.", km: "ចំណងជើងរឿងជាភាសាខ្មែរ ត្រូវសរសេរជាអក្សរខ្មែរ។" },
   reviewTitleError: { en: "The English story name must be at least 3 characters.", km: "ចំណងជើងរឿងជាភាសាអង់គ្លេស ត្រូវមានយ៉ាងតិច 3 តួអក្សរ។" },
+  reviewSummaryEnglishKhmerError: { en: "Write the English summary without Khmer letters. The Khmer summary goes in its own box.", km: "សូមសរសេរសេចក្ដីសង្ខេបជាភាសាអង់គ្លេស ដោយគ្មានអក្សរខ្មែរ។ សេចក្ដីសង្ខេបជាភាសាខ្មែរ ត្រូវសរសេរនៅក្នុងប្រអប់ផ្សេង។" },
+  reviewSummaryKhmerLatinError: { en: "Write the Khmer summary without English letters. The English summary goes in its own box.", km: "សូមសរសេរសេចក្ដីសង្ខេបជាភាសាខ្មែរ ដោយគ្មានអក្សរអង់គ្លេស។ សេចក្ដីសង្ខេបជាភាសាអង់គ្លេស ត្រូវសរសេរនៅក្នុងប្រអប់ផ្សេង។" },
   reviewSummaryError: { en: "Write a summary before approving.", km: "សូមសរសេរសេចក្ដីសង្ខេប មុននឹងអនុម័ត។" },
   reviewSummaryKhmerError: { en: "Write the summary in Khmer before approving.", km: "សូមសរសេរសេចក្ដីសង្ខេបជាភាសាខ្មែរ មុននឹងអនុម័ត។" },
   reviewSummaryKhmerScriptError: { en: "The Khmer summary needs to be written in Khmer.", km: "សេចក្ដីសង្ខេបជាភាសាខ្មែរ ត្រូវសរសេរជាអក្សរខ្មែរ។" },

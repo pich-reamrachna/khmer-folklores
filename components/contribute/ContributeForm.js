@@ -68,6 +68,11 @@ function stripInvisible(str) {
 // Length by code point, so Khmer and emoji count sensibly rather than by
 // UTF-16 unit.
 const len = (s) => [...s].length;
+// Each language stays in its own field: a new story's English name may not
+// contain Khmer letters, and its Khmer name may not contain English ones.
+// Digits and punctuation are fine in either.
+const KHMER_SCRIPT = /[ក-៿]/;
+const LATIN_LETTERS = /[A-Za-z]/;
 
 // Verifies the file's real type from its leading magic bytes, not its
 // filename — so a renamed .png.exe is rejected (OWASP file-upload guidance).
@@ -113,7 +118,8 @@ function validate({ title, place, description, photoFile, t, newStory, khmerTitl
   if (newStory && !titleVal && !khmerVal) errors.title = t("newStoryNameRequired");
   else if (newStory && !titleVal) {
     // No English name: nothing to check here.
-  } else if (len(titleVal) < TITLE_MIN || len(titleVal) > TITLE_MAX)
+  } else if (newStory && KHMER_SCRIPT.test(titleVal)) errors.title = t("englishNameKhmerError");
+  else if (len(titleVal) < TITLE_MIN || len(titleVal) > TITLE_MAX)
     errors.title = fill(t("contributeTitleLenError"), { min: TITLE_MIN, max: TITLE_MAX });
   else if (hasForbiddenChars(titleVal, false)) errors.title = t("contributeTitleCharError");
   else if (titleOrderError) errors.title = titleOrderError;
@@ -127,6 +133,7 @@ function validate({ title, place, description, photoFile, t, newStory, khmerTitl
     // has the same 3-character minimum as any telling title.
     else if (!titleVal && khmerVal && len(khmerVal) < TITLE_MIN)
       errors.khmerTitle = fill(t("contributeTitleLenError"), { min: TITLE_MIN, max: TITLE_MAX });
+    else if (LATIN_LETTERS.test(khmerVal)) errors.khmerTitle = t("khmerNameLatinError");
     else if (hasForbiddenChars(khmerVal, false)) errors.khmerTitle = t("contributeTitleCharError");
     else if (khmerOrderErr) errors.khmerTitle = khmerOrderErr;
     if (!categories.some((c) => c.en === category)) errors.category = t("newStoryCategoryError");
